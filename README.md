@@ -14,7 +14,6 @@ PHP
 MySQL
 OpenSSL
 Ionic Angular
-Docker
 
 ## Features
 
