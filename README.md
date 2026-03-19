@@ -7,7 +7,6 @@ Clean Architecture
 
 Domain
 Application
-Infrastructure
 
 ## Tech Stack
 
