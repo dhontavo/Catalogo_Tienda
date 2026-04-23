@@ -1,0 +1,7 @@
+{
+  "name": "ShoppyCatalog",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
