@@ -39,7 +39,7 @@ class MySQLProductRepository implements ProductRepository
                 $row['description'],
                 (float) $row['price'],
                 $row['image_url'],
-                (int) $row['id']
+                (string) $row['id']
             );
         }
 
@@ -49,7 +49,7 @@ class MySQLProductRepository implements ProductRepository
     /**
      * {@inheritdoc}
      */
-    public function findById(int $id): ?Product
+    public function findById(string $id): ?Product
     {
         $stmt = $this->db->prepare(
             'SELECT id, store_id, name, description, price, image_url
@@ -69,7 +69,7 @@ class MySQLProductRepository implements ProductRepository
             $row['description'],
             (float) $row['price'],
             $row['image_url'],
-            (int) $row['id']
+            (string) $row['id']
         );
     }
 
@@ -79,8 +79,8 @@ class MySQLProductRepository implements ProductRepository
     public function save(Product $product): int
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO products (UUID(),store_id, name, description, price, image_url)
-             VALUES (:store_id, :name, :description, :price, :image_url)'
+            'INSERT INTO products (id,store_id, name, description, price, image_url)
+             VALUES (UUID(), :store_id, :name, :description, :price, :image_url)'
         );
 
         $stmt->execute([

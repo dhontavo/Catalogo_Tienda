@@ -11,24 +11,24 @@ class Product
     private string $id;
     private int $storeId;
     private string $name;
-    private string $description;
+    private ?string $description;
     private float $price;
-    private string $imageUrl;
+    private ?string $imageUrl;
 
     public function __construct(
         int $storeId,
         string $name,
-        string $description,
-        float $price,
-        string $imageUrl,
-        string $id = ""
+        ?string $description = null,
+        float $price = 0.00,
+        ?string $imageUrl = null,
+        string $id = ''
     ) {
+        $this->id = $id;
         $this->storeId = $storeId;
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
         $this->imageUrl = $imageUrl;
-        $this->id = $id;
     }
 
     // ─── Getters ────────────────────────────────────────────
@@ -48,7 +48,7 @@ class Product
         return $this->name;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -58,7 +58,7 @@ class Product
         return $this->price;
     }
 
-    public function getImageUrl(): string
+    public function getImageUrl(): ?string
     {
         return $this->imageUrl;
     }
@@ -70,7 +70,7 @@ class Product
         $this->name = $name;
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
@@ -80,9 +80,14 @@ class Product
         $this->price = $price;
     }
 
-    public function setImageUrl(string $imageUrl): void
+    public function setImageUrl(?string $imageUrl): void
     {
         $this->imageUrl = $imageUrl;
+    }
+
+    public function setId(string $id): void
+    {
+        $this->id = $id;
     }
 
     // Convierte la entidad a un arreglo asociativo.

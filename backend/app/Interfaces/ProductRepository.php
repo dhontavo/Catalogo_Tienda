@@ -21,10 +21,10 @@ interface ProductRepository
     /**
      * Obtiene un producto por su ID.
      *
-     * @param int $id
+     * @param string $id
      * @return Product|null
      */
-    public function findById(int $id): ?Product;
+    public function findById(string $id): ?Product;
 
     /**
      * Guarda un nuevo producto y devuelve el ID generado.
