@@ -1,23 +1,15 @@
-# Catalogo_Tienda
+# 🛍️ ShoppyCatalog
 
-SaaS catalog platform for small businesses.
+A clean architecture product catalog system built with PHP, Ionic Angular, and MySQL.
 
-## Architecture
-Clean Architecture
+## 🧠 Architecture
+- Clean Architecture
+- SOLID Principles
+- REST API
 
-Domain
-Application
+## 🎨 Design
+Minimal, fast, and user-focused UI inspired by modern mobile apps.
 
-## Tech Stack
-
-PHP
-MySQL
-OpenSSL
-Ionic Angular
-
-## Features
-
-Multi-tenant catalogs
-Mobile product upload
-Public catalog pages
-Secure API
+## 🔐 Security
+- OpenSSL encryption
+- Token-based protection

@@ -25,8 +25,14 @@ spl_autoload_register(function (string $class) {
 });
 
 // ─── Imports ────────────────────────────────────────────────
+use App\Infrastructure\Env;
 use App\Infrastructure\SecurityHelper;
 use App\Controllers\ProductController;
+use App\Controllers\AuthController;
+
+// ─── Cargar variables de entorno ─────────────────────────────
+Env::load(__DIR__ . '/../.env');
+
 
 // ─── CORS & Headers ─────────────────────────────────────────
 SecurityHelper::setCorsHeaders();
@@ -41,17 +47,28 @@ $path = str_replace($basePath, '', $uri);
 $path = '/' . ltrim($path, '/');
 
 // ─── Rutas ──────────────────────────────────────────────────
-$controller = new ProductController();
+$productController = new ProductController();
+$authController = new AuthController();
 
 switch (true) {
     // GET /products?store_id=X
     case $method === 'GET' && $path === '/products':
-        $controller->index();
+        $productController->index();
         break;
 
     // POST /products
     case $method === 'POST' && $path === '/products':
-        $controller->store();
+        $productController->store();
+        break;
+
+    // POST /register
+    case $method === 'POST' && $path === '/register':
+        $authController->register();
+        break;
+
+    // POST /login
+    case $method === 'POST' && $path === '/login':
+        $authController->login();
         break;
 
     // Ruta no encontrada

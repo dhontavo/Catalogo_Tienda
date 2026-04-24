@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure;
 
+use App\Infrastructure\JWTHelper;
+
 /**
  * Utilidades de seguridad para la API.
  * Maneja validación de API keys, sanitización y headers CORS.
@@ -40,15 +42,33 @@ class SecurityHelper
     }
 
     /**
-     * Obtiene la API Key del header de la petición.
-     *
-     * @return string|null
+     * Obtiene el token de autorización del header.
      */
-    public static function getApiKeyFromRequest(): ?string
+    public static function getAuthToken(): ?string
     {
         $headers = getallheaders();
-        return $headers['X-API-Key'] ?? $headers['x-api-key'] ?? null;
+        $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+        
+        if ($auth && preg_match('/Bearer\s(\S+)/', $auth, $matches)) {
+            return $matches[1];
+        }
+        
+        return null;
     }
+
+    /**
+     * Verifica si el usuario está autorizado mediante un JWT válido.
+     */
+    public static function isAuthorized(): ?array
+    {
+        $token = self::getAuthToken();
+        if (!$token) {
+            return null;
+        }
+        
+        return JWTHelper::validate($token);
+    }
+
 
     /**
      * Sanitiza un string para prevenir XSS.
