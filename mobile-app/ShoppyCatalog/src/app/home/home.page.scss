@@ -1,27 +1,67 @@
-#container {
-  text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+.cf-content {
+  --background: var(--color-bg);
+  padding: var(--space-4);
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+/* HEADER */
+.cf-header {
+  --background: #fff;
+  box-shadow: var(--shadow-sm);
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
+/* SEARCH */
+.cf-search {
+  margin-bottom: var(--space-4);
+}
 
-  color: #8c8c8c;
+/* GRID */
+.cf-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
 
+/* CARD */
+.cf-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.cf-card:active {
+  transform: scale(0.98);
+}
+
+/* IMAGE */
+.cf-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+/* BODY */
+.cf-card-body {
+  padding: var(--space-3);
+}
+
+/* TEXT */
+.cf-title {
+  font-size: var(--font-subtitle);
+  font-weight: 600;
   margin: 0;
+  color: var(--color-text);
 }
 
-#container a {
-  text-decoration: none;
+.cf-price {
+  margin-top: var(--space-1);
+  font-size: var(--font-body);
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+/* FAB */
+.cf-fab {
+  --background: var(--color-primary);
 }

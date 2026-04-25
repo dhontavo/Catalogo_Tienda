@@ -1,20 +1,30 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+<ion-header>
+  <ion-toolbar class="header">
+    <ion-title>ShoppyCatalog</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- Buscador -->
+  <ion-searchbar placeholder="Buscar productos..." class="search"></ion-searchbar>
+
+  <!-- Grid -->
+  <div class="grid">
+    <div class="card" *ngFor="let product of products">
+      <img [src]="product.image" />
+      <div class="card-body">
+        <h3>{{product.name}}</h3>
+        <p>${{product.price}}</p>
+      </div>
+    </div>
   </div>
+
+  <!-- FAB -->
+  <ion-fab vertical="bottom" horizontal="end">
+    <ion-fab-button routerLink="/add-product">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>
