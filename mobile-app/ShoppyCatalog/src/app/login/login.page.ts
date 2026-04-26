@@ -3,6 +3,8 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
+import { add, lockClosedOutline, personOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +26,14 @@ export class LoginPage {
     username: '',
     password: ''
   };
+
+  constructor() {
+    addIcons({
+      personOutline,
+      lockClosedOutline
+
+    })
+  }
 
   async login() {
     this.auth.login(this.form).subscribe({
