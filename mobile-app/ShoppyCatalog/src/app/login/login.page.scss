@@ -1,0 +1,81 @@
+.login-content {
+    --background: #f8fafc; // Fondo claro tipo SaaS
+
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 20px;
+    }
+
+    .logo-wrapper {
+        text-align: center;
+        margin-bottom: 40px;
+
+        .app-logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 15px;
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin: 0;
+
+            span {
+                color: #2563eb; // El azul del logo
+            }
+        }
+
+        .tagline {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+    }
+
+    .form-section {
+        width: 100%;
+        max-width: 400px;
+
+        .custom-input {
+            --background: #ffffff;
+            --border-radius: 12px;
+            --padding-start: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+
+            ion-icon {
+                color: #2563eb;
+            }
+        }
+
+        .login-button {
+            --background: #2563eb;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+            margin-top: 25px;
+            height: 50px;
+            font-weight: 600;
+            text-transform: none;
+        }
+    }
+
+    .footer-links {
+        text-align: center;
+        margin-top: 20px;
+        color: #64748b;
+        font-size: 0.85rem;
+
+        .signup-text {
+            color: #10b981; // El verde de acento
+            font-weight: 600;
+            cursor: pointer;
+        }
+    }
+}

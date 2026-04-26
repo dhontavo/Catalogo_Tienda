@@ -3,21 +3,27 @@ const { writeFileSync } = require('fs');
 const { resolve } = require('path');
 require('dotenv').config(); // Carga variables desde .env
 
-// Ruta del archivo de entorno de Angular
-const targetPath = resolve(__dirname, './src/environments/environment.ts');
+// Rutas de los archivos de entorno de Angular
+const targetPaths = [
+    resolve(__dirname, './src/environments/environment.ts'),
+    resolve(__dirname, './src/environments/environment.prod.ts')
+];
 
 // Construir contenido del archivo
-const envConfigFile = `export const environment = {
-  production: ${process.env.NODE_ENV === 'production'},
+const envConfigFile = (isProd) => `export const environment = {
+  production: ${isProd},
   apiUrl: '${process.env.API_URL}',
   appVersion: '${process.env.APP_VERSION}'
 };
 `;
 
 try {
-    writeFileSync(targetPath, envConfigFile);
-    console.log(`Archivo environment.ts generado con variables de entorno`);
+    targetPaths.forEach(targetPath => {
+        const isProd = targetPath.includes('prod');
+        writeFileSync(targetPath, envConfigFile(isProd));
+        console.log(`Archivo ${targetPath.split(/[\\/]/).pop()} generado con variables de entorno`);
+    });
 } catch (err) {
-    console.error(' Error al generar environment.ts', err);
+    console.error(' Error al generar los archivos de entorno', err);
     process.exit(1);
 }
