@@ -11,20 +11,20 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
     path: 'new-account',
-    loadComponent: () => import('./new-account/new-account.page').then( m => m.NewAccountPage)
+    loadComponent: () => import('./new-account/new-account.page').then(m => m.NewAccountPage)
   },
   {
     path: 'add-product',
-    loadComponent: () => import('./add-product/add-product.page').then( m => m.AddProductPage)
+    loadComponent: () => import('./add-product/add-product.page').then(m => m.AddProductPage)
   },
   {
     path: 'lost-pass',
-    loadComponent: () => import('./lost-pass/lost-pass.page').then( m => m.LostPassPage)
+    loadComponent: () => import('./lost-pass/lost-pass.page').then(m => m.LostPassPage)
   },
 
 ];
