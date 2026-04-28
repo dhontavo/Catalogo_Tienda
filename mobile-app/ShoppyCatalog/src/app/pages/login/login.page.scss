@@ -53,6 +53,13 @@
             ion-icon {
                 color: #2563eb;
             }
+
+            ion-input {
+                --color: #1e293b;
+                --placeholder-color: #64748b;
+                --placeholder-opacity: 1;
+                color: #1e293b;
+            }
         }
 
         .login-button {

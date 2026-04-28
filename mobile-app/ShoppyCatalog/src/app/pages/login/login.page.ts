@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../service/auth.service';
-import { add, lockClosedOutline, personOutline } from 'ionicons/icons';
+import { AuthService } from '../../../service/auth.service';
+import { lockClosedOutline, personOutline, eyeOffOutline, eyeOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 
 @Component({
@@ -30,8 +30,9 @@ export class LoginPage {
   constructor() {
     addIcons({
       personOutline,
-      lockClosedOutline
-
+      lockClosedOutline,
+      eyeOffOutline,
+      eyeOutline
     })
   }
 
@@ -49,5 +50,9 @@ export class LoginPage {
         t.present();
       }
     });
+  }
+
+  routerPath(path: string) {
+    this.router.navigateByUrl(path);
   }
 }
