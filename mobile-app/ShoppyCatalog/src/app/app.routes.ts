@@ -7,7 +7,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
   },
   {
     path: '',
@@ -16,7 +16,7 @@ export const routes: Routes = [
   },
   {
     path: 'new-account',
-    loadComponent: () => import('./new-account/new-account.page').then(m => m.NewAccountPage)
+    loadComponent: () => import('./pages/new-account/new-account.page').then(m => m.NewAccountPage)
   },
   {
     path: 'add-product',
@@ -24,7 +24,7 @@ export const routes: Routes = [
   },
   {
     path: 'lost-pass',
-    loadComponent: () => import('./lost-pass/lost-pass.page').then(m => m.LostPassPage)
+    loadComponent: () => import('./pages/lost-pass/lost-pass.page').then(m => m.LostPassPage)
   },
 
 ];
