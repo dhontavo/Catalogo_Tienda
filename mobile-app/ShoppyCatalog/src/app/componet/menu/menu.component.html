@@ -1,19 +1,32 @@
 <ion-menu contentId="main-content">
   <ion-header>
-    <ion-toolbar>
-      <ion-title>Menu Content</ion-title>
+    <ion-toolbar color="primary">
+      <ion-title>Menú</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content class="ion-padding">This is the menu content.</ion-content>
+  
+  <ion-content>
+    <ion-list lines="none" class="ion-padding-top">
+      <ion-item>
+        <ion-icon slot="start" [name]="themeService.getDarkMode() ? 'moon-outline' : 'sunny-outline'"></ion-icon>
+        <ion-label>Modo Oscuro</ion-label>
+        <ion-toggle [checked]="themeService.getDarkMode()" (ionChange)="toggleTheme($event)"></ion-toggle>
+      </ion-item>
+    </ion-list>
+  </ion-content>
 </ion-menu>
+
 <div class="ion-page" id="main-content">
   <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
-      <ion-title>Menu</ion-title>
+      <ion-title>ShoppyCatalog</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content class="ion-padding"> Tap the button in the toolbar to open the menu. </ion-content>
-</div>
+  
+  <ion-content>
+    <ng-content></ng-content>
+  </ion-content>
+</div>

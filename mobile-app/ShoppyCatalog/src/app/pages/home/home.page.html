@@ -1,30 +1,22 @@
-<ion-header>
-  <ion-toolbar class="header">
-    <ion-title>ShoppyCatalog</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-
+<app-menu>
   <!-- Buscador -->
-  <ion-searchbar placeholder="Buscar productos..." class="search"></ion-searchbar>
+  <ion-searchbar placeholder="Buscar productos..." class="cf-search"></ion-searchbar>
 
   <!-- Grid -->
-  <div class="grid">
-    <div class="card" *ngFor="let product of products">
+  <div class="cf-grid">
+    <div class="cf-card" *ngFor="let product of products">
       <img [src]="product.image" />
-      <div class="card-body">
-        <h3>{{product.name}}</h3>
-        <p>${{product.price}}</p>
+      <div class="cf-card-body">
+        <h3 class="cf-title">{{product.name}}</h3>
+        <p class="cf-price">${{product.price}}</p>
       </div>
     </div>
   </div>
 
   <!-- FAB -->
-  <ion-fab vertical="bottom" horizontal="end">
-    <ion-fab-button routerLink="/add-product">
+  <ion-fab vertical="bottom" horizontal="end" class="cf-fab">
+    <ion-fab-button href="/add-product">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
-</ion-content>
+</app-menu>

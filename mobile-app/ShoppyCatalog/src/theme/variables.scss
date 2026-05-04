@@ -2,13 +2,22 @@
 // https://ionicframework.com/docs/theming/
 :root {
 
-    /*  Colores */
-    --color-primary: #2563EB;
-    --color-success: #10B981;
-    --color-bg: #F8FAFC;
-    --color-text: #0F172A;
+    /*  Colores (Basados en el Logo) */
+    --color-primary: #1D63D3;    /* Azul del cubo */
+    --color-success: #2AB88C;    /* Verde teal de las flechas */
+    --color-bg: #F0F9FF;         /* Fondo celeste muy tenue */
+    --color-surface: #FFFFFF;
+    --color-text: #0F172A;       /* Azul muy oscuro para contraste */
     --color-muted: #64748B;
-    --color-border: #E2E8F0;
+    --color-border: #E0E7FF;     /* Borde con tinte azulado */
+
+    /* Mapeo a variables estándar de Ionic */
+    --ion-color-primary: var(--color-primary);
+    --ion-color-success: var(--color-success);
+    --ion-background-color: var(--color-bg);
+    --ion-text-color: var(--color-text);
+    --ion-border-color: var(--color-border);
+    --ion-item-background: var(--color-surface);
 
     /*  Tipografía */
     --font-title: 18px;
@@ -29,6 +38,59 @@
     --radius-lg: 16px;
 
     /* Sombras */
-    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.08);
+    --shadow-sm: 0 2px 6px rgba(29, 99, 211, 0.05);
+    --shadow-md: 0 6px 16px rgba(29, 99, 211, 0.08);
 }
+
+/* Modo Oscuro (Detección Automática por Sistema) */
+@media (prefers-color-scheme: dark) {
+    :root:not(.light) {
+        --color-primary: #5A95FF;     /* Azul más claro para mejor contraste */
+        --color-success: #4ADE80;     /* Verde más vibrante */
+        --color-bg: #1A1C1E;          /* Fondo gris oscuro suave */
+        --color-surface: #2D3035;      /* Superficie ligeramente más clara */
+        --color-text: #E1E2E5;        /* Blanco hueso (menos agresivo) */
+        --color-muted: #9BA1A6;
+        --color-border: #3A3F45;
+        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+        --ion-color-primary: var(--color-primary);
+        --ion-color-success: var(--color-success);
+        --ion-background-color: var(--color-bg);
+        --ion-text-color: var(--color-text);
+        --ion-border-color: var(--color-border);
+        --ion-item-background: var(--color-surface);
+        --ion-item-color: var(--color-text);
+    }
+}
+
+/* Modo Oscuro (Forzado por Clase / Manual) */
+body.dark,
+html.ion-palette-dark {
+    --color-primary: #5A95FF;
+    --color-success: #4ADE80;
+    --color-bg: #1A1C1E;
+    --color-surface: #2D3035;
+    --color-text: #E1E2E5;
+    --color-muted: #9BA1A6;
+    --color-border: #3A3F45;
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+    --ion-color-primary: var(--color-primary);
+    --ion-color-success: var(--color-success);
+    --ion-background-color: var(--color-bg);
+    --ion-text-color: var(--color-text);
+    --ion-border-color: var(--color-border);
+    --ion-item-background: var(--color-surface);
+    --ion-item-color: var(--color-text);
+}
+
+
+
+/* Forzar fondo y color de texto global */
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}

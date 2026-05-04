@@ -1,17 +1,21 @@
 .cf-content {
   --background: var(--color-bg);
+  --color: var(--color-text);
   padding: var(--space-4);
 }
 
 /* HEADER */
 .cf-header {
-  --background: #fff;
+  --background: var(--color-surface);
+  color: var(--color-text);
   box-shadow: var(--shadow-sm);
 }
 
 /* SEARCH */
 .cf-search {
   margin-bottom: var(--space-4);
+  --background: var(--color-surface);
+  --color: var(--color-text);
 }
 
 /* GRID */
@@ -23,7 +27,7 @@
 
 /* CARD */
 .cf-card {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -64,4 +68,4 @@
 /* FAB */
 .cf-fab {
   --background: var(--color-primary);
-}
+}
