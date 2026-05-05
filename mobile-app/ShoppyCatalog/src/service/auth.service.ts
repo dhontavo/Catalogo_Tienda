@@ -11,7 +11,8 @@ export class AuthService {
   private API = environment.apiUrl;
 
   login(credentials: any) {
-    return this.http.post<any>(`${this.API}login`, credentials).pipe(
+    const body = JSON.stringify(credentials);
+    return this.http.post<any>(`${this.API}login`, body).pipe(
       tap(res => {
         if (res.data && res.data.token) {
           localStorage.setItem('token', res.data.token);
@@ -22,7 +23,8 @@ export class AuthService {
   }
 
   register(userData: any) {
-    return this.http.post(`${this.API}register`, userData);
+    const body = JSON.stringify(userData);
+    return this.http.post(`${this.API}register`, body);
   }
 
   logout() {

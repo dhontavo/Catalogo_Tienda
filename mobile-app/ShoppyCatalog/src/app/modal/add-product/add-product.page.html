@@ -2,61 +2,67 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()">
-        <ion-icon slot="start" name="close-outline"></ion-icon>
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
 
-    <ion-title>Detalle del Producto</ion-title>
+    <ion-title>Nuevo Producto</ion-title>
+
     <ion-buttons slot="end">
-      <ion-button color="primary" (click)="saveProduct()">
+      <ion-button (click)="saveProduct()">
         Guardar
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" [scrollY]="false">
+<ion-content class="ion-padding">
   <div class="form-wrapper">
 
-    <!-- Gestión de Imagen (Campo: image) -->
+    <!-- Gestión de Imagen -->
     <div class="image-uploader" (click)="selectImage()">
       <div *ngIf="!previewImage" class="placeholder">
         <ion-icon name="cloud-upload-outline"></ion-icon>
-        <p>Subir imagen del producto</p>
+        <p>Toca para subir una foto</p>
       </div>
       <img *ngIf="previewImage" [src]="previewImage" class="selected-img">
     </div>
 
     <!-- Información Principal -->
     <div class="input-group">
-      <ion-label class="group-title">Información General</ion-label>
+      <ion-label class="group-title">Detalles Básicos</ion-label>
 
       <ion-item lines="none" class="custom-input">
-        <ion-label position="stacked">Nombre del Producto</ion-label>
-        <ion-input type="text" placeholder="Ej. Camiseta Pro Fit"></ion-input>
+        <ion-icon name="cube-outline" slot="start"></ion-icon>
+        <ion-label position="stacked">Nombre del Producto *</ion-label>
+        <ion-input type="text" placeholder="Ej. Camiseta Pro Fit" [(ngModel)]="name"></ion-input>
       </ion-item>
 
       <ion-item lines="none" class="custom-input">
-        <ion-label position="stacked">Precio (MXN)</ion-label>
         <ion-icon name="cash-outline" slot="start"></ion-icon>
-        <ion-input type="number" placeholder="0.00"></ion-input>
+        <ion-label position="stacked">Precio (MXN) *</ion-label>
+        <ion-input type="number" placeholder="0.00" [(ngModel)]="price"></ion-input>
       </ion-item>
     </div>
 
-    <!-- Descripción (Campo: description) -->
+    <!-- Descripción -->
     <div class="input-group">
-      <ion-label class="group-title">Descripción Detallada</ion-label>
+      <ion-label class="group-title">Descripción</ion-label>
       <ion-item lines="none" class="custom-textarea">
-        <ion-textarea rows="6"
-          placeholder="Describe las características, materiales o beneficios del producto..."></ion-textarea>
+        <ion-icon name="document-text-outline" slot="start"></ion-icon>
+        <ion-label position="stacked">Información Adicional</ion-label>
+        <ion-textarea rows="4" placeholder="Describe las características o beneficios..."
+          [(ngModel)]="description"></ion-textarea>
       </ion-item>
     </div>
 
-    <!-- Datos de Control (Ocultos o Solo Lectura) -->
-    <!-- <div class="meta-info">
-      <ion-note>ID Tienda: {{id_store}}</ion-note>
-      <ion-note>Gestionado por ID Usuario: {{id_user}}</ion-note>
-    </div> -->
+    <!-- Notas informativas (opcional) -->
+    <div class="meta-info">
+      <ion-note>
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Este producto será visible inmediatamente en tu catálogo.
+      </ion-note>
+    </div>
 
   </div>
 </ion-content>

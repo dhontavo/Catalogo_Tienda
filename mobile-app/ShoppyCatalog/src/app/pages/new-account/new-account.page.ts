@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -16,9 +16,11 @@ import {
   IonDatetime,
   IonModal,
   IonButtons,
-  IonImg
+  IonImg,
+  ToastController
 } from '@ionic/angular/standalone';
-
+import { Router } from '@angular/router';
+import { AuthService } from 'src/service/auth.service';
 
 import {
   atOutline,
@@ -36,6 +38,8 @@ import { addIcons } from 'ionicons';
   styleUrls: ['./new-account.page.scss'],
   standalone: true,
   imports: [
+    CommonModule,
+    FormsModule,
     IonContent,
     IonHeader,
     IonToolbar,
@@ -54,6 +58,20 @@ import { addIcons } from 'ionicons';
   ]
 })
 export class NewAccountPage {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private toastCtrl = inject(ToastController);
+
+  form = {
+    name: '',
+    lastname: '',
+    birthday: '',
+    email: '',
+    username: '',
+    password: '',
+    id_store: '',
+    id_plan: 0
+  };
 
   constructor() {
     addIcons({
@@ -63,7 +81,39 @@ export class NewAccountPage {
       storefrontOutline,
       mailOutline,
       personOutline
-    })
+    });
+  }
 
+  async register() {
+    // Validar campos básicos
+    if (!this.form.username || !this.form.password || !this.form.email) {
+      this.showToast('Por favor rellena los campos obligatorios.', 'warning');
+      return;
+    }
+
+    this.authService.register(this.form).subscribe({
+      next: (res: any) => {
+        this.showToast('Cuenta creada con éxito. Ya puedes iniciar sesión.', 'success');
+        this.router.navigateByUrl('/login');
+      },
+      error: (err) => {
+        const errorMsg = err.error?.error || 'Error al crear la cuenta.';
+        this.showToast(errorMsg, 'danger');
+      }
+    });
+  }
+
+  async showToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      color,
+      position: 'bottom'
+    });
+    await toast.present();
+  }
+
+  onDateChange(event: any) {
+    this.form.birthday = event.detail.value.split('T')[0];
   }
 }

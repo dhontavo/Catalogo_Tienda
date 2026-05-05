@@ -24,22 +24,19 @@
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="person-outline" slot="start"></ion-icon>
-            <!-- <ion-label position="stacked">Nombre</ion-label> -->
-            <ion-input type="text" placeholder="Nombre (s)"></ion-input>
+            <ion-input type="text" placeholder="Nombre (s)" [(ngModel)]="form.name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="person-outline" slot="start"></ion-icon>
-            <!-- <ion-label position="stacked">Apellido</ion-label> -->
-            <ion-input type="text" placeholder="Apellido (S)"></ion-input>
+            <ion-input type="text" placeholder="Apellido (S)" [(ngModel)]="form.lastname"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="mail-outline" slot="start"></ion-icon>
-            <!-- <ion-label position="stacked">Nombre de usuario</ion-label> -->
-            <ion-input type="email" placeholder="Correo electronico"></ion-input>
+            <ion-input type="email" placeholder="Correo electronico" [(ngModel)]="form.email"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -47,18 +44,16 @@
       <!-- Usuario -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="at-outline" slot="start"></ion-icon>
-        <!-- <ion-label position="stacked">Nombre de usuario</ion-label> -->
-        <ion-input type="text" placeholder="Nombre de usuario"></ion-input>
+        <ion-input type="text" placeholder="Nombre de usuario" [(ngModel)]="form.username"></ion-input>
       </ion-item>
 
       <!-- Fecha de nacimiento -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="calendar-outline" slot="start"></ion-icon>
-        <!-- <ion-label position="stacked">Fecha de nacimiento</ion-label> -->
         <ion-datetime-button datetime="birthday"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="birthday" presentation="date"></ion-datetime>
+            <ion-datetime id="birthday" presentation="date" (ionChange)="onDateChange($event)"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-item>
@@ -66,18 +61,16 @@
       <!-- Seguridad -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-        <!-- <ion-label position="stacked">Contraseña</ion-label> -->
-        <ion-input type="password" placeholder="••••••••"></ion-input>
+        <ion-input type="password" placeholder="••••••••" [(ngModel)]="form.password"></ion-input>
       </ion-item>
 
       <!-- Datos de Tienda (id_store) -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="storefront-outline" slot="start"></ion-icon>
-        <!-- <ion-label position="stacked">ID de tu Tienda</ion-label> -->
-        <ion-input type="text" placeholder="Nombre de tienda"></ion-input>
+        <ion-input type="text" placeholder="Nombre de tienda" [(ngModel)]="form.id_store"></ion-input>
       </ion-item>
 
-      <ion-button expand="block" class="register-button">
+      <ion-button expand="block" class="register-button" (click)="register()">
         Registrar plataforma
       </ion-button>
     </div>

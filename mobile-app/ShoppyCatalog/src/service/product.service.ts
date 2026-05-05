@@ -12,11 +12,22 @@ export class ProductService {
     private API = `${environment.apiUrl}products`;
 
     getProducts() {
-        return this.http.get<any[]>(this.API);
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<any[]>(this.API, { headers });
     }
 
     addProduct(product: any) {
-        return this.http.post(this.API, product);
+        const body = JSON.stringify(product);
+
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.post(this.API, body, { headers });
     }
+
 
 }

@@ -6,6 +6,10 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './app/auth.interceptor';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+
+// Call the element loader before the bootstrap
+defineCustomElements(window);
 
 bootstrapApplication(AppComponent, {
   providers: [
