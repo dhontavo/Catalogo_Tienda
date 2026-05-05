@@ -26,6 +26,7 @@ export class LoginPage {
     username: '',
     password: ''
   };
+  showPassword: boolean = false;
 
   constructor() {
     addIcons({
@@ -50,6 +51,10 @@ export class LoginPage {
         t.present();
       }
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   routerPath(path: string) {

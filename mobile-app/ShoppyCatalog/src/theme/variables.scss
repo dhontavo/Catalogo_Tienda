@@ -1,96 +1,186 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// ShoppyCatalog Design System
+// Extraído del icono: Azul #1D63D3, Teal #2AB88C, Fondo celeste #EEF6FF
+
+// ─── FUENTE ─────────────────────────────────────────────────────────────────
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+// ─── MODO CLARO ─────────────────────────────────────────────────────────────
 :root {
+    font-family: 'Inter', sans-serif;
 
-    /*  Colores (Basados en el Logo) */
-    --color-primary: #1D63D3;    /* Azul del cubo */
-    --color-success: #2AB88C;    /* Verde teal de las flechas */
-    --color-bg: #F0F9FF;         /* Fondo celeste muy tenue */
-    --color-surface: #FFFFFF;
-    --color-text: #0F172A;       /* Azul muy oscuro para contraste */
-    --color-muted: #64748B;
-    --color-border: #E0E7FF;     /* Borde con tinte azulado */
+    // Colores de Marca (del icono)
+    --color-primary:        #1D63D3;   // Azul cubo
+    --color-primary-light:  #4A90E2;   // Azul claro
+    --color-primary-dark:   #1249A8;   // Azul oscuro
+    --color-accent:         #2AB88C;   // Teal flechas
+    --color-accent-light:   #4ADE80;   // Verde claro
+    --color-accent-dark:    #1A8A68;   // Teal oscuro
 
-    /* Mapeo a variables estándar de Ionic */
-    --ion-color-primary: var(--color-primary);
-    --ion-color-success: var(--color-success);
-    --ion-background-color: var(--color-bg);
-    --ion-text-color: var(--color-text);
-    --ion-border-color: var(--color-border);
-    --ion-item-background: var(--color-surface);
+    // Fondos
+    --color-bg:             #EEF6FF;   // Celeste muy tenue del icono
+    --color-surface:        #FFFFFF;
+    --color-surface-raised: #F8FBFF;
 
-    /*  Tipografía */
-    --font-title: 18px;
+    // Textos
+    --color-text:           #0D1B2A;   // Casi negro con matiz azul
+    --color-text-secondary: #3D5A80;   // Azul oscuro medio
+    --color-muted:          #6B7FA3;
+
+    // Bordes
+    --color-border:         #C8DDF5;   // Borde azulado
+
+    // Gradientes
+    --gradient-brand: linear-gradient(135deg, #1D63D3 0%, #2AB88C 100%);
+    --gradient-surface: linear-gradient(180deg, #EEF6FF 0%, #FFFFFF 100%);
+    --gradient-card: linear-gradient(135deg, #FFFFFF 0%, #F0F8FF 100%);
+
+    // Tipografía
+    --font-title:    18px;
     --font-subtitle: 14px;
-    --font-body: 13px;
+    --font-body:     13px;
+    --font-caption:  11px;
 
-    /* Espaciado (8pt system) */
+    // Espaciado (8pt)
     --space-1: 4px;
     --space-2: 8px;
     --space-3: 12px;
     --space-4: 16px;
     --space-5: 20px;
     --space-6: 24px;
+    --space-8: 32px;
 
-    /* Bordes */
-    --radius-sm: 10px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
+    // Bordes Redondeados
+    --radius-sm:   8px;
+    --radius-md:   14px;
+    --radius-lg:   20px;
+    --radius-xl:   28px;
+    --radius-full: 9999px;
 
-    /* Sombras */
-    --shadow-sm: 0 2px 6px rgba(29, 99, 211, 0.05);
-    --shadow-md: 0 6px 16px rgba(29, 99, 211, 0.08);
+    // Sombras con tinte azul
+    --shadow-sm:   0 2px 8px rgba(29, 99, 211, 0.08);
+    --shadow-md:   0 4px 20px rgba(29, 99, 211, 0.12);
+    --shadow-lg:   0 8px 32px rgba(29, 99, 211, 0.16);
+    --shadow-card: 0 2px 12px rgba(29, 99, 211, 0.10);
+
+    // Variables Ionic
+    --ion-color-primary:           var(--color-primary);
+    --ion-color-primary-shade:     var(--color-primary-dark);
+    --ion-color-primary-tint:      var(--color-primary-light);
+    --ion-color-success:           var(--color-accent);
+    --ion-background-color:        var(--color-bg);
+    --ion-text-color:              var(--color-text);
+    --ion-border-color:            var(--color-border);
+    --ion-item-background:         var(--color-surface);
+    --ion-item-color:              var(--color-text);
+    --ion-toolbar-background:      var(--color-surface);
+    --ion-toolbar-color:           var(--color-text);
+    --ion-tab-bar-background:      var(--color-surface);
+    --ion-searchbar-background:    var(--color-surface);
 }
 
-/* Modo Oscuro (Detección Automática por Sistema) */
+// ─── MODO OSCURO AUTOMÁTICO (sistema) ───────────────────────────────────────
 @media (prefers-color-scheme: dark) {
     :root:not(.light) {
-        --color-primary: #5A95FF;     /* Azul más claro para mejor contraste */
-        --color-success: #4ADE80;     /* Verde más vibrante */
-        --color-bg: #1A1C1E;          /* Fondo gris oscuro suave */
-        --color-surface: #2D3035;      /* Superficie ligeramente más clara */
-        --color-text: #E1E2E5;        /* Blanco hueso (menos agresivo) */
-        --color-muted: #9BA1A6;
-        --color-border: #3A3F45;
-        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+        --color-primary:        #5A95FF;
+        --color-primary-light:  #7BB3FF;
+        --color-primary-dark:   #1D63D3;
+        --color-accent:         #4ADE80;
+        --color-accent-light:   #6EF2A0;
+        --color-accent-dark:    #2AB88C;
 
-        --ion-color-primary: var(--color-primary);
-        --ion-color-success: var(--color-success);
-        --ion-background-color: var(--color-bg);
-        --ion-text-color: var(--color-text);
-        --ion-border-color: var(--color-border);
-        --ion-item-background: var(--color-surface);
-        --ion-item-color: var(--color-text);
+        --color-bg:             #0E1623;   // Azul marino profundo
+        --color-surface:        #182336;
+        --color-surface-raised: #1F2E42;
+
+        --color-text:           #E8F0FE;
+        --color-text-secondary: #A8C4E8;
+        --color-muted:          #6B8BAE;
+
+        --color-border:         #243352;
+
+        --gradient-brand:   linear-gradient(135deg, #5A95FF 0%, #4ADE80 100%);
+        --gradient-surface: linear-gradient(180deg, #0E1623 0%, #182336 100%);
+        --gradient-card:    linear-gradient(135deg, #182336 0%, #1F2E42 100%);
+
+        --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow-md:   0 4px 20px rgba(0, 0, 0, 0.4);
+        --shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.5);
+        --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.35);
+
+        --ion-color-primary:        var(--color-primary);
+        --ion-color-success:        var(--color-accent);
+        --ion-background-color:     var(--color-bg);
+        --ion-text-color:           var(--color-text);
+        --ion-border-color:         var(--color-border);
+        --ion-item-background:      var(--color-surface);
+        --ion-item-color:           var(--color-text);
+        --ion-toolbar-background:   var(--color-surface);
+        --ion-toolbar-color:        var(--color-text);
+        --ion-searchbar-background: var(--color-surface);
     }
 }
 
-/* Modo Oscuro (Forzado por Clase / Manual) */
+// ─── MODO OSCURO MANUAL (clase) ─────────────────────────────────────────────
 body.dark,
 html.ion-palette-dark {
-    --color-primary: #5A95FF;
-    --color-success: #4ADE80;
-    --color-bg: #1A1C1E;
-    --color-surface: #2D3035;
-    --color-text: #E1E2E5;
-    --color-muted: #9BA1A6;
-    --color-border: #3A3F45;
-    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --color-primary:        #5A95FF;
+    --color-primary-light:  #7BB3FF;
+    --color-primary-dark:   #1D63D3;
+    --color-accent:         #4ADE80;
+    --color-accent-light:   #6EF2A0;
+    --color-accent-dark:    #2AB88C;
 
-    --ion-color-primary: var(--color-primary);
-    --ion-color-success: var(--color-success);
-    --ion-background-color: var(--color-bg);
-    --ion-text-color: var(--color-text);
-    --ion-border-color: var(--color-border);
-    --ion-item-background: var(--color-surface);
-    --ion-item-color: var(--color-text);
+    --color-bg:             #0E1623;
+    --color-surface:        #182336;
+    --color-surface-raised: #1F2E42;
+
+    --color-text:           #E8F0FE;
+    --color-text-secondary: #A8C4E8;
+    --color-muted:          #6B8BAE;
+
+    --color-border:         #243352;
+
+    --gradient-brand:   linear-gradient(135deg, #5A95FF 0%, #4ADE80 100%);
+    --gradient-surface: linear-gradient(180deg, #0E1623 0%, #182336 100%);
+    --gradient-card:    linear-gradient(135deg, #182336 0%, #1F2E42 100%);
+
+    --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md:   0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.35);
+
+    --ion-color-primary:        var(--color-primary);
+    --ion-color-success:        var(--color-accent);
+    --ion-background-color:     var(--color-bg);
+    --ion-text-color:           var(--color-text);
+    --ion-border-color:         var(--color-border);
+    --ion-item-background:      var(--color-surface);
+    --ion-item-color:           var(--color-text);
+    --ion-toolbar-background:   var(--color-surface);
+    --ion-toolbar-color:        var(--color-text);
+    --ion-searchbar-background: var(--color-surface);
 }
 
+// ─── ESTILOS GLOBALES ───────────────────────────────────────────────────────
+* {
+    font-family: 'Inter', sans-serif;
+}
 
-
-/* Forzar fondo y color de texto global */
 body {
     background-color: var(--color-bg);
     color: var(--color-text);
-}
+}
+
+// Toolbar global
+ion-toolbar {
+    --background: var(--color-surface);
+    --color:      var(--color-text);
+    --border-color: var(--color-border);
+}
+
+// Botón primario global
+ion-button[color="primary"] {
+    --background: var(--gradient-brand);
+    --border-radius: var(--radius-md);
+    font-weight: 600;
+}

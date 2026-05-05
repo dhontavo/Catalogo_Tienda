@@ -1,71 +1,122 @@
-.cf-content {
-  --background: var(--color-bg);
-  --color: var(--color-text);
-  padding: var(--space-4);
-}
+// ─── HOME PAGE ──────────────────────────────────────────────────────────────
+// Diseño de catálogo de productos inspirado en ShoppyCatalog
 
-/* HEADER */
+// Header
 .cf-header {
   --background: var(--color-surface);
-  color: var(--color-text);
-  box-shadow: var(--shadow-sm);
+  --color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+
+  ion-title {
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+    color: var(--color-text);
+  }
 }
 
-/* SEARCH */
+// Barra de búsqueda
 .cf-search {
-  margin-bottom: var(--space-4);
   --background: var(--color-surface);
   --color: var(--color-text);
+  --placeholder-color: var(--color-muted);
+  --icon-color: var(--color-primary);
+  --box-shadow: var(--shadow-sm);
+  --border-radius: var(--radius-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  padding-inline: 0;
 }
 
-/* GRID */
+// Grid de productos
 .cf-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-3);
+  padding-bottom: 80px; // espacio para el FAB
 }
 
-/* CARD */
+// Tarjeta de producto
 .cf-card {
-  background: var(--color-surface);
+  background: var(--gradient-card);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
   overflow: hidden;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: var(--shadow-sm);
+  }
+
+  img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    display: block;
+  }
 }
 
-.cf-card:active {
-  transform: scale(0.98);
-}
-
-/* IMAGE */
-.cf-card img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-}
-
-/* BODY */
+// Cuerpo de la tarjeta
 .cf-card-body {
   padding: var(--space-3);
 }
 
-/* TEXT */
 .cf-title {
-  font-size: var(--font-subtitle);
+  font-size: 13px;
   font-weight: 600;
-  margin: 0;
+  margin: 0 0 4px;
   color: var(--color-text);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cf-price {
-  margin-top: var(--space-1);
-  font-size: var(--font-body);
+  font-size: 15px;
   font-weight: 700;
-  color: var(--color-success);
+  margin: 0;
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* FAB */
+// Botón flotante (FAB)
 .cf-fab {
-  --background: var(--color-primary);
-}
+  ion-fab-button {
+    --background: var(--gradient-brand);
+    --box-shadow: var(--shadow-lg);
+  }
+}
+
+// Estado vacío
+.cf-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 64px;
+    color: var(--color-border);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: var(--color-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+}

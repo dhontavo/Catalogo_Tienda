@@ -1,3 +1,5 @@
+// Diseño limpio y premium inspirado en el icono de ShoppyCatalog
+
 .login-content {
     --background: var(--color-bg);
     --color: var(--color-text);
@@ -7,86 +9,167 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        padding: 20px;
+        min-height: 100%;
+        padding: var(--space-6);
+        position: relative;
+
+        // Decoración de fondo con el color primario
+        &::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(29, 99, 211, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -60px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(42, 184, 140, 0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
     }
 
+    // Logo y Marca
     .logo-wrapper {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: var(--space-8);
+        position: relative;
+        z-index: 1;
+
+        .logo-ring {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 16px;
+            border-radius: var(--radius-xl);
+            background: var(--color-surface);
+            box-shadow: var(--shadow-lg);
+            border: 2px solid rgba(29, 99, 211, 0.12);
+        }
 
         .app-logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px auto;
+            width: 80px;
+            height: 80px;
             display: block;
         }
 
-
         .brand-name {
-            font-weight: 700;
-            font-size: 1.8rem;
+            font-size: 2rem;
+            font-weight: 800;
             color: var(--color-text);
-            margin: 0;
+            margin: 0 0 6px;
+            letter-spacing: -0.5px;
 
             span {
-                color: var(--color-primary);
+                background: var(--gradient-brand);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
         }
 
         .tagline {
             color: var(--color-muted);
             font-size: 0.9rem;
-            margin-top: 5px;
+            margin: 0;
+            font-weight: 400;
         }
     }
 
+    // Formulario
     .form-section {
         width: 100%;
         max-width: 400px;
+        position: relative;
+        z-index: 1;
 
         .custom-input {
             --background: var(--color-surface);
             --border-radius: var(--radius-md);
-            --padding-start: 15px;
-            margin-bottom: 15px;
+            --padding-start: 14px;
+            --padding-end: 14px;
+            --inner-padding-end: 14px;
+            margin-bottom: var(--space-3);
             box-shadow: var(--shadow-sm);
-            border: 1px solid var(--color-border);
+            border: 1.5px solid var(--color-border);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            border-radius: var(--radius-md);
+
+            &:focus-within {
+                border-color: var(--color-primary);
+                box-shadow: 0 0 0 3px rgba(29, 99, 211, 0.12);
+            }
 
             ion-icon {
                 color: var(--color-primary);
+                font-size: 20px;
             }
 
             ion-input {
                 --color: var(--color-text);
                 --placeholder-color: var(--color-muted);
                 --placeholder-opacity: 1;
-                color: var(--color-text);
+                font-size: 15px;
             }
         }
 
         .login-button {
-            --background: var(--color-primary);
+            --background: var(--gradient-brand);
             --border-radius: var(--radius-md);
             --box-shadow: var(--shadow-md);
-            margin-top: 25px;
-            height: 50px;
-            font-weight: 600;
+            margin-top: var(--space-5);
+            height: 52px;
+            font-weight: 700;
+            font-size: 16px;
             text-transform: none;
-            color: #ffffff; /* El texto del botón suele quedar mejor en blanco */
+            letter-spacing: 0.3px;
+            color: #ffffff;
         }
     }
 
+    // Footer
     .footer-links {
         text-align: center;
-        margin-top: 20px;
+        margin-top: var(--space-5);
         color: var(--color-muted);
-        font-size: 0.85rem;
+        font-size: 0.875rem;
+        position: relative;
+        z-index: 1;
+
+        p {
+            margin: 6px 0;
+        }
 
         .signup-text {
-            color: var(--color-success);
+            color: var(--color-accent);
             font-weight: 600;
             cursor: pointer;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+
+        .forgot-link {
+            color: var(--color-primary);
+            font-weight: 500;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 0.8;
+            }
         }
     }
-}
+}

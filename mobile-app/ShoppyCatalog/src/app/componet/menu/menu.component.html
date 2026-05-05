@@ -1,23 +1,35 @@
 <ion-menu contentId="main-content">
-  <ion-header>
-    <ion-toolbar color="primary">
-      <ion-title>Menú</ion-title>
+  <ion-header class="ion-no-border">
+    <ion-toolbar class="menu-header-toolbar">
+      <div class="menu-brand">
+        <img src="assets/icon/favicon.png" alt="logo">
+        <span class="menu-title">Shoppy<span>Catalog</span></span>
+      </div>
     </ion-toolbar>
   </ion-header>
-  
+
   <ion-content>
-    <ion-list lines="none" class="ion-padding-top">
-      <ion-item>
+    <div class="menu-divider"></div>
+
+    <ion-list class="menu-list" lines="none">
+      <ion-item class="menu-theme-item">
         <ion-icon slot="start" [name]="themeService.getDarkMode() ? 'moon-outline' : 'sunny-outline'"></ion-icon>
         <ion-label>Modo Oscuro</ion-label>
-        <ion-toggle [checked]="themeService.getDarkMode()" (ionChange)="toggleTheme($event)"></ion-toggle>
+        <ion-toggle slot="end" [checked]="themeService.getDarkMode()" (ionChange)="toggleTheme($event)">
+        </ion-toggle>
       </ion-item>
     </ion-list>
+
+    <div class="menu-divider"></div>
+
+    <div class="menu-footer">
+      ShoppyCatalog v1.0
+    </div>
   </ion-content>
 </ion-menu>
 
-<div class="ion-page" id="main-content">
-  <ion-header>
+<div class="ion-page" id="main-content" collapse="fade">
+  <ion-header class="cf-header">
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
@@ -25,8 +37,8 @@
       <ion-title>ShoppyCatalog</ion-title>
     </ion-toolbar>
   </ion-header>
-  
-  <ion-content>
+
+  <ion-content class="ion-padding">
     <ng-content></ng-content>
   </ion-content>
-</div>
+</div>

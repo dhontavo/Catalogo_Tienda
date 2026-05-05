@@ -4,15 +4,19 @@ import {
   IonIcon,
   IonSearchbar,
   IonFab,
-  IonFabButton
+  IonFabButton,
+  IonModal,
+  ModalController
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 import { ProductService } from 'src/service/product.service';
 import { NgFor } from '@angular/common';
+import { AddProductPage } from '../../modal/add-product/add-product.page';
 
 import { MenuComponent } from '../../componet/menu/menu.component';
+
 
 @Component({
   selector: 'app-home',
@@ -24,15 +28,19 @@ import { MenuComponent } from '../../componet/menu/menu.component';
     IonSearchbar,
     IonFab,
     IonFabButton,
+    IonModal,
     FormsModule,
     NgFor,
-    MenuComponent
+    MenuComponent,
+    AddProductPage
   ],
 })
 
 export class HomePage implements OnInit {
   private productService = inject(ProductService);
+
   products: any[] = [];
+  isModalOpen: boolean = false;
 
   ngOnInit() {
     this.productService.getProducts().subscribe(res => {
@@ -40,11 +48,21 @@ export class HomePage implements OnInit {
     });
   }
 
-  constructor() {
+  constructor(private modalCtrl: ModalController) {
     addIcons({
       add,
-
     })
   }
 
+  async openModal() {
+    const modal = await this.modalCtrl.create({
+      component: AddProductPage,
+      // componentProps: { value: 123 } // Opcional: pasar datos
+    });
+    return await modal.present();
+  }
 }
+
+
+
+

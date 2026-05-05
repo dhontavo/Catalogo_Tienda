@@ -18,12 +18,14 @@ export const routes: Routes = [
     path: 'new-account',
     loadComponent: () => import('./pages/new-account/new-account.page').then(m => m.NewAccountPage)
   },
-  {
-    path: 'add-product',
-    loadComponent: () => import('./pages/add-product/add-product.page').then(m => m.AddProductPage)
-  },
+  // {
+  //   path: 'add-product',
+  //   loadComponent: () => import('./modal/add-product/add-product.page').then(m => m.AddProductPage)
+  // },
   {
     path: 'lost-pass',
+
+
     loadComponent: () => import('./pages/lost-pass/lost-pass.page').then(m => m.LostPassPage)
   },
 

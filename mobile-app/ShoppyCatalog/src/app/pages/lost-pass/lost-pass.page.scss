@@ -1,3 +1,6 @@
+// ─── RECUPERAR CONTRASEÑA ───────────────────────────────────────────────────
+// Diseño consistente con el Login
+
 .login-content {
     --background: var(--color-bg);
     --color: var(--color-text);
@@ -7,33 +10,60 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        padding: 20px;
+        min-height: 100%;
+        padding: var(--space-6);
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(29,99,211,0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
     }
 
     .logo-wrapper {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: var(--space-8);
+
+        .logo-ring {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 14px;
+            border-radius: var(--radius-xl);
+            background: var(--color-surface);
+            box-shadow: var(--shadow-md);
+            border: 1.5px solid var(--color-border);
+        }
 
         .app-logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px auto;
+            width: 64px;
+            height: 64px;
             display: block;
         }
 
-
         .brand-name {
-            font-weight: 700;
-            font-size: 1.8rem;
+            font-size: 1.7rem;
+            font-weight: 800;
             color: var(--color-text);
-            margin: 0;
+            margin: 0 0 6px;
+            letter-spacing: -0.3px;
 
             span {
-                color: var(--color-primary);
+                background: var(--gradient-brand);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
         }
-
     }
 
     .form-section {
@@ -43,31 +73,40 @@
         .custom-input {
             --background: var(--color-surface);
             --border-radius: var(--radius-md);
-            --padding-start: 15px;
-            margin-bottom: 15px;
+            --padding-start: 14px;
+            --padding-end: 14px;
+            margin-bottom: var(--space-3);
             box-shadow: var(--shadow-sm);
-            border: 1px solid var(--color-border);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-md);
+            transition: border-color 0.2s, box-shadow 0.2s;
+
+            &:focus-within {
+                border-color: var(--color-primary);
+                box-shadow: 0 0 0 3px rgba(29, 99, 211, 0.1);
+            }
 
             ion-icon {
                 color: var(--color-primary);
+                font-size: 20px;
             }
 
             ion-input {
                 --color: var(--color-text);
                 --placeholder-color: var(--color-muted);
-                --placeholder-opacity: 1;
-                color: var(--color-text);
-                margin-top: 5px;
+                margin-top: 2px;
+                font-size: 15px;
             }
         }
 
         .login-button {
-            --background: var(--color-primary);
+            --background: var(--gradient-brand);
             --border-radius: var(--radius-md);
             --box-shadow: var(--shadow-md);
-            margin-top: 25px;
-            height: 50px;
-            font-weight: 600;
+            margin-top: var(--space-5);
+            height: 52px;
+            font-weight: 700;
+            font-size: 16px;
             text-transform: none;
             color: #ffffff;
         }
@@ -75,19 +114,20 @@
 
     .footer-links {
         text-align: center;
-        margin-top: 30px;
+        margin-top: var(--space-6);
         color: var(--color-muted);
 
         .back-link {
-            color: var(--color-primary);
-            font-weight: 500;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
             cursor: pointer;
-            text-decoration: none;
+            font-size: 15px;
             transition: opacity 0.2s;
 
-            &:hover {
-                opacity: 0.8;
-            }
+            &:hover { opacity: 0.8; }
         }
     }
 }
