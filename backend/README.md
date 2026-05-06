@@ -51,7 +51,7 @@ backend/
 
 | Método | Ruta         | Descripción              |
 |--------|-------------|--------------------------|
-| GET    | `/products` | Lista productos (`?store_id=X`) |
+| GET    | `/products` | Lista productos (`?id_store=X`) |
 | POST   | `/products` | Crea un producto         |
 
 ### Ejemplo: Crear producto
@@ -60,7 +60,7 @@ backend/
 curl -X POST http://localhost/Catalogo_Tienda/backend/public/products \
   -H "Content-Type: application/json" \
   -d '{
-    "store_id": 1,
+    "id_store": 1,
     "name": "Camiseta Negra",
     "description": "Camiseta 100% algodón",
     "price": 299.99,

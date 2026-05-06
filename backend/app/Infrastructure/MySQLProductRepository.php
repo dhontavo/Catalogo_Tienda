@@ -24,17 +24,17 @@ class MySQLProductRepository implements ProductRepository
     public function findByStoreId(int $storeId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, store_id, name, description, price, image_url
+            'SELECT id, id_store, name, description, price, image_url
              FROM products
-             WHERE store_id = :store_id
+             WHERE id_store = :id_store
              ORDER BY id DESC'
         );
-        $stmt->execute([':store_id' => $storeId]);
+        $stmt->execute([':id_store' => $storeId]);
 
         $products = [];
         while ($row = $stmt->fetch()) {
             $products[] = new Product(
-                (int) $row['store_id'],
+                (int) $row['id_store'],
                 $row['name'],
                 $row['description'],
                 (float) $row['price'],
@@ -52,7 +52,7 @@ class MySQLProductRepository implements ProductRepository
     public function findById(string $id): ?Product
     {
         $stmt = $this->db->prepare(
-            'SELECT id, store_id, name, description, price, image_url
+            'SELECT id, id_store, name, description, price, image_url
              FROM products
              WHERE id = :id'
         );
@@ -64,7 +64,7 @@ class MySQLProductRepository implements ProductRepository
         }
 
         return new Product(
-            (int) $row['store_id'],
+            (int) $row['id_store'],
             $row['name'],
             $row['description'],
             (float) $row['price'],
@@ -79,12 +79,12 @@ class MySQLProductRepository implements ProductRepository
     public function save(Product $product): int
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO products (id,store_id, name, description, price, image_url)
-             VALUES (UUID(), :store_id, :name, :description, :price, :image_url)'
+            'INSERT INTO products (id,id_store, name, description, price, image_url)
+             VALUES (UUID(), :id_store, :name, :description, :price, :image_url)'
         );
 
         $stmt->execute([
-            ':store_id'    => $product->getStoreId(),
+            ':id_store'    => $product->getStoreId(),
             ':name'        => $product->getName(),
             ':description' => $product->getDescription(),
             ':price'       => $product->getPrice(),

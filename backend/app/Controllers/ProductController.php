@@ -24,16 +24,16 @@ class ProductController
     }
 
     /**
-     * GET /products?store_id={id}
+     * GET /products?id_store={id}
      * Lista los productos de una tienda.
      */
     public function index(): void
     {
-        $storeId = isset($_GET['store_id']) ? (int) $_GET['store_id'] : 0;
+        $storeId = isset($_GET['id_store']);
 
-        if ($storeId <= 0) {
+        if ($storeId !="") {
             SecurityHelper::jsonResponse(
-                ['error' => 'El parámetro store_id es obligatorio y debe ser mayor a 0.'],
+                ['error' => 'El parámetro id_store es obligatorio.'],
                 400
             );
         }
@@ -55,17 +55,10 @@ class ProductController
      */
     public function store(): void
     {
-        $input = json_decode(file_get_contents('php://input'), true);
-
-        if (!$input) {
-            SecurityHelper::jsonResponse(
-                ['error' => 'El cuerpo de la petición debe ser JSON válido.'],
-                400
-            );
-        }
+        $input = SecurityHelper::getJsonInput();
 
         // Validar campos requeridos
-        $required = ['store_id', 'name', 'description', 'price', 'image_url'];
+        $required = ['id_store', 'name', 'description', 'price', 'image_url'];
         foreach ($required as $field) {
             if (!isset($input[$field]) || (is_string($input[$field]) && empty(trim($input[$field])))) {
                 SecurityHelper::jsonResponse(
@@ -77,7 +70,7 @@ class ProductController
 
         try {
             $product = $this->createProduct->execute(
-                (int)    $input['store_id'],
+                (int)    $input['id_store'],
                 SecurityHelper::sanitize($input['name']),
                 SecurityHelper::sanitize($input['description']),
                 (float)  $input['price'],

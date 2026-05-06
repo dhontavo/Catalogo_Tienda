@@ -111,7 +111,7 @@ export class AddProductPage implements OnInit {
         description: this.description,
         price: this.price,
         image_url: this.previewImage, // En una app real, aquí subirías el archivo primero
-        store_id: storeId
+        id_store: storeId
       };
 
       this.productService.addProduct(productData).subscribe({

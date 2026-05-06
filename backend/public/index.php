@@ -51,7 +51,7 @@ $productController = new ProductController();
 $authController = new AuthController();
 
 switch (true) {
-    // GET /products?store_id=X
+    // GET /products?id_store=X
     case $method === 'GET' && $path === '/products':
         $productController->index();
         break;

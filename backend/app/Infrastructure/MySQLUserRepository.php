@@ -24,7 +24,7 @@ class MySQLUserRepository implements UserRepository
     public function findById(string $id): ?User
     {
         $stmt = $this->db->prepare(
-            'SELECT id, username, password, created_at
+            'SELECT id, name, lastname, birthday, email, username, password, id_store, id_plan, created_at, update_at
              FROM users
              WHERE id = :id'
         );
@@ -35,12 +35,7 @@ class MySQLUserRepository implements UserRepository
             return null;
         }
 
-        return new User(
-            $row['username'],
-            $row['password'],
-            (string) $row['id'],
-            $row['created_at']
-        );
+        return $this->mapRowToUser($row);
     }
 
     /**
@@ -49,7 +44,7 @@ class MySQLUserRepository implements UserRepository
     public function findByUsername(string $username): ?User
     {
         $stmt = $this->db->prepare(
-            'SELECT id, username, password, created_at
+            'SELECT id, name, lastname, birthday, email, username, password, id_store, id_plan, created_at, update_at
              FROM users
              WHERE username = :username'
         );
@@ -60,12 +55,7 @@ class MySQLUserRepository implements UserRepository
             return null;
         }
 
-        return new User(
-            $row['username'],
-            $row['password'],
-            (string) $row['id'],
-            $row['created_at']
-        );
+        return $this->mapRowToUser($row);
     }
 
     /**
@@ -74,16 +64,22 @@ class MySQLUserRepository implements UserRepository
     public function save(User $user): string
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO users (id, username, password)
-             VALUES (UUID(), :username, :password)'
+            'INSERT INTO users (id, name, lastname, birthday, email, username, password, id_store, id_plan)
+             VALUES (UUID(), :name, :lastname, :birthday, :email, :username, :password, :id_store, :id_plan)'
         );
 
         $stmt->execute([
+            ':name'     => $user->getName(),
+            ':lastname' => $user->getLastname(),
+            ':birthday' => $user->getBirthday(),
+            ':email'    => $user->getEmail(),
             ':username' => $user->getUsername(),
             ':password' => $user->getPassword(),
+            ':id_store' => $user->getIdStore(),
+            ':id_plan'  => $user->getIdPlan()
         ]);
 
-        // Recuperar el UUID generado
+        // Recuperar el UUID generado (en MySQL 8 con DEFAULT uuid() se podría omitir UUID() en el INSERT)
         $stmt = $this->db->prepare(
             'SELECT id FROM users WHERE username = :username'
         );
@@ -91,5 +87,25 @@ class MySQLUserRepository implements UserRepository
         $row = $stmt->fetch();
 
         return $row ? (string) $row['id'] : '';
+    }
+
+    /**
+     * Mapea una fila de la base de datos a la entidad User.
+     */
+    private function mapRowToUser(array $row): User
+    {
+        return new User(
+            $row['name'],
+            $row['lastname'],
+            $row['birthday'],
+            $row['email'],
+            $row['username'],
+            $row['password'],
+            $row['id_store'],
+            (int) ($row['id_plan'] ?? 0),
+            (string) $row['id'],
+            $row['created_at'],
+            $row['update_at']
+        );
     }
 }

@@ -12,6 +12,14 @@
     <div class="menu-divider"></div>
 
     <ion-list class="menu-list" lines="none">
+      <ion-item class="menu-theme-item" (click)="logOut()">
+        <ion-icon slot="start" name="person-outline"></ion-icon>
+        <ion-label>perfil</ion-label>
+      </ion-item>
+      <ion-item class="menu-theme-item" (click)="logOut()">
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        <ion-label>Cerrar sesión</ion-label>
+      </ion-item>
       <ion-item class="menu-theme-item">
         <ion-icon slot="start" [name]="themeService.getDarkMode() ? 'moon-outline' : 'sunny-outline'"></ion-icon>
         <ion-label>Modo Oscuro</ion-label>

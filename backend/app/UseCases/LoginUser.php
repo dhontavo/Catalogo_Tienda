@@ -3,6 +3,7 @@
 namespace App\UseCases;
 
 use App\Infrastructure\JWTHelper;
+use App\Interfaces\UserRepository;
 
 /**
  * Caso de uso: Autenticar un usuario (login).

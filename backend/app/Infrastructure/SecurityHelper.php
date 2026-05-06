@@ -82,6 +82,30 @@ class SecurityHelper
     }
 
     /**
+     * Obtiene y decodifica el cuerpo de la petición en formato JSON.
+     * Si no es válido, envía una respuesta de error y termina la ejecución.
+     *
+     * @return array
+     */
+    public static function getJsonInput(): array
+    {
+        $rawInput = file_get_contents('php://input');
+        $input = json_decode($rawInput, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            self::jsonResponse(
+                [
+                    'error' => 'El cuerpo de la petición debe ser JSON válido.',
+                    'details' => json_last_error_msg()
+                ],
+                400
+            );
+        }
+
+        return $input ?? [];
+    }
+
+    /**
      * Envía una respuesta JSON con el código HTTP correspondiente.
      *
      * @param mixed $data   Datos a enviar
@@ -89,8 +113,11 @@ class SecurityHelper
      */
     public static function jsonResponse(mixed $data, int $status = 200): void
     {
+        if (!headers_sent()) {
+            header('Content-Type: application/json; charset=UTF-8');
+        }
         http_response_code($status);
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 }

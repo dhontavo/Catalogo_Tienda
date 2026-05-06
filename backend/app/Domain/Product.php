@@ -95,7 +95,7 @@ class Product
     {
         return [
             'id'          => $this->id,
-            'store_id'    => $this->storeId,
+            'id_store'    => $this->storeId,
             'name'        => $this->name,
             'description' => $this->description,
             'price'       => $this->price,
