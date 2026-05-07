@@ -13,10 +13,11 @@ import {
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 import { ProductService } from 'src/service/product.service';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { AddProductPage } from '../../modal/add-product/add-product.page';
 
 import { MenuComponent } from '../../componet/menu/menu.component';
+import { ToolsService } from 'src/app/tools/tools';
 
 
 @Component({
@@ -31,6 +32,7 @@ import { MenuComponent } from '../../componet/menu/menu.component';
     IonFabButton,
     FormsModule,
     NgFor,
+    NgIf,
     MenuComponent,
     IonTitle
   ],
@@ -43,11 +45,13 @@ export class HomePage implements OnInit {
 
   products: any[] = [];
   isModalOpen: boolean = false;
+  private tools = inject(ToolsService);
 
   ngOnInit() {
     this.productService.getProducts().subscribe({
       next: (res) => {
         this.products = res;
+
       },
       error: (err) => {
         console.error('Error al obtener productos:', err);

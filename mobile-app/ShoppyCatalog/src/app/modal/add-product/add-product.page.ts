@@ -24,6 +24,7 @@ import { cloudUploadOutline, cashOutline, closeOutline, cubeOutline, documentTex
 import { FileUploadService } from 'src/service/file-upload.service';
 import { ProductService } from 'src/service/product.service';
 import { AuthService } from 'src/service/auth.service';
+import { ToolsService } from 'src/app/tools/tools';
 
 @Component({
   selector: 'app-add-product',
@@ -61,6 +62,7 @@ export class AddProductPage implements OnInit {
   private modalCtrl = inject(ModalController);
   private loadingCtrl = inject(LoadingController);
   private toastCtrl = inject(ToastController);
+  private tools = inject(ToolsService);
 
   constructor() {
     addIcons({
@@ -89,14 +91,11 @@ export class AddProductPage implements OnInit {
 
   async saveProduct() {
     if (!this.name || !this.price || !this.previewImage) {
-      this.showToast('Por favor, completa todos los campos obligatorios', 'warning');
+      this.tools.presentToast('Por favor, completa todos los campos obligatorios', 'warning');
       return;
     }
 
-    const loading = await this.loadingCtrl.create({
-      message: 'Guardando producto...'
-    });
-    await loading.present();
+    this.tools.presentLoading('Guardando producto...')
 
     try {
       const user = this.authService.getUser();
@@ -116,29 +115,20 @@ export class AddProductPage implements OnInit {
 
       this.productService.addProduct(productData).subscribe({
         next: (res) => {
-          loading.dismiss();
-          this.showToast('Producto guardado con éxito', 'success');
+          this.tools.dismissLoading();
+          this.tools.presentToast('Producto guardado con éxito', 'success');
           this.modalCtrl.dismiss(true);
         },
         error: (err) => {
-          loading.dismiss();
-          this.showToast('Error al guardar el producto', 'danger');
+          this.tools.dismissLoading();
+          this.tools.presentToast('Error al guardar el producto', 'danger');
           console.error(err);
         }
       });
     } catch (error: any) {
-      loading.dismiss();
-      this.showToast(error.message || 'Error inesperado', 'danger');
+      this.tools.dismissLoading();
+      this.tools.presentToast(error.message || 'Error inesperado', 'danger');
     }
   }
 
-  private async showToast(message: string, color: string) {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2000,
-      color,
-      position: 'bottom'
-    });
-    await toast.present();
-  }
 }
