@@ -17,7 +17,9 @@ import {
   IonModal,
   IonButtons,
   IonImg,
-  ToastController
+  ToastController,
+  IonLabel,
+  ModalController
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/service/auth.service';
@@ -31,8 +33,10 @@ import {
   storefrontOutline
 } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { TermsConditionsComponent } from 'src/app/modal/terms-conditions/terms-conditions.component';
 
 @Component({
+
   selector: 'app-new-account',
   templateUrl: './new-account.page.html',
   styleUrls: ['./new-account.page.scss'],
@@ -54,13 +58,16 @@ import { addIcons } from 'ionicons';
     IonDatetime,
     IonModal,
     IonButtons,
-    IonImg
+    IonImg,
+    IonLabel,
+    TermsConditionsComponent
   ]
 })
 export class NewAccountPage {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastCtrl = inject(ToastController);
+  private modalCtrl = inject(ModalController)
 
   form = {
     name: '',
@@ -116,4 +123,12 @@ export class NewAccountPage {
   onDateChange(event: any) {
     this.form.birthday = event.detail.value.split('T')[0];
   }
+
+  async terms() {
+    const modal = await this.modalCtrl.create({
+      component: TermsConditionsComponent,
+    });
+    return await modal.present();
+  }
+
 }

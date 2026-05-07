@@ -1,52 +1,58 @@
-<ion-menu contentId="main-content">
-  <ion-header class="ion-no-border">
-    <ion-toolbar class="menu-header-toolbar">
-      <div class="menu-brand">
-        <img src="assets/icon/favicon.png" alt="logo">
-        <span class="menu-title">Shoppy<span>Catalog</span></span>
+<ion-split-pane contentId="main-content" when="md">
+  <ion-menu contentId="main-content" type="overlay">
+    <ion-header class="ion-no-border">
+      <ion-toolbar class="menu-header-toolbar">
+        <div class="menu-brand">
+          <img src="assets/icon/favicon.png" alt="logo">
+          <span class="menu-title">Shoppy<span>Catalog</span></span>
+        </div>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="menu-divider"></div>
+
+      <ion-list class="menu-list" lines="none">
+        <ion-item class="menu-theme-item" (click)="person()">
+          <ion-icon slot="start" name="person-outline"></ion-icon>
+          <ion-label>perfil</ion-label>
+        </ion-item>
+        <ion-item class="menu-theme-item" (click)="home()">
+          <ion-icon slot="start" name="home-outline"></ion-icon>
+          <ion-label>Inicio</ion-label>
+        </ion-item>
+        <ion-item class="menu-theme-item" (click)="logOut()">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          <ion-label>Cerrar sesión</ion-label>
+        </ion-item>
+        <ion-item class="menu-theme-item">
+          <ion-icon slot="start" [name]="themeService.getDarkMode() ? 'moon-outline' : 'sunny-outline'"></ion-icon>
+          <ion-label>Modo Oscuro</ion-label>
+          <ion-toggle slot="end" [checked]="themeService.getDarkMode()" (ionChange)="toggleTheme($event)">
+          </ion-toggle>
+        </ion-item>
+      </ion-list>
+
+      <div class="menu-divider"></div>
+
+      <div class="menu-footer">
+        ShoppyCatalog v1.0
       </div>
-    </ion-toolbar>
-  </ion-header>
+    </ion-content>
+  </ion-menu>
 
-  <ion-content>
-    <div class="menu-divider"></div>
+  <div class="ion-page" id="main-content" collapse="fade">
+    <ion-header class="cf-header">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>ShoppyCatalog</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-    <ion-list class="menu-list" lines="none">
-      <ion-item class="menu-theme-item" (click)="logOut()">
-        <ion-icon slot="start" name="person-outline"></ion-icon>
-        <ion-label>perfil</ion-label>
-      </ion-item>
-      <ion-item class="menu-theme-item" (click)="logOut()">
-        <ion-icon slot="start" name="log-out-outline"></ion-icon>
-        <ion-label>Cerrar sesión</ion-label>
-      </ion-item>
-      <ion-item class="menu-theme-item">
-        <ion-icon slot="start" [name]="themeService.getDarkMode() ? 'moon-outline' : 'sunny-outline'"></ion-icon>
-        <ion-label>Modo Oscuro</ion-label>
-        <ion-toggle slot="end" [checked]="themeService.getDarkMode()" (ionChange)="toggleTheme($event)">
-        </ion-toggle>
-      </ion-item>
-    </ion-list>
-
-    <div class="menu-divider"></div>
-
-    <div class="menu-footer">
-      ShoppyCatalog v1.0
-    </div>
-  </ion-content>
-</ion-menu>
-
-<div class="ion-page" id="main-content" collapse="fade">
-  <ion-header class="cf-header">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>ShoppyCatalog</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-content class="ion-padding">
-    <ng-content></ng-content>
-  </ion-content>
-</div>
+    <ion-content class="ion-padding">
+      <ng-content></ng-content>
+    </ion-content>
+  </div>
+</ion-split-pane>

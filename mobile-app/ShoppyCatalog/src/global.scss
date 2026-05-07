@@ -32,4 +32,77 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-@import "@ionic/angular/css/palettes/dark.class.css";
+@import "@ionic/angular/css/palettes/dark.class.css";
+
+/* Custom Loading Styles */
+.custom-loading-class {
+  --background: rgba(255, 255, 255, 0.9);
+  --border-radius: 16px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  
+  .loading-wrapper {
+    padding: 25px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    /* Icono de la app mediante CSS para evitar sanitización de HTML */
+    &::before {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 60px;
+      margin-bottom: 15px;
+      background-image: url('assets/icon/favicon.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .loading-content {
+      font-weight: 600;
+      color: var(--ion-color-primary, #3880ff);
+      font-size: 1.1rem;
+      text-align: center;
+    }
+  }
+}
+
+/* Animación pulse mejorada para el logo */
+@keyframes pulse {
+  0% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+  50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+}
+
+/* Efecto Skeleton Shimmer (Carga de esqueletos) */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Ajustes para modo oscuro */
+.ion-palette-dark {
+  .custom-loading-class {
+    --background: rgba(28, 28, 30, 0.95);
+    .loading-content {
+      color: var(--ion-color-primary-light, #4c8dff);
+    }
+  }
+
+  .skeleton-shimmer {
+    background: linear-gradient(90deg, #2c2c2e 25%, #3a3a3c 50%, #2c2c2e 75%);
+    background-size: 200% 100%;
+  }
+}
+
+
+

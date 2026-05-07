@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../service/auth.service';
 import { lockClosedOutline, personOutline, eyeOffOutline, eyeOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { ToolsService } from 'src/app/tools/tools';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,7 @@ export class LoginPage {
 
   private auth = inject(AuthService);
   private router = inject(Router);
-  private toast = inject(ToastController);
+  private tools = inject(ToolsService);
 
   form = {
     username: '',
@@ -43,12 +44,7 @@ export class LoginPage {
         this.router.navigateByUrl('/home');
       },
       error: async () => {
-        const t = await this.toast.create({
-          message: 'Credenciales incorrectas',
-          duration: 2000,
-          color: 'danger'
-        });
-        t.present();
+        this.tools.presentToast('Credenciales incorrectas', 'danger', 2000)
       }
     });
   }

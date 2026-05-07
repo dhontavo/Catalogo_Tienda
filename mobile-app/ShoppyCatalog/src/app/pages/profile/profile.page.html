@@ -1,0 +1,82 @@
+<app-menu>
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="avatar-circle">
+        {{ user.name?.charAt(0) }}{{ user.lastname?.charAt(0) }}
+      </div>
+      <h2>{{ user.name }} {{ user.lastname }}</h2>
+      <p>@{{ user.username }}</p>
+    </div>
+
+    <div class="info-card">
+      <ion-list lines="none">
+        <!-- Nombre -->
+        <ion-item class="custom-field">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-label position="stacked">Nombre</ion-label>
+          <p *ngIf="!isEditing">{{ user.name }}</p>
+          <ion-input *ngIf="isEditing" [(ngModel)]="editUser.name" type="text"></ion-input>
+        </ion-item>
+
+        <!-- Apellido -->
+        <ion-item class="custom-field">
+          <ion-icon name="people-outline" slot="start"></ion-icon>
+          <ion-label position="stacked">Apellido</ion-label>
+          <p *ngIf="!isEditing">{{ user.lastname }}</p>
+          <ion-input *ngIf="isEditing" [(ngModel)]="editUser.lastname" type="text"></ion-input>
+        </ion-item>
+
+        <!-- Usuario -->
+        <ion-item class="custom-field">
+          <ion-icon name="at-outline" slot="start"></ion-icon>
+          <ion-label position="stacked">Nombre de Usuario</ion-label>
+          <p *ngIf="!isEditing">{{ user.username }}</p>
+          <ion-input *ngIf="isEditing" [(ngModel)]="editUser.username" type="text"></ion-input>
+        </ion-item>
+
+        <!-- Fecha de Nacimiento -->
+        <ion-item class="custom-field">
+          <ion-icon name="calendar-outline" slot="start"></ion-icon>
+          <ion-label position="stacked">Cumpleaños</ion-label>
+          <p *ngIf="!isEditing">{{ user.birthday | date:'dd/MM/yyyy' }}</p>
+          <ion-datetime-button *ngIf="isEditing" datetime="edit-birthday"></ion-datetime-button>
+        </ion-item>
+
+        <!-- Datos de Sistema -->
+        <div class="system-info">
+          <ion-item class="custom-field readonly">
+            <ion-icon name="key-outline" slot="start"></ion-icon>
+            <ion-label position="stacked">ID de Usuario</ion-label>
+            <p>{{ user.id }}</p>
+          </ion-item>
+          <ion-item class="custom-field readonly">
+            <ion-icon name="storefront-outline" slot="start"></ion-icon>
+            <ion-label position="stacked">Tienda Asociada</ion-label>
+            <p>{{ user.id_store }}</p>
+          </ion-item>
+        </div>
+      </ion-list>
+    </div>
+
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="edit-birthday" presentation="date" [(ngModel)]="editUser.birthday"></ion-datetime>
+      </ng-template>
+    </ion-modal>
+
+    <div class="profile-actions" *ngIf="isEditing">
+      <ion-button expand="block" fill="clear" color="medium" (click)="toggleEdit()">
+        Cancelar cambios
+      </ion-button>
+      <ion-button expand="block" (click)="saveChanges()" color="primary">
+        Guardar cambios
+      </ion-button>
+    </div>
+
+    <div class="profile-actions" *ngIf="!isEditing">
+      <ion-button expand="block" fill="outline" (click)="toggleEdit()" color="primary">
+        Editar Perfil
+      </ion-button>
+    </div>
+  </div>
+</app-menu>

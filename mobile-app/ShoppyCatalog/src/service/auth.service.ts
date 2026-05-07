@@ -1,16 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { tap } from 'rxjs/operators';
+import { tap, finalize } from 'rxjs/operators';
+import { ToolsService } from 'src/app/tools/tools';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private tools = inject(ToolsService);
   private API = environment.apiUrl;
 
   login(credentials: any) {
+    this.tools.presentLoading();
     const body = JSON.stringify(credentials);
     return this.http.post<any>(`${this.API}login`, body).pipe(
       tap(res => {
@@ -18,9 +21,13 @@ export class AuthService {
           localStorage.setItem('token', res.data.token);
           localStorage.setItem('user', JSON.stringify(res.data.user));
         }
+      }),
+      finalize(() => {
+        this.tools.dismissLoading();
       })
     );
   }
+
 
   register(userData: any) {
     const body = JSON.stringify(userData);

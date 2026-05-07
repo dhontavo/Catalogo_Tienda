@@ -1,0 +1,66 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="light">
+    <ion-title>Términos y Condiciones</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="terms-content">
+    <div class="welcome-note">
+      <ion-icon name="document-text-outline" color="primary"></ion-icon>
+      <h3>Acuerdo de Usuario</h3>
+      <p>Al registrarte en <strong>ShoppyCatalog</strong>, aceptas cumplir con nuestras políticas de comunidad y uso
+        comercial.</p>
+    </div>
+
+    <section>
+      <h4>1. Registro y Responsabilidad</h4>
+      <p>El usuario es responsable de la veracidad de los datos proporcionados (Nombre, Usuario, Fecha de Nacimiento) y
+        del resguardo de su contraseña. El uso del ID de tienda y de usuario es personal e intransferible.</p>
+    </section>
+
+    <section class="prohibited-box">
+      <h4>2. Contenido Prohibido</h4>
+      <p>Queda estrictamente prohibida la creación, publicación o difusión de catálogos que contengan:</p>
+      <ul>
+        <li>
+          <ion-icon name="ban-outline" color="danger"></ion-icon>
+          Contenido explícito o pornografía.
+        </li>
+        <li>
+          <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+          Sustancias ilegales, drogas o parafernalia relacionada.
+        </li>
+        <li>
+          <ion-icon name="flame-outline" color="danger"></ion-icon>
+          Armas o artículos que promuevan la violencia.
+        </li>
+        <li>
+          <ion-icon name="hand-left-outline" color="danger"></ion-icon>
+          Artículos que infrinjan derechos de autor o propiedad intelectual.
+        </li>
+      </ul>
+      <p class="warning-text">El incumplimiento de esta cláusula resultará en la eliminación inmediata de la cuenta y el
+        reporte a las autoridades competentes si así se requiere.</p>
+    </section>
+
+    <section>
+      <h4>3. Uso de Datos</h4>
+      <p>Tus datos de registro serán almacenados de forma segura con el fin de gestionar tu inventario y cuenta
+        comercial conforme a las leyes de protección de datos vigentes.</p>
+    </section>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-button expand="block" (click)="accept()" class="accept-btn">
+      Entiendo y Acepto
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

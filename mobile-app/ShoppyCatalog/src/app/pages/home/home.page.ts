@@ -5,9 +5,9 @@ import {
   IonSearchbar,
   IonFab,
   IonFabButton,
-  IonModal,
   ModalController
 } from '@ionic/angular/standalone';
+
 
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
@@ -28,16 +28,16 @@ import { MenuComponent } from '../../componet/menu/menu.component';
     IonSearchbar,
     IonFab,
     IonFabButton,
-    IonModal,
     FormsModule,
     NgFor,
-    MenuComponent,
-    AddProductPage
+    MenuComponent
   ],
 })
 
+
 export class HomePage implements OnInit {
   private productService = inject(ProductService);
+  private modalCtrl = inject(ModalController);
 
   products: any[] = [];
   isModalOpen: boolean = false;
@@ -48,7 +48,7 @@ export class HomePage implements OnInit {
     });
   }
 
-  constructor(private modalCtrl: ModalController) {
+  constructor() {
     addIcons({
       add,
     })

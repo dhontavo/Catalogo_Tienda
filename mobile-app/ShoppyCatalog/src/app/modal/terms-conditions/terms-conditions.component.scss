@@ -1,0 +1,82 @@
+.terms-content {
+    color: #1e293b;
+    line-height: 1.5;
+
+    .welcome-note {
+        text-align: center;
+        margin-bottom: 25px;
+
+        ion-icon {
+            font-size: 3.5rem;
+        }
+
+        h3 {
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+    }
+
+    h4 {
+        font-weight: 700;
+        color: #2563eb;
+        font-size: 1.1rem;
+        margin-top: 20px;
+    }
+
+    p {
+        font-size: 0.9rem;
+        color: #475569;
+    }
+
+    .prohibited-box {
+        background: #fff1f2;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid #fecdd3;
+        margin: 20px 0;
+
+        h4 {
+            color: #e11d48;
+            margin-top: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                display: flex;
+                align-items: center;
+                margin: 10px 0;
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #881337;
+
+                ion-icon {
+                    margin-right: 10px;
+                    font-size: 1.2rem;
+                }
+            }
+        }
+
+        .warning-text {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: #be123c;
+            margin-top: 10px;
+        }
+    }
+}
+
+.accept-btn {
+    --background: #2563eb;
+    --border-radius: 12px;
+    height: 50px;
+    margin: 10px;
+    font-weight: 600;
+}
