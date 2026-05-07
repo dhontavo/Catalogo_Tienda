@@ -119,4 +119,20 @@
     font-size: 14px;
     margin: 0;
   }
+
+  ion-title {
+    color: var(--color-muted);
+    font-weight: 500;
+    font-size: 14px;
+    
+    /* Centrado forzado */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    
+    margin: 40px 0;
+    opacity: 0.8;
+  }
 }

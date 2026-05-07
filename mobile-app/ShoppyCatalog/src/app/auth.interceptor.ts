@@ -20,8 +20,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     tap({
       next: (event) => {
         if (event instanceof HttpResponse) {
-          console.log(`[API SUCCESS 200] ${req.method} ${req.urlWithParams} ->`, event.body);
-          
+          // console.log(`[API SUCCESS 200] ${req.method} ${req.urlWithParams} ->`, event.body);
+
           // Mostrar mensaje de éxito si el backend lo envía
           const body = event.body as any;
           if (body && body.message) {
@@ -31,8 +31,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       },
       error: (error) => {
         if (error instanceof HttpErrorResponse) {
-          console.error(`[API ERROR ${error.status}] ${req.method} ${req.urlWithParams} ->`, error.error || error.message);
-          
+          // console.error(`[API ERROR ${error.status}] ${req.method} ${req.urlWithParams} ->`, error.error || error.message);
+
           // Mostrar mensaje de error del backend
           const errorMsg = error.error?.error || error.error?.message || 'Error en el servidor';
           tools.presentToast(errorMsg, 'danger');

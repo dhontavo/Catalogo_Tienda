@@ -24,19 +24,22 @@
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="person-outline" slot="start"></ion-icon>
-            <ion-input type="text" placeholder="Nombre (s)" [(ngModel)]="form.name"></ion-input>
+            <ion-label position="floating">Nombre (s)</ion-label>
+            <ion-input type="text" [(ngModel)]="form.name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="person-outline" slot="start"></ion-icon>
-            <ion-input type="text" placeholder="Apellido (S)" [(ngModel)]="form.lastname"></ion-input>
+            <ion-label position="floating">Apellido (S)</ion-label>
+            <ion-input type="text" [(ngModel)]="form.lastname"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="mail-outline" slot="start"></ion-icon>
-            <ion-input type="email" placeholder="Correo electronico" [(ngModel)]="form.email"></ion-input>
+            <ion-label position="floating">Correo electrónico</ion-label>
+            <ion-input type="email" [(ngModel)]="form.email"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -44,13 +47,17 @@
       <!-- Usuario -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="at-outline" slot="start"></ion-icon>
-        <ion-input type="text" placeholder="Nombre de usuario" [(ngModel)]="form.username"></ion-input>
+        <ion-label position="floating">Nombre de usuario</ion-label>
+        <ion-input type="text" [(ngModel)]="form.username"></ion-input>
       </ion-item>
 
       <!-- Fecha de nacimiento -->
-      <ion-item lines="none" class="custom-input">
+      <ion-item lines="none" class="custom-input date-item">
         <ion-icon name="calendar-outline" slot="start"></ion-icon>
-        <ion-datetime-button datetime="birthday"></ion-datetime-button>
+        <div class="date-wrapper">
+          <ion-label>Fecha de nacimiento</ion-label>
+          <ion-datetime-button datetime="birthday"></ion-datetime-button>
+        </div>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
             <ion-datetime id="birthday" presentation="date" (ionChange)="onDateChange($event)"></ion-datetime>
@@ -61,19 +68,33 @@
       <!-- Seguridad -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-        <ion-input type="password" placeholder="••••••••" [(ngModel)]="form.password"></ion-input>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" [(ngModel)]="form.password"></ion-input>
       </ion-item>
 
       <!-- Datos de Tienda (id_store) -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="storefront-outline" slot="start"></ion-icon>
-        <ion-input type="text" placeholder="Nombre de tienda" [(ngModel)]="form.id_store"></ion-input>
+        <ion-label position="floating">Nombre de tienda</ion-label>
+        <ion-input type="text" [(ngModel)]="form.id_store"></ion-input>
       </ion-item>
+
+      <!-- Selección de Plan -->
+      <!-- <ion-item lines="none" class="custom-input">
+        <ion-icon name="ribbon-outline" slot="start"></ion-icon>
+        <ion-label position="floating">Plan de suscripción</ion-label>
+        <ion-select [(ngModel)]="form.id_plan" interface="popover">
+          <ion-select-option [value]="1">Básico (Gratis)</ion-select-option>
+          <ion-select-option [value]="2">Premium</ion-select-option>
+          <ion-select-option [value]="3">Empresarial</ion-select-option>
+        </ion-select>
+      </ion-item> -->
 
       <ion-button expand="block" class="register-button" (click)="register()">
         Registrar plataforma
       </ion-button>
     </div>
+
 
     <p class="terms">
       Al registrarte, aceptas nuestros <span (click)="terms()">Términos y Condiciones</span>.

@@ -64,7 +64,7 @@ curl -X POST http://localhost/Catalogo_Tienda/backend/public/products \
     "name": "Camiseta Negra",
     "description": "Camiseta 100% algodón",
     "price": 299.99,
-    "image_url": "https://example.com/camiseta.jpg"
+    "image": "https://example.com/camiseta.jpg"
   }'
 ```
 

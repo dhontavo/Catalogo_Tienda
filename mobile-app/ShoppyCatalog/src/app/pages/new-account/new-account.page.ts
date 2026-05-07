@@ -19,7 +19,9 @@ import {
   IonImg,
   ToastController,
   IonLabel,
-  ModalController
+  ModalController,
+  IonSelect,
+  IonSelectOption
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/service/auth.service';
@@ -30,8 +32,10 @@ import {
   lockClosedOutline,
   mailOutline,
   personOutline,
-  storefrontOutline
+  storefrontOutline,
+  ribbonOutline
 } from 'ionicons/icons';
+
 import { addIcons } from 'ionicons';
 import { TermsConditionsComponent } from 'src/app/modal/terms-conditions/terms-conditions.component';
 
@@ -60,7 +64,9 @@ import { TermsConditionsComponent } from 'src/app/modal/terms-conditions/terms-c
     IonButtons,
     IonImg,
     IonLabel,
-    TermsConditionsComponent
+    TermsConditionsComponent,
+    IonSelect,
+    IonSelectOption
   ]
 })
 export class NewAccountPage {
@@ -77,7 +83,7 @@ export class NewAccountPage {
     username: '',
     password: '',
     id_store: '',
-    id_plan: 0
+    id_plan: 1
   };
 
   constructor() {
@@ -87,9 +93,11 @@ export class NewAccountPage {
       lockClosedOutline,
       storefrontOutline,
       mailOutline,
-      personOutline
+      personOutline,
+      ribbonOutline
     });
   }
+
 
   async register() {
     // Validar campos básicos

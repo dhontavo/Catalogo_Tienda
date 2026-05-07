@@ -19,10 +19,10 @@ class GetProducts
     /**
      * Ejecuta el caso de uso.
      *
-     * @param int $storeId ID de la tienda
+     * @param string $storeId ID de la tienda
      * @return array Arreglo de productos serializados
      */
-    public function execute(int $storeId): array
+    public function execute(string $storeId): array
     {
         $products = $this->repository->findByStoreId($storeId);
 

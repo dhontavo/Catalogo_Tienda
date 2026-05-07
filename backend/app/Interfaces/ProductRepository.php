@@ -13,10 +13,10 @@ interface ProductRepository
     /**
      * Obtiene todos los productos de una tienda.
      *
-     * @param int $storeId
+     * @param string $storeId
      * @return Product[]
      */
-    public function findByStoreId(int $storeId): array;
+    public function findByStoreId(string $storeId): array;
 
     /**
      * Obtiene un producto por su ID.
@@ -30,9 +30,9 @@ interface ProductRepository
      * Guarda un nuevo producto y devuelve el ID generado.
      *
      * @param Product $product
-     * @return int ID del producto insertado
+     * @return string ID del producto insertado
      */
-    public function save(Product $product): int;
+    public function save(Product $product): string;
 
     /**
      * Actualiza un producto existente.
@@ -45,8 +45,8 @@ interface ProductRepository
     /**
      * Elimina un producto por su ID.
      *
-     * @param int $id
+     * @param string $id
      * @return bool
      */
-    public function delete(int $id): bool;
+    public function delete(string $id): bool;
 }

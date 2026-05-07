@@ -110,7 +110,7 @@ export class AddProductPage implements OnInit {
         name: this.name,
         description: this.description,
         price: this.price,
-        image_url: this.previewImage, // En una app real, aquí subirías el archivo primero
+        image: this.previewImage, // En una app real, aquí subirías el archivo primero
         id_store: storeId
       };
 

@@ -9,14 +9,14 @@ namespace App\Domain;
 class Product
 {
     private string $id;
-    private int $storeId;
+    private string $storeId;
     private string $name;
     private ?string $description;
     private float $price;
     private ?string $imageUrl;
 
     public function __construct(
-        int $storeId,
+        string $storeId,
         string $name,
         ?string $description = null,
         float $price = 0.00,
@@ -38,7 +38,7 @@ class Product
         return $this->id;
     }
 
-    public function getStoreId(): int
+    public function getStoreId(): string
     {
         return $this->storeId;
     }
@@ -99,7 +99,7 @@ class Product
             'name'        => $this->name,
             'description' => $this->description,
             'price'       => $this->price,
-            'image_url'   => $this->imageUrl,
+            'image'   => $this->imageUrl,
         ];
     }
 }

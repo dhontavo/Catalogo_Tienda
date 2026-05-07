@@ -21,24 +21,26 @@ class MySQLProductRepository implements ProductRepository
     /**
      * {@inheritdoc}
      */
-    public function findByStoreId(int $storeId): array
+    public function findByStoreId(string $storeId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, id_store, name, description, price, image_url
+            'SELECT id, id_store, name, description, price, image
              FROM products
              WHERE id_store = :id_store
              ORDER BY id DESC'
+
+
         );
         $stmt->execute([':id_store' => $storeId]);
 
         $products = [];
         while ($row = $stmt->fetch()) {
             $products[] = new Product(
-                (int) $row['id_store'],
+                (string) $row['id_store'],
                 $row['name'],
                 $row['description'],
                 (float) $row['price'],
-                $row['image_url'],
+                $row['image'],
                 (string) $row['id']
             );
         }
@@ -52,7 +54,7 @@ class MySQLProductRepository implements ProductRepository
     public function findById(string $id): ?Product
     {
         $stmt = $this->db->prepare(
-            'SELECT id, id_store, name, description, price, image_url
+            'SELECT id, id_store, name, description, price, image
              FROM products
              WHERE id = :id'
         );
@@ -64,11 +66,11 @@ class MySQLProductRepository implements ProductRepository
         }
 
         return new Product(
-            (int) $row['id_store'],
+            (string) $row['id_store'],
             $row['name'],
             $row['description'],
             (float) $row['price'],
-            $row['image_url'],
+            $row['image'],
             (string) $row['id']
         );
     }
@@ -76,11 +78,11 @@ class MySQLProductRepository implements ProductRepository
     /**
      * {@inheritdoc}
      */
-    public function save(Product $product): int
+    public function save(Product $product): string
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO products (id,id_store, name, description, price, image_url)
-             VALUES (UUID(), :id_store, :name, :description, :price, :image_url)'
+            'INSERT INTO products (id,id_store, name, description, price, image)
+             VALUES (UUID(), :id_store, :name, :description, :price, :image)'
         );
 
         $stmt->execute([
@@ -88,10 +90,10 @@ class MySQLProductRepository implements ProductRepository
             ':name'        => $product->getName(),
             ':description' => $product->getDescription(),
             ':price'       => $product->getPrice(),
-            ':image_url'   => $product->getImageUrl(),
+            ':image'   => $product->getImageUrl(),
         ]);
 
-        return (int) $this->db->lastInsertId();
+        return (string) $this->db->lastInsertId();
     }
 
     /**
@@ -101,7 +103,7 @@ class MySQLProductRepository implements ProductRepository
     {
         $stmt = $this->db->prepare(
             'UPDATE products
-             SET name = :name, description = :description, price = :price, image_url = :image_url
+             SET name = :name, description = :description, price = :price, image = :image
              WHERE id = :id'
         );
 
@@ -109,7 +111,7 @@ class MySQLProductRepository implements ProductRepository
             ':name'        => $product->getName(),
             ':description' => $product->getDescription(),
             ':price'       => $product->getPrice(),
-            ':image_url'   => $product->getImageUrl(),
+            ':image'   => $product->getImageUrl(),
             ':id'          => $product->getId(),
         ]);
     }
@@ -117,7 +119,7 @@ class MySQLProductRepository implements ProductRepository
     /**
      * {@inheritdoc}
      */
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
         $stmt = $this->db->prepare('DELETE FROM products WHERE id = :id');
         return $stmt->execute([':id' => $id]);

@@ -29,18 +29,21 @@ class ProductController
      */
     public function index(): void
     {
-        $storeId = isset($_GET['id_store']);
+        $storeId = $_GET['id_store'] ?? null;
 
-        if ($storeId !="") {
+        if (!$storeId) {
             SecurityHelper::jsonResponse(
                 ['error' => 'El parámetro id_store es obligatorio.'],
                 400
             );
+            return;
         }
 
+
         try {
-            $products = $this->getProducts->execute((int)$storeId);
-            SecurityHelper::jsonResponse(['data' => $products]);
+            $products = $this->getProducts->execute($storeId);
+            SecurityHelper::jsonResponse(['data' => $products,
+        'success' =>true]);
         } catch (\Exception $e) {
             SecurityHelper::jsonResponse(
                 ['error' => 'Error al obtener los productos.'],
@@ -58,7 +61,7 @@ class ProductController
         $input = SecurityHelper::getJsonInput();
 
         // Validar campos requeridos
-        $required = ['id_store', 'name', 'description', 'price', 'image_url'];
+        $required = ['id_store', 'name', 'description', 'price', 'image'];
         foreach ($required as $field) {
             if (!isset($input[$field]) || (is_string($input[$field]) && empty(trim($input[$field])))) {
                 SecurityHelper::jsonResponse(
@@ -74,7 +77,7 @@ class ProductController
                 SecurityHelper::sanitize($input['name']),
                 SecurityHelper::sanitize($input['description']),
                 (float)  $input['price'],
-                SecurityHelper::sanitize($input['image_url'])
+                SecurityHelper::sanitize($input['image'])
             );
 
             SecurityHelper::jsonResponse(['data' => $product], 201);

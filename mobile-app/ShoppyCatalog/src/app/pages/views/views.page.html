@@ -1,0 +1,31 @@
+<app-menu>
+  <div class="stats-container">
+    <div class="stats-header">
+      <h2>Reporte de Visualizaciones</h2>
+      <p>Análisis de popularidad de tus productos</p>
+    </div>
+
+    <ion-card class="chart-card">
+      <ion-card-header>
+        <ion-card-title>Estadísticas por Producto</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="chart-container">
+          <canvas #barChart></canvas>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="stats-summary" *ngIf="products.length > 0">
+      <ion-card class="summary-card">
+        <ion-card-content>
+          <div class="summary-item">
+            <span class="label">Total Productos</span>
+            <span class="value">{{products.length}}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</app-menu>
+

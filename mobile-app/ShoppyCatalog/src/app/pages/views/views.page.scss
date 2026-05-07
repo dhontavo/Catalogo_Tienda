@@ -1,0 +1,79 @@
+.stats-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .stats-header {
+    margin-bottom: 25px;
+    
+    h2 {
+      font-weight: 800;
+      color: var(--ion-color-dark);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    p {
+      color: var(--ion-color-medium);
+      margin: 5px 0 0;
+    }
+  }
+}
+
+.chart-card {
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  margin: 0;
+  border: none;
+  background: var(--ion-card-background);
+
+  ion-card-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--ion-color-primary);
+  }
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.stats-summary {
+  margin-top: 20px;
+
+  .summary-card {
+    border-radius: 15px;
+    margin: 0;
+    background: linear-gradient(135deg, var(--ion-color-primary) 0%, #4facfe 100%);
+    color: white;
+
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+
+      .label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .value {
+        font-size: 2.2rem;
+        font-weight: 800;
+      }
+    }
+  }
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .chart-card {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+}

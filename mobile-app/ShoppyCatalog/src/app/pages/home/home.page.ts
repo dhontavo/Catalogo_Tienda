@@ -5,7 +5,8 @@ import {
   IonSearchbar,
   IonFab,
   IonFabButton,
-  ModalController
+  ModalController,
+  IonTitle
 } from '@ionic/angular/standalone';
 
 
@@ -30,7 +31,8 @@ import { MenuComponent } from '../../componet/menu/menu.component';
     IonFabButton,
     FormsModule,
     NgFor,
-    MenuComponent
+    MenuComponent,
+    IonTitle
   ],
 })
 
@@ -43,8 +45,14 @@ export class HomePage implements OnInit {
   isModalOpen: boolean = false;
 
   ngOnInit() {
-    this.productService.getProducts().subscribe(res => {
-      this.products = res;
+    this.productService.getProducts().subscribe({
+      next: (res) => {
+        this.products = res;
+      },
+      error: (err) => {
+        console.error('Error al obtener productos:', err);
+        this.products = []; // Vaciar para mostrar el mensaje de error
+      }
     });
   }
 

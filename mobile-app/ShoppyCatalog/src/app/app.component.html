@@ -1,3 +1,49 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <!-- Menú Global con Diseño Restaurado -->
+  <ion-menu contentId="main-content" type="overlay" menuId="main-menu">
+    <ion-header class="ion-no-border">
+      <ion-toolbar class="menu-header-toolbar">
+        <div class="menu-brand">
+          <img src="assets/icon/favicon.png" alt="logo">
+          <span class="menu-title">Shoppy<span>Catalog</span></span>
+        </div>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="menu-divider"></div>
+
+      <ion-list class="menu-list" lines="none">
+        <ion-item (click)="navigate('/profile')">
+          <ion-icon slot="start" name="person-outline"></ion-icon>
+          <ion-label>Perfil</ion-label>
+        </ion-item>
+        <ion-item (click)="navigate('/home')">
+          <ion-icon slot="start" name="home-outline"></ion-icon>
+          <ion-label>Inicio</ion-label>
+        </ion-item>
+        <ion-item (click)="navigate('/views')">
+          <ion-icon slot="start" name="bar-chart-outline"></ion-icon>
+          <ion-label>Reportes</ion-label>
+        </ion-item>
+        <ion-item (click)="logOut()">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          <ion-label>Cerrar sesión</ion-label>
+        </ion-item>
+
+        <!-- Toggle de Modo Oscuro -->
+        <ion-item class="menu-theme-item">
+          <ion-icon slot="start" [name]="themeService.getDarkMode() ? 'moon-outline' : 'sunny-outline'"></ion-icon>
+          <ion-label>Modo Oscuro</ion-label>
+          <ion-toggle slot="end" [checked]="themeService.getDarkMode()" (ionChange)="toggleTheme($event)">
+          </ion-toggle>
+        </ion-item>
+      </ion-list>
+
+      <div class="menu-divider"></div>
+      <div class="menu-footer">ShoppyCatalog v1.0</div>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main-content"></ion-router-outlet>
 </ion-app>

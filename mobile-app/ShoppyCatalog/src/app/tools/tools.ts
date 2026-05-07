@@ -81,6 +81,24 @@ export class ToolsService {
       await alert.present();
     });
   }
+
+  /**
+   * Muestra una alerta de confirmación con botones Sí y No.
+   * @param alertHeader Título de la alerta
+   * @param alertSubtitle Mensaje de la alerta
+   * @param message Mensaje de la alerta
+   * @returns Promesa que resuelve a true si el usuario presiona "Sí", o false si presiona "No"
+   */
+  async presentAlert(alertHeader: string = 'Error', alertSubtitle: string = '', message: string = '') {
+    const alert = await this.alertController.create({
+      header: alertHeader,
+      subHeader: alertSubtitle,
+      message: message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
 }
 
 

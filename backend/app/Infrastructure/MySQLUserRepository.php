@@ -24,8 +24,8 @@ class MySQLUserRepository implements UserRepository
     public function findById(string $id): ?User
     {
         $stmt = $this->db->prepare(
-            'SELECT id, name, lastname, birthday, email, username, password, id_store, id_plan, created_at, update_at
-             FROM users
+            'SELECT us.id, name, lastname, birthday, email, username, password, id_store, id_plan, st.store, st.dialing_code, st.cellphone, st.image, st.colors
+             FROM users AS us LEFT JOIN stores AS st on us.id_store = st.id
              WHERE id = :id'
         );
         $stmt->execute([':id' => $id]);
@@ -44,8 +44,8 @@ class MySQLUserRepository implements UserRepository
     public function findByUsername(string $username): ?User
     {
         $stmt = $this->db->prepare(
-            'SELECT id, name, lastname, birthday, email, username, password, id_store, id_plan, created_at, update_at
-             FROM users
+            'SELECT us.id, name, lastname, birthday, email, username, password, id_store, id_plan, st.store, st.dialing_code, st.cellphone, st.image, st.colors
+             FROM users AS us LEFT JOIN stores AS st on us.id_store = st.id
              WHERE username = :username'
         );
         $stmt->execute([':username' => $username]);
