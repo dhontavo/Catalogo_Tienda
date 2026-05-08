@@ -74,12 +74,24 @@ class User
 
     // ─── Utilidades ─────────────────────────────────────────
 
+    private array $extraData = [];
+
+    public function setExtraData(array $data): void
+    {
+        $this->extraData = $data;
+    }
+
+    public function getExtraData(): array
+    {
+        return $this->extraData;
+    }
+
     /**
      * Convierte la entidad a un arreglo asociativo.
      */
     public function toArray(): array
     {
-        return [
+        $base = [
             'id'         => $this->id,
             'name'       => $this->name,
             'lastname'   => $this->lastname,
@@ -91,5 +103,8 @@ class User
             'created_at' => $this->createdAt,
             'update_at'  => $this->updateAt,
         ];
+
+        return array_merge($base, $this->extraData);
     }
 }
+

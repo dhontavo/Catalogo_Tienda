@@ -85,32 +85,61 @@ export class AddProductPage implements OnInit {
   async selectImage() {
     const image = await this.fileUploadService.selectImage();
     if (image) {
-      this.previewImage = image.webPath || '';
+      this.previewImage = image.webPath || image.dataUrl || '';
     }
+  }
+
+  /**
+   * Convierte un Blob de imagen a una cadena Base64
+   */
+  private convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.readAsDataURL(blob);
+    });
   }
 
   async saveProduct() {
     if (!this.name || !this.price || !this.previewImage) {
-      this.tools.presentToast('Por favor, completa todos los campos obligatorios', 'warning');
+      this.tools.presentToast('Falta agregar imagen o rellenar campos', 'warning');
       return;
     }
 
-    this.tools.presentLoading('Guardando producto...')
+    this.tools.presentLoading('Guardando producto...');
 
     try {
       const user = this.authService.getUser();
       const storeId = user ? user.id_store : null;
+      const userId = user ? user.id : null;
 
       if (!storeId) {
         throw new Error('No se encontró información de la tienda');
+      }
+
+      if (!userId) {
+        throw new Error('No se encontró información de usuario');
+      }
+
+      // Convertir la imagen a Base64 antes de enviarla
+      let finalBase64Image = this.previewImage;
+      if (this.previewImage && !this.previewImage.startsWith('data:')) {
+        // Obtener el archivo desde la URI local
+        const blob = await this.fileUploadService.getBlobFromUri(this.previewImage);
+        // Convertirlo a Base64
+        finalBase64Image = await this.convertBlobToBase64(blob);
       }
 
       const productData = {
         name: this.name,
         description: this.description,
         price: this.price,
-        image: this.previewImage, // En una app real, aquí subirías el archivo primero
-        id_store: storeId
+        image: finalBase64Image, // Ahora siempre es Base64
+        id_store: storeId,
+        id_user: userId
       };
 
       this.productService.addProduct(productData).subscribe({
@@ -132,3 +161,4 @@ export class AddProductPage implements OnInit {
   }
 
 }
+

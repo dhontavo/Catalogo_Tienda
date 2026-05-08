@@ -8,8 +8,9 @@ namespace App\Domain;
  */
 class Product
 {
-    private string $id;
+    private ?string $id;
     private string $storeId;
+    private string $idUser;
     private string $name;
     private ?string $description;
     private float $price;
@@ -17,14 +18,16 @@ class Product
 
     public function __construct(
         string $storeId,
+        string $idUser,
         string $name,
         ?string $description = null,
         float $price = 0.00,
         ?string $imageUrl = null,
-        string $id = ''
+        ?string $id = null
     ) {
         $this->id = $id;
         $this->storeId = $storeId;
+        $this->idUser = $idUser;
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
@@ -41,6 +44,11 @@ class Product
     public function getStoreId(): string
     {
         return $this->storeId;
+    }
+
+    public function getIdUser(): string
+    {
+        return $this->idUser;
     }
 
     public function getName(): string

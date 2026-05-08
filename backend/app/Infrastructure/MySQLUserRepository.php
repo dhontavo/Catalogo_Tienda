@@ -26,7 +26,7 @@ class MySQLUserRepository implements UserRepository
         $stmt = $this->db->prepare(
             'SELECT us.id, name, lastname, birthday, email, username, password, id_store, id_plan, st.store, st.dialing_code, st.cellphone, st.image, st.colors
              FROM users AS us LEFT JOIN stores AS st on us.id_store = st.id
-             WHERE id = :id'
+             WHERE us.id = :id'
         );
         $stmt->execute([':id' => $id]);
         $row = $stmt->fetch();
@@ -46,7 +46,7 @@ class MySQLUserRepository implements UserRepository
         $stmt = $this->db->prepare(
             'SELECT us.id, name, lastname, birthday, email, username, password, id_store, id_plan, st.store, st.dialing_code, st.cellphone, st.image, st.colors
              FROM users AS us LEFT JOIN stores AS st on us.id_store = st.id
-             WHERE username = :username'
+             WHERE us.username = :username'
         );
         $stmt->execute([':username' => $username]);
         $row = $stmt->fetch();
@@ -94,7 +94,7 @@ class MySQLUserRepository implements UserRepository
      */
     private function mapRowToUser(array $row): User
     {
-        return new User(
+        $user = new User(
             $row['name'],
             $row['lastname'],
             $row['birthday'],
@@ -104,8 +104,19 @@ class MySQLUserRepository implements UserRepository
             $row['id_store'],
             (int) ($row['id_plan'] ?? 0),
             (string) $row['id'],
-            $row['created_at'],
-            $row['update_at']
+            $row['created_at'] ?? '',
+            $row['update_at'] ?? ''
         );
+
+        $user->setExtraData([
+            'store'        => $row['store'] ?? null,
+            'dialing_code' => $row['dialing_code'] ?? null,
+            'cellphone'    => $row['cellphone'] ?? null,
+            'store_image'  => $row['image'] ?? null,
+            'colors'       => $row['colors'] ?? null
+        ]);
+
+        return $user;
     }
 }
+

@@ -1,1 +1,4 @@
 *.env
+backend/logs/*.log
+/logs
+backend/public/uploads

@@ -20,15 +20,16 @@ class CreateProduct
     /**
      * Ejecuta el caso de uso.
      *
-     * @param int    $storeId     ID de la tienda
+     * @param string $storeId     ID de la tienda (UUID)
      * @param string $name        Nombre del producto
      * @param string $description Descripción del producto
      * @param float  $price       Precio del producto
-     * @param string $imageUrl    URL de la imagen
+     * @param string $imageUrl    URL o Base64 de la imagen
      * @return array Producto creado serializado
      */
     public function execute(
-        int $storeId,
+        string $storeId,
+        string $idUser,
         string $name,
         string $description,
         float $price,
@@ -43,7 +44,7 @@ class CreateProduct
             throw new \InvalidArgumentException('El precio no puede ser negativo.');
         }
 
-        $product = new Product($storeId, $name, $description, $price, $imageUrl);
+        $product = new Product($storeId, $idUser, $name, $description, $price, $imageUrl);
         $id = $this->repository->save($product);
 
         // Recuperar el producto con su ID asignado

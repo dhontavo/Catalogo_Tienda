@@ -24,12 +24,10 @@ class MySQLProductRepository implements ProductRepository
     public function findByStoreId(string $storeId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, id_store, name, description, price, image
+            'SELECT id, id_store, id_user, name, description, price, image
              FROM products
              WHERE id_store = :id_store
              ORDER BY id DESC'
-
-
         );
         $stmt->execute([':id_store' => $storeId]);
 
@@ -37,6 +35,7 @@ class MySQLProductRepository implements ProductRepository
         while ($row = $stmt->fetch()) {
             $products[] = new Product(
                 (string) $row['id_store'],
+                (string) ($row['id_user'] ?? ''),
                 $row['name'],
                 $row['description'],
                 (float) $row['price'],
@@ -54,7 +53,7 @@ class MySQLProductRepository implements ProductRepository
     public function findById(string $id): ?Product
     {
         $stmt = $this->db->prepare(
-            'SELECT id, id_store, name, description, price, image
+            'SELECT id, id_store, id_user, name, description, price, image
              FROM products
              WHERE id = :id'
         );
@@ -67,6 +66,7 @@ class MySQLProductRepository implements ProductRepository
 
         return new Product(
             (string) $row['id_store'],
+            (string) ($row['id_user'] ?? ''),
             $row['name'],
             $row['description'],
             (float) $row['price'],
@@ -81,8 +81,8 @@ class MySQLProductRepository implements ProductRepository
     public function save(Product $product): string
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO products (id,id_store, name, description, price, image)
-             VALUES (UUID(), :id_store, :name, :description, :price, :image)'
+            'INSERT INTO products (id,id_store, name, description, price, image, id_user)
+             VALUES (UUID(), :id_store, :name, :description, :price, :image,:id_user)'
         );
 
         $stmt->execute([
@@ -91,6 +91,7 @@ class MySQLProductRepository implements ProductRepository
             ':description' => $product->getDescription(),
             ':price'       => $product->getPrice(),
             ':image'   => $product->getImageUrl(),
+            ':id_user'   => $product->getIdUser(),
         ]);
 
         return (string) $this->db->lastInsertId();

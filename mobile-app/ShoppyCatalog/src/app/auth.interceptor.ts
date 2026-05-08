@@ -2,6 +2,7 @@ import { HttpInterceptorFn, HttpResponse, HttpErrorResponse } from '@angular/com
 import { tap } from 'rxjs/operators';
 import { inject } from '@angular/core';
 import { ToolsService } from './tools/tools';
+import { environment } from 'src/environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
@@ -33,9 +34,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         if (error instanceof HttpErrorResponse) {
           // console.error(`[API ERROR ${error.status}] ${req.method} ${req.urlWithParams} ->`, error.error || error.message);
 
-          // Mostrar mensaje de error del backend
-          const errorMsg = error.error?.error || error.error?.message || 'Error en el servidor';
-          tools.presentToast(errorMsg, 'danger');
+          // Solo mostrar toasts para errores de nuestra propia API
+          if (req.url.startsWith(environment.apiUrl)) {
+            let errorMsg = 'Ocurrió un error inesperado. Por favor, intenta más tarde.';
+
+            if (!environment.production) {
+              // Modo Desarrollo: Mostrar error técnico detallado
+              errorMsg = error.error?.error || error.error?.message || `[${error.status}] ${error.message}`;
+            } else {
+              // Modo Producción: Mostrar error genérico o un mensaje amigable del backend si existe de forma segura
+              if (error.status === 401) errorMsg = 'Sesión expirada o credenciales inválidas.';
+              if (error.status === 400) errorMsg = 'Hubo un problema con los datos enviados.';
+            }
+
+            tools.presentToast(errorMsg, 'danger');
+          }
         }
       }
     })
