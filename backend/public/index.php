@@ -29,6 +29,7 @@ use App\Infrastructure\Env;
 use App\Infrastructure\SecurityHelper;
 use App\Controllers\ProductController;
 use App\Controllers\AuthController;
+use App\Controllers\PlanController;
 
 // ─── Cargar variables de entorno ─────────────────────────────
 Env::load(__DIR__ . '/../.env');
@@ -49,8 +50,14 @@ $path = '/' . ltrim($path, '/');
 // ─── Rutas ──────────────────────────────────────────────────
 $productController = new ProductController();
 $authController = new AuthController();
+$planController = new PlanController();
 
 switch (true) {
+    // GET /plans
+    case $method === 'GET' && $path === '/plans':
+        $planController->index();
+        break;
+
     // GET /products?id_store=X
     case $method === 'GET' && $path === '/products':
         $productController->index();
@@ -59,6 +66,16 @@ switch (true) {
     // POST /products
     case $method === 'POST' && $path === '/products':
         $productController->store();
+        break;
+
+    // DELETE /products
+    case $method === 'DELETE' && $path === '/products':
+        $productController->delete();
+        break;
+
+    // PUT /products
+    case $method === 'PUT' && $path === '/products':
+        $productController->update();
         break;
 
     // POST /register

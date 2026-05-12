@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\UseCases\GetProducts;
 use App\UseCases\CreateProduct;
+use App\UseCases\DeleteProduct;
+use App\UseCases\UpdateProduct;
 use App\Infrastructure\MySQLProductRepository;
 use App\Infrastructure\SecurityHelper;
 
@@ -15,12 +17,16 @@ class ProductController
 {
     private GetProducts $getProducts;
     private CreateProduct $createProduct;
+    private DeleteProduct $deleteProduct;
+    private UpdateProduct $updateProduct;
 
     public function __construct()
     {
         $repository = new MySQLProductRepository();
         $this->getProducts = new GetProducts($repository);
         $this->createProduct = new CreateProduct($repository);
+        $this->deleteProduct = new DeleteProduct($repository);
+        $this->updateProduct = new UpdateProduct($repository);
     }
 
     /**
@@ -29,22 +35,44 @@ class ProductController
      */
     public function index(): void
     {
+        $id = $_GET['id'] ?? null;
         $storeId = $_GET['id_store'] ?? null;
 
+        // Si viene un ID, buscamos solo ese producto
+        if ($id) {
+            try {
+                $product = $this->getProducts->findById($id);
+                if (!$product) {
+                    SecurityHelper::jsonResponse(['error' => 'Producto no encontrado', 'success' => false], 404);
+                    return;
+                }
+                SecurityHelper::jsonResponse(['data' => $product, 'success' => true]);
+                return;
+            } catch (\Exception $e) {
+                SecurityHelper::jsonResponse(['error' => $e->getMessage(), 'success' => false], 500);
+                return;
+            }
+        }
+
+        // Si no viene ID, debe venir id_store para listar
         if (!$storeId) {
             SecurityHelper::jsonResponse(
-                ['error' => 'Falta el parámetro id_store.'],
+                ['error' => 'Falta el parámetro id_store o id.', 'success' => false],
                 400
             );
             return;
         }
 
         try {
-            $products = $this->getProducts->execute($storeId);
+            $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $offset = ($page - 1) * $limit;
+
+            $products = $this->getProducts->execute($storeId, $limit, $offset);
             SecurityHelper::jsonResponse(['data' => $products, 'success' => true]);
         } catch (\Exception $e) {
             SecurityHelper::jsonResponse(
-                ['error' => 'Error al obtener los productos: ' . $e->getMessage()],
+                ['error' => 'Error al obtener los productos: ' . $e->getMessage(), 'success' => false],
                 500
             );
         }
@@ -123,15 +151,81 @@ class ProductController
                 $imageUrl
             );
 
-            SecurityHelper::jsonResponse(['data' => $product], 201);
+            SecurityHelper::jsonResponse(['data' => $product,'success' => true], 201);
         } catch (\InvalidArgumentException $e) {
-            SecurityHelper::jsonResponse(['error' => $e->getMessage()], 422);
+            SecurityHelper::jsonResponse(['error' => $e->getMessage(), 'success' => false], 422);
         } catch (\Exception $e) {
             // Guardamos el error en el archivo de log (al inicio)
             \App\Infrastructure\Logger::log($e->getMessage() . "\nTrace:\n" . $e->getTraceAsString(), 'ERROR');
-            
+            error_log('Error al crear el producto: ' . $e->getMessage());
             SecurityHelper::jsonResponse(
-                ['error' => 'Error al crear el producto: ' . $e->getMessage()],
+                ['error' => 'Error al crear el producto: ' . $e->getMessage(), 'success' => false],
+                500
+            );
+        }
+    }
+
+    /**
+     * DELETE /products?id={id}
+     * Elimina un producto.
+     */
+    public function delete(): void
+    {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            SecurityHelper::jsonResponse(
+                ['error' => 'Falta el parámetro id.'],
+                400
+            );
+            return;
+        }
+
+        try {
+            $product = $this->deleteProduct->execute($id);
+            SecurityHelper::jsonResponse(['data' => $product, 'success' => true]);
+        } catch (\InvalidArgumentException $e) {
+            SecurityHelper::jsonResponse(['error' => $e->getMessage(), 'success' => false], 422);
+        } catch (\Exception $e) {
+            SecurityHelper::jsonResponse(
+                ['error' => 'Error al eliminar el producto: ' . $e->getMessage(), 'success' => false],
+                500
+            );
+        }
+    }
+
+    /**
+     * PUT /products?id={id}
+     * Actualiza un producto.
+     */
+    public function update(): void
+    {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            SecurityHelper::jsonResponse(
+                ['error' => 'Falta el parámetro id.'],
+                400
+            );
+            return;
+        }
+
+        $input = SecurityHelper::getJsonInput();
+
+        try {
+            $product = $this->updateProduct->execute(
+                $id,
+                SecurityHelper::sanitize($input['name']),
+                SecurityHelper::sanitize($input['description']),
+                (float)  $input['price']
+            );
+
+            SecurityHelper::jsonResponse(['data' => $product, 'success' => true]);
+        } catch (\InvalidArgumentException $e) {
+            SecurityHelper::jsonResponse(['error' => $e->getMessage(), 'success' => false], 422);
+        } catch (\Exception $e) {
+            SecurityHelper::jsonResponse(
+                ['error' => 'Error al actualizar el producto: ' . $e->getMessage(), 'success' => false],
                 500
             );
         }

@@ -1,0 +1,51 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Detalle de Producto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Imagen del Producto (completa, sin recorte) -->
+  <div class="product-hero">
+    <img [src]="product.image" [alt]="product.name">
+  </div>
+
+  <div class="product-info-container">
+    <!-- Precio destacado -->
+    <div class="price-badge">
+      <span class="currency">MXN</span>
+      ${{ product.price | number:'1.2-2' }}
+    </div>
+
+    <!-- Nombre -->
+    <div class="main-header">
+      <h1>{{ product.name }}</h1>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Descripción -->
+    <div class="description-section">
+      <h3>Descripción</h3>
+      <p>{{ product.description || 'Sin descripción disponible para este producto.' }}</p>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="footer-actions">
+    <ion-button class="edit-btn" (click)="editProduct()" expand="block" fill="outline" color="secondary">
+      <ion-icon name="create-outline" slot="start"></ion-icon>
+      Editar
+    </ion-button>
+    <ion-button class="delete-btn" (click)="deleteProduct()" expand="block" fill="outline" color="danger">
+      <ion-icon name="trash-outline" slot="start"></ion-icon>
+      Eliminar
+    </ion-button>
+  </div>
+</ion-footer>

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -14,9 +14,7 @@ import {
   IonButtons,
   IonButton,
   ModalController,
-  IonNote,
-  LoadingController,
-  ToastController
+  IonNote
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { cloudUploadOutline, cashOutline, closeOutline, cubeOutline, documentTextOutline, informationCircleOutline } from 'ionicons/icons';
@@ -56,12 +54,12 @@ export class AddProductPage implements OnInit {
   description: string = '';
   previewImage: string = '';
 
+  @Input() id_product: string = '';
+
   private fileUploadService = inject(FileUploadService);
   private productService = inject(ProductService);
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
-  private loadingCtrl = inject(LoadingController);
-  private toastCtrl = inject(ToastController);
   private tools = inject(ToolsService);
 
   constructor() {
@@ -76,6 +74,26 @@ export class AddProductPage implements OnInit {
   }
 
   ngOnInit() {
+    if (this.id_product) {
+      this.loadProduct();
+    }
+  }
+
+  loadProduct() {
+    this.productService.getProductById(this.id_product).subscribe({
+      next: (res) => {
+        if (res) {
+          this.name = res.name;
+          this.price = res.price;
+          this.description = res.description;
+          this.previewImage = res.image;
+        }
+      },
+      error: (err) => {
+        this.tools.presentToast('Error al cargar datos del producto', 'danger');
+        console.error(err);
+      }
+    });
   }
 
   closeModal() {
@@ -137,23 +155,36 @@ export class AddProductPage implements OnInit {
         name: this.name,
         description: this.description,
         price: this.price,
-        image: finalBase64Image, // Ahora siempre es Base64
+        image: finalBase64Image,
         id_store: storeId,
         id_user: userId
       };
 
-      this.productService.addProduct(productData).subscribe({
-        next: (res) => {
-          this.tools.dismissLoading();
-          this.tools.presentToast('Producto guardado con éxito', 'success');
-          this.modalCtrl.dismiss(true);
-        },
-        error: (err) => {
-          this.tools.dismissLoading();
-          this.tools.presentToast('Error al guardar el producto', 'danger');
-          console.error(err);
-        }
-      });
+      if (this.id_product) {
+        // Modo Edición
+        this.productService.editProduct(this.id_product, productData).subscribe({
+          next: (res) => {
+            this.tools.dismissLoading();
+            this.modalCtrl.dismiss(true);
+          },
+          error: (err) => {
+            this.tools.dismissLoading();
+            this.tools.presentToast('Error al editar el producto', 'danger');
+          }
+        });
+      } else {
+        // Modo Creación
+        this.productService.addProduct(productData).subscribe({
+          next: (res) => {
+            this.tools.dismissLoading();
+            this.modalCtrl.dismiss(true);
+          },
+          error: (err) => {
+            this.tools.dismissLoading();
+            this.tools.presentToast('Error al guardar el producto', 'danger');
+          }
+        });
+      }
     } catch (error: any) {
       this.tools.dismissLoading();
       this.tools.presentToast(error.message || 'Error inesperado', 'danger');

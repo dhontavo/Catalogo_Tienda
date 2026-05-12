@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
 
-    <ion-title>Nuevo Producto</ion-title>
+    <ion-title>{{ id_product ? 'Editar Producto' : 'Nuevo Producto' }}</ion-title>
 
     <ion-buttons slot="end">
       <ion-button (click)="saveProduct()">

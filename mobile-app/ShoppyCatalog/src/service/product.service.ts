@@ -13,43 +13,83 @@ export class ProductService {
     private tools = inject(ToolsService);
     private API = `${environment.apiUrl}products`;
 
-    getProducts() {
+    /**
+     * Obtiene los headers con el token de autorización
+     */
+    private getHeaders() {
         const token = localStorage.getItem('token');
+        return new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+    }
+
+    getProducts() {
         const user = localStorage.getItem('user');
         const id_store = JSON.parse(user ?? '{}').id_store;
 
-        const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-        });
-
         this.tools.presentLoading();
-        return this.http.get<any>(this.API + `?id_store=${id_store}`, { headers }).pipe(
-            map(res => {
-                if (res && res.success) {
-                    return res.data;
-                }
-                return [];
-            }),
-            finalize(() => {
-                this.tools.dismissLoading();
-            })
+        return this.http.get<any>(`${this.API}?id_store=${id_store}`, { headers: this.getHeaders() }).pipe(
+            map(res => (res && res.success) ? res.data : []),
+            finalize(() => this.tools.dismissLoading())
         );
     }
 
     getProductById(id: string) {
-        const token = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-        });
-        return this.http.get<any>(this.API + `?id=${id}`, { headers });
+        this.tools.presentLoading();
+        return this.http.get<any>(`${this.API}?id=${id}`, { headers: this.getHeaders() }).pipe(
+            map(res => (res && res.success) ? res.data : null),
+            finalize(() => this.tools.dismissLoading())
+        );
     }
 
     addProduct(product: any) {
         const body = JSON.stringify(product);
-        const token = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-        });
-        return this.http.post(this.API, body, { headers });
+        this.tools.presentLoading();
+
+        return this.http.post<any>(this.API, body, { headers: this.getHeaders() }).pipe(
+            map(res => {
+                if (res && res.success) {
+                    this.tools.presentToast('Producto agregado correctamente', 'success');
+                    return res.data;
+                }
+                this.tools.dismissLoading();
+                throw new Error(res.error || 'Error al agregar producto');
+
+            }),
+            finalize(() => this.tools.dismissLoading())
+        );
+    }
+
+    deleteProduct(id: string) {
+        this.tools.presentLoading();
+        return this.http.delete<any>(`${this.API}?id=${id}`, { headers: this.getHeaders() }).pipe(
+            map(res => {
+                if (res && res.success) {
+                    this.tools.presentToast('Producto eliminado correctamente', 'success');
+                    return res.data;
+                }
+                this.tools.dismissLoading();
+                throw new Error(res.error || 'Error al eliminar producto');
+            }),
+            finalize(() => this.tools.dismissLoading())
+        );
+    }
+
+    editProduct(id: string, product: any) {
+        const body = JSON.stringify(product);
+        this.tools.presentLoading();
+
+        return this.http.put<any>(`${this.API}?id=${id}`, body, { headers: this.getHeaders() }).pipe(
+            map(res => {
+                if (res && res.success) {
+                    this.tools.presentToast('Producto editado correctamente', 'success');
+                    return res.data;
+                }
+                this.tools.dismissLoading();
+                throw new Error(res.error || 'Error al editar producto');
+            }),
+            finalize(() => this.tools.dismissLoading())
+        );
     }
 }

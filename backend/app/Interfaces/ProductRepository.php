@@ -16,7 +16,7 @@ interface ProductRepository
      * @param string $storeId
      * @return Product[]
      */
-    public function findByStoreId(string $storeId): array;
+    public function findByStoreId(string $storeId, int $limit = 10, int $offset = 0): array;
 
     /**
      * Obtiene un producto por su ID.

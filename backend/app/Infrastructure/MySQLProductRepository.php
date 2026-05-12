@@ -21,15 +21,20 @@ class MySQLProductRepository implements ProductRepository
     /**
      * {@inheritdoc}
      */
-    public function findByStoreId(string $storeId): array
+    public function findByStoreId(string $storeId, int $limit = 10, int $offset = 0): array
     {
         $stmt = $this->db->prepare(
             'SELECT id, id_store, id_user, name, description, price, image
              FROM products
              WHERE id_store = :id_store
-             ORDER BY id DESC'
+             ORDER BY id DESC
+             LIMIT :limit OFFSET :offset'
         );
-        $stmt->execute([':id_store' => $storeId]);
+        
+        $stmt->bindValue(':id_store', $storeId, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
 
         $products = [];
         while ($row = $stmt->fetch()) {
