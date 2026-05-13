@@ -64,6 +64,27 @@
           <ion-input *ngIf="isEditing" [(ngModel)]="editUser.store" type="text"></ion-input>
         </ion-item>
 
+        <!-- Teléfono -->
+        <ion-item class="custom-field">
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-label position="stacked">Lada</ion-label>
+          <p *ngIf="!isEditing">{{ user.dialing_code }}</p>
+          <ion-select *ngIf="isEditing" [(ngModel)]="editUser.dialing_code" interface="popover"
+            toggleIcon="chevron-down-outline">
+            <ion-select-option *ngFor="let c of countries" [value]="c.code">
+              {{ c.flag }} {{ c.code }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item class="custom-field">
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-label position="stacked">Teléfono</ion-label>
+          <p *ngIf="!isEditing">{{ user.cellphone }}</p>
+          <ion-input *ngIf="isEditing" type="tel" [(ngModel)]="editUser.cellphone" (ionInput)="formatPhone($event)"
+            placeholder="(000) 000-0000"></ion-input>
+        </ion-item>
+
       </ion-list>
     </div>
 

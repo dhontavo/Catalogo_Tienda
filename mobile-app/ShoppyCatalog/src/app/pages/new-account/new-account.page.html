@@ -43,6 +43,27 @@
           </ion-item>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Lada</ion-label>
+            <ion-select [(ngModel)]="form.dialing_code" interface="popover" toggleIcon="chevron-down-outline"
+              [interfaceOptions]="{cssClass: 'lada-select'}">
+              <ion-select-option *ngFor="let c of countries" [value]="c.code">
+                {{ c.flag }} {{ c.code }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item lines="none" class="custom-input">
+            <!-- <ion-icon name="call-outline" slot="start"></ion-icon> -->
+            <ion-label position="floating">Teléfono</ion-label>
+            <ion-input type="tel" [(ngModel)]="form.cellphone" (ionInput)="formatPhone($event)"
+              placeholder="(000) 000-0000"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
 
       <!-- Usuario -->
       <ion-item lines="none" class="custom-input">

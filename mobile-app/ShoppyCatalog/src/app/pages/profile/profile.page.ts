@@ -10,7 +10,9 @@ import {
   IonInput,
   IonDatetimeButton,
   IonModal,
-  IonDatetime
+  IonDatetime,
+  IonSelect,
+  IonSelectOption
 } from '@ionic/angular/standalone';
 import { MenuComponent } from 'src/app/componet/menu/menu.component';
 import { AuthService } from 'src/service/auth.service';
@@ -23,7 +25,9 @@ import {
   calendarOutline,
   keyOutline,
   storefrontOutline,
-  cameraOutline
+  cameraOutline,
+  callOutline,
+  chevronDownOutline
 } from 'ionicons/icons';
 import { FileUploadService } from 'src/service/file-upload.service';
 
@@ -42,6 +46,8 @@ import { FileUploadService } from 'src/service/file-upload.service';
     IonDatetimeButton,
     IonModal,
     IonDatetime,
+    IonSelect,
+    IonSelectOption,
     CommonModule,
     FormsModule,
     MenuComponent
@@ -53,6 +59,17 @@ export class ProfilePage implements OnInit {
   private tools = inject(ToolsService);
   private fileUploadService = inject(FileUploadService);
 
+  countries = [
+    { name: 'México', code: '+52', flag: '🇲🇽' },
+    { name: 'USA', code: '+1', flag: '🇺🇸' },
+    { name: 'España', code: '+34', flag: '🇪🇸' },
+    { name: 'Colombia', code: '+57', flag: '🇨🇴' },
+    { name: 'Argentina', code: '+54', flag: '🇦🇷' },
+    { name: 'Chile', code: '+56', flag: '🇨🇱' },
+    { name: 'Perú', code: '+51', flag: '🇵🇪' },
+    { name: 'Ecuador', code: '+593', flag: '🇪🇨' }
+  ];
+
   // Estado y datos
   isEditing: boolean = false;
   user: any = {};
@@ -62,7 +79,9 @@ export class ProfilePage implements OnInit {
     username: '',
     birthday: '',
     store_image: '',
-    store: ''
+    store: '',
+    dialing_code: '',
+    cellphone: ''
   };
   previewImage: string = '';
   isImageZoomed: boolean = false;
@@ -75,8 +94,23 @@ export class ProfilePage implements OnInit {
       calendarOutline,
       keyOutline,
       storefrontOutline,
-      cameraOutline
+      cameraOutline,
+      callOutline,
+      chevronDownOutline
     });
+  }
+
+  formatPhone(event: any) {
+    let val = event.target.value.replace(/\D/g, ''); // Solo números
+    if (val.length > 10) val = val.substring(0, 10); // Máximo 10 dígitos
+
+    const parts = [];
+    if (val.length > 0) parts.push('(' + val.substring(0, 3));
+    if (val.length > 3) parts[0] = parts[0] + ') ' + val.substring(3, 6);
+    if (val.length > 6) parts[0] = parts[0] + '-' + val.substring(6, 10);
+
+    this.editUser.cellphone = parts[0] || '';
+    event.target.value = this.editUser.cellphone;
   }
 
   ngOnInit() {
@@ -120,7 +154,7 @@ export class ProfilePage implements OnInit {
     if (!this.isEditing) {
       // Si cancelamos, restauramos los datos originales
       this.editUser = { ...this.user };
-      this.previewImage = this.user.image || '';
+      this.previewImage = this.user.store_image || '';
     }
   }
 

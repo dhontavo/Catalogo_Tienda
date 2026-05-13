@@ -33,14 +33,15 @@ import {
   mailOutline,
   personOutline,
   storefrontOutline,
-  ribbonOutline
+  ribbonOutline,
+  callOutline,
+  chevronDownOutline
 } from 'ionicons/icons';
 
 import { addIcons } from 'ionicons';
 import { TermsConditionsComponent } from 'src/app/modal/terms-conditions/terms-conditions.component';
 
 @Component({
-
   selector: 'app-new-account',
   templateUrl: './new-account.page.html',
   styleUrls: ['./new-account.page.scss'],
@@ -75,6 +76,17 @@ export class NewAccountPage {
   private toastCtrl = inject(ToastController);
   private modalCtrl = inject(ModalController)
 
+  countries = [
+    { name: 'México', code: '+52', flag: '🇲🇽' },
+    { name: 'USA', code: '+1', flag: '🇺🇸' },
+    { name: 'España', code: '+34', flag: '🇪🇸' },
+    { name: 'Colombia', code: '+57', flag: '🇨🇴' },
+    { name: 'Argentina', code: '+54', flag: '🇦🇷' },
+    { name: 'Chile', code: '+56', flag: '🇨🇱' },
+    { name: 'Perú', code: '+51', flag: '🇵🇪' },
+    { name: 'Ecuador', code: '+593', flag: '🇪🇨' }
+  ];
+
   form = {
     name: '',
     lastname: '',
@@ -83,7 +95,9 @@ export class NewAccountPage {
     username: '',
     password: '',
     store: '',
-    id_plan: 1
+    id_plan: 1,
+    dialing_code: '+52',
+    cellphone: ''
   };
 
   constructor() {
@@ -94,8 +108,23 @@ export class NewAccountPage {
       storefrontOutline,
       mailOutline,
       personOutline,
-      ribbonOutline
+      ribbonOutline,
+      callOutline,
+      chevronDownOutline
     });
+  }
+
+  formatPhone(event: any) {
+    let val = event.target.value.replace(/\D/g, ''); // Solo números
+    if (val.length > 10) val = val.substring(0, 10); // Máximo 10 dígitos
+
+    const parts = [];
+    if (val.length > 0) parts.push('(' + val.substring(0, 3));
+    if (val.length > 3) parts[0] = parts[0] + ') ' + val.substring(3, 6);
+    if (val.length > 6) parts[0] = parts[0] + '-' + val.substring(6, 10);
+
+    this.form.cellphone = parts[0] || '';
+    event.target.value = this.form.cellphone;
   }
 
 
