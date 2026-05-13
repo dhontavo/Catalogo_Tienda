@@ -127,8 +127,6 @@ export class AddProductPage implements OnInit {
       return;
     }
 
-    this.tools.presentLoading('Guardando producto...');
-
     try {
       const user = this.authService.getUser();
       const storeId = user ? user.id_store : null;
@@ -164,11 +162,9 @@ export class AddProductPage implements OnInit {
         // Modo Edición
         this.productService.editProduct(this.id_product, productData).subscribe({
           next: (res) => {
-            this.tools.dismissLoading();
             this.modalCtrl.dismiss(true);
           },
           error: (err) => {
-            this.tools.dismissLoading();
             this.tools.presentToast('Error al editar el producto', 'danger');
           }
         });
@@ -176,11 +172,9 @@ export class AddProductPage implements OnInit {
         // Modo Creación
         this.productService.addProduct(productData).subscribe({
           next: (res) => {
-            this.tools.dismissLoading();
             this.modalCtrl.dismiss(true);
           },
           error: (err) => {
-            this.tools.dismissLoading();
             this.tools.presentToast('Error al guardar el producto', 'danger');
           }
         });

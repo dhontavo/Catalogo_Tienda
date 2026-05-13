@@ -1,10 +1,10 @@
 <app-menu title="Inicio">
   <!-- Buscador -->
-  <ion-searchbar placeholder="Buscar productos..." class="cf-search"></ion-searchbar>
+  <ion-searchbar placeholder="Buscar productos..." class="cf-search" [(ngModel)]="searchQuery"></ion-searchbar>
 
   <!-- Grid -->
   <div class="cf-grid">
-    <div class="cf-card" *ngFor="let product of products" (click)="OpenModal2(product, 'view')">
+    <div class="cf-card" *ngFor="let product of products | filter:searchQuery:'name'" (click)="OpenModal2(product, 'view')">
       <img [src]="product.image" />
       <div class="cf-card-body">
         <h3 class="cf-title">{{product.name}}</h3>

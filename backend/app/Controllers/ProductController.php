@@ -203,31 +203,55 @@ class ProductController
         $id = $_GET['id'] ?? null;
 
         if (!$id) {
-            SecurityHelper::jsonResponse(
-                ['error' => 'Falta el parámetro id.'],
-                400
-            );
+            SecurityHelper::jsonResponse(['error' => 'Falta el parámetro id.'], 400);
             return;
         }
 
         $input = SecurityHelper::getJsonInput();
+        
+        // Obtener la URL de imagen actual (por si no se cambia)
+        $existingProduct = $this->getProducts->findById($id);
+        $imageUrl = $existingProduct ? $existingProduct['image'] : '';
+
+        // Procesar nueva imagen si viene en Base64
+        if (isset($input['image']) && strpos($input['image'], 'data:image') === 0) {
+            $imageData = $input['image'];
+            list($type, $imageData) = explode(';', $imageData);
+            list(, $imageData)      = explode(',', $imageData);
+            $base64Image = base64_decode($imageData);
+
+            $extension = 'jpg';
+            if (strpos($type, 'png') !== false) $extension = 'png';
+            if (strpos($type, 'webp') !== false) $extension = 'webp';
+
+            $fileName = uniqid() . '.' . $extension;
+            $uploadDir = __DIR__ . '/../../public/uploads/';
+            
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            if (file_put_contents($uploadDir . $fileName, $base64Image)) {
+                $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+                $host = $_SERVER['HTTP_HOST'];
+                $imageUrl = "{$protocol}://{$host}/Catalogo_Tienda/backend/public/uploads/{$fileName}";
+            }
+        }
 
         try {
-            $product = $this->updateProduct->execute(
+            $success = $this->updateProduct->execute(
                 $id,
                 SecurityHelper::sanitize($input['name']),
                 SecurityHelper::sanitize($input['description']),
-                (float)  $input['price']
+                (float)  $input['price'],
+                $imageUrl // 5to parámetro: Imagen
             );
 
-            SecurityHelper::jsonResponse(['data' => $product, 'success' => true]);
+            SecurityHelper::jsonResponse(['data' => $success, 'success' => true]);
         } catch (\InvalidArgumentException $e) {
             SecurityHelper::jsonResponse(['error' => $e->getMessage(), 'success' => false], 422);
         } catch (\Exception $e) {
-            SecurityHelper::jsonResponse(
-                ['error' => 'Error al actualizar el producto: ' . $e->getMessage(), 'success' => false],
-                500
-            );
+            SecurityHelper::jsonResponse(['error' => 'Error al actualizar: ' . $e->getMessage(), 'success' => false], 500);
         }
     }
 }

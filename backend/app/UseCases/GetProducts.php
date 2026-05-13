@@ -18,9 +18,6 @@ class GetProducts
 
     /**
      * Ejecuta el caso de uso para listar productos de una tienda.
-     *
-     * @param string $storeId ID de la tienda
-     * @return array Arreglo de productos serializados
      */
     public function execute(string $storeId, int $limit = 10, int $offset = 0): array
     {
@@ -32,7 +29,7 @@ class GetProducts
     }
 
     /**
-     * Obtiene un producto individual por su ID.
+     * Obtiene un producto individual por su ID para edición o detalle.
      */
     public function findById(string $id): ?array
     {

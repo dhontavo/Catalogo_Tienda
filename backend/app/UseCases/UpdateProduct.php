@@ -14,21 +14,24 @@ class UpdateProduct
         $this->repository = $repository;
     }
 
-    public function execute(string $id, string $name, string $description, float $price): bool
+    /**
+     * Ejecuta la actualización de un producto.
+     */
+    public function execute(string $id, string $name, string $description, float $price, string $imageUrl): bool
     {
         $product = $this->repository->findById($id);
         if (!$product) {
             throw new \InvalidArgumentException("El producto con ID {$id} no existe.");
         }
 
-        // Crear una nueva instancia con los datos actualizados conservando el storeId, userId e imagen actual
+        // Crear una nueva instancia con los datos actualizados
         $updatedProduct = new Product(
             $product->getStoreId(),
             $product->getIdUser(),
             $name,
             $description,
             $price,
-            $product->getImageUrl(),
+            $imageUrl, // Ahora usamos la nueva URL
             $id
         );
 

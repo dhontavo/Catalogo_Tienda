@@ -53,9 +53,7 @@ export class ProductService {
                     this.tools.presentToast('Producto agregado correctamente', 'success');
                     return res.data;
                 }
-                this.tools.dismissLoading();
                 throw new Error(res.error || 'Error al agregar producto');
-
             }),
             finalize(() => this.tools.dismissLoading())
         );
@@ -69,7 +67,6 @@ export class ProductService {
                     this.tools.presentToast('Producto eliminado correctamente', 'success');
                     return res.data;
                 }
-                this.tools.dismissLoading();
                 throw new Error(res.error || 'Error al eliminar producto');
             }),
             finalize(() => this.tools.dismissLoading())
@@ -86,7 +83,6 @@ export class ProductService {
                     this.tools.presentToast('Producto editado correctamente', 'success');
                     return res.data;
                 }
-                this.tools.dismissLoading();
                 throw new Error(res.error || 'Error al editar producto');
             }),
             finalize(() => this.tools.dismissLoading())

@@ -21,6 +21,7 @@ import { MenuComponent } from '../../componet/menu/menu.component';
 import { ToolsService } from 'src/app/tools/tools';
 import { async } from 'rxjs';
 import { ViewProductComponent } from 'src/app/modal/view-product/view-product.component';
+import { FilterPipe } from '../../pipes/filter.pipe';
 
 
 @Component({
@@ -38,6 +39,7 @@ import { ViewProductComponent } from 'src/app/modal/view-product/view-product.co
     NgIf,
     MenuComponent,
     IonTitle,
+    FilterPipe
   ],
 })
 
@@ -48,6 +50,7 @@ export class HomePage implements OnInit {
   private actionSheetCtrl = inject(ActionSheetController);
 
   products: any[] = [];
+  searchQuery: string = '';
   isModalOpen: boolean = false;
   private tools = inject(ToolsService);
 
