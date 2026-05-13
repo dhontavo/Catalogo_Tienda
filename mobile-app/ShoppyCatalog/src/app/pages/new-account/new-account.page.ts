@@ -82,7 +82,7 @@ export class NewAccountPage {
     email: '',
     username: '',
     password: '',
-    id_store: '',
+    store: '',
     id_plan: 1
   };
 
@@ -101,7 +101,7 @@ export class NewAccountPage {
 
   async register() {
     // Validar campos básicos
-    if (!this.form.username || !this.form.password || !this.form.email) {
+    if (!this.form.username || !this.form.password || !this.form.email || !this.form.store) {
       this.showToast('Por favor rellena los campos obligatorios.', 'warning');
       return;
     }

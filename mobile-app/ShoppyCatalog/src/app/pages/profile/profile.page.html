@@ -1,9 +1,23 @@
 <app-menu title="Perfil">
   <div class="profile-container">
     <div class="profile-header">
-      <div class="avatar-circle">
-        {{ user.name?.charAt(0) }}{{ user.lastname?.charAt(0) }}
+      <div class="image-container" (click)="isEditing ? selectImage() : toggleZoom()">
+        <div class="avatar-circle" *ngIf="!previewImage">
+          {{ user.name?.charAt(0) }}{{ user.lastname?.charAt(0) }}
+        </div>
+        <img *ngIf="previewImage" [src]="previewImage" class="profile-img">
+
+        <!-- Icono de edición solo cuando isEditing es true -->
+        <div class="edit-badge" *ngIf="isEditing">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
       </div>
+
+      <!-- Overlay para imagen completa -->
+      <div class="zoomed-overlay" *ngIf="isImageZoomed" (click)="toggleZoom()">
+        <img [src]="previewImage" class="full-img">
+      </div>
+
       <h2>{{ user.name }} {{ user.lastname }}</h2>
       <p>@{{ user.username }}</p>
     </div>
@@ -42,19 +56,14 @@
           <ion-datetime-button *ngIf="isEditing" datetime="edit-birthday"></ion-datetime-button>
         </ion-item>
 
-        <!-- Datos de Sistema -->
-        <div class="system-info">
-          <ion-item class="custom-field readonly">
-            <ion-icon name="key-outline" slot="start"></ion-icon>
-            <ion-label position="stacked">ID de Usuario</ion-label>
-            <p>{{ user.id }}</p>
-          </ion-item>
-          <ion-item class="custom-field readonly">
-            <ion-icon name="storefront-outline" slot="start"></ion-icon>
-            <ion-label position="stacked">Tienda Asociada</ion-label>
-            <p>{{ user.id_store }}</p>
-          </ion-item>
-        </div>
+        <!-- Tienda -->
+        <ion-item class="custom-field">
+          <ion-icon name="storefront-outline" slot="start"></ion-icon>
+          <ion-label position="stacked">Nombre de tienda</ion-label>
+          <p *ngIf="!isEditing">{{ user.store }}</p>
+          <ion-input *ngIf="isEditing" [(ngModel)]="editUser.store" type="text"></ion-input>
+        </ion-item>
+
       </ion-list>
     </div>
 

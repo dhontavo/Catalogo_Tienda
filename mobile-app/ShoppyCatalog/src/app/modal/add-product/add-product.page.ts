@@ -84,7 +84,7 @@ export class AddProductPage implements OnInit {
       next: (res) => {
         if (res) {
           this.name = res.name;
-          this.price = res.price;
+          this.price = res.price ? parseFloat(Number(res.price).toFixed(2)) : null;
           this.description = res.description;
           this.previewImage = res.image;
         }
@@ -94,6 +94,17 @@ export class AddProductPage implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  limitDecimals(event: any) {
+    const val = event.target.value;
+    if (val && val.toString().includes('.')) {
+      const parts = val.toString().split('.');
+      if (parts[1].length > 2) {
+        event.target.value = parts[0] + '.' + parts[1].slice(0, 2);
+        this.price = parseFloat(event.target.value);
+      }
+    }
   }
 
   closeModal() {

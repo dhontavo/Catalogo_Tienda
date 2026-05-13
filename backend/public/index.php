@@ -78,6 +78,11 @@ switch (true) {
         $productController->update();
         break;
 
+    // PUT /users/{id}
+    case $method === 'PUT' && strpos($path, '/users/') === 0:
+        $authController->updateProfile();
+        break;
+
     // POST /register
     case $method === 'POST' && $path === '/register':
         $authController->register();

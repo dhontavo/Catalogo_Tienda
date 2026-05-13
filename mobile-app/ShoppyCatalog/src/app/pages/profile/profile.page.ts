@@ -22,8 +22,10 @@ import {
   atOutline,
   calendarOutline,
   keyOutline,
-  storefrontOutline
+  storefrontOutline,
+  cameraOutline
 } from 'ionicons/icons';
+import { FileUploadService } from 'src/service/file-upload.service';
 
 @Component({
   selector: 'app-profile',
@@ -49,6 +51,7 @@ import {
 export class ProfilePage implements OnInit {
   private authService = inject(AuthService);
   private tools = inject(ToolsService);
+  private fileUploadService = inject(FileUploadService);
 
   // Estado y datos
   isEditing: boolean = false;
@@ -57,8 +60,12 @@ export class ProfilePage implements OnInit {
     name: '',
     lastname: '',
     username: '',
-    birthday: ''
+    birthday: '',
+    store_image: '',
+    store: ''
   };
+  previewImage: string = '';
+  isImageZoomed: boolean = false;
 
   constructor() {
     addIcons({
@@ -67,7 +74,8 @@ export class ProfilePage implements OnInit {
       atOutline,
       calendarOutline,
       keyOutline,
-      storefrontOutline
+      storefrontOutline,
+      cameraOutline
     });
   }
 
@@ -79,9 +87,32 @@ export class ProfilePage implements OnInit {
     const userData = this.authService.getUser();
     if (userData) {
       this.user = userData;
+      this.previewImage = userData.store_image || '';
       // Inicializar el objeto de edición con los datos actuales
       this.editUser = { ...userData };
     }
+  }
+
+  async selectImage() {
+    if (!this.isEditing) return;
+
+    const image = await this.fileUploadService.selectImage();
+    if (image) {
+      this.previewImage = image.webPath || image.dataUrl || '';
+      // También lo asignamos a editUser.image (aunque sea la URI temporal por ahora)
+      this.editUser.image = this.previewImage;
+    }
+  }
+
+  private convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.readAsDataURL(blob);
+    });
   }
 
   toggleEdit() {
@@ -89,24 +120,43 @@ export class ProfilePage implements OnInit {
     if (!this.isEditing) {
       // Si cancelamos, restauramos los datos originales
       this.editUser = { ...this.user };
+      this.previewImage = this.user.image || '';
     }
   }
 
   async saveChanges() {
-    const loading = await this.tools.presentLoading('Guardando cambios...');
+    try {
+      // Convertir la imagen a Base64 si ha cambiado y es una URI local
+      if (this.editUser.image && this.editUser.image.startsWith('http') === false && !this.editUser.image.startsWith('data:')) {
+        await this.tools.presentLoading('Procesando imagen...');
+        const blob = await this.fileUploadService.getBlobFromUri(this.editUser.image);
+        this.editUser.image = await this.convertBlobToBase64(blob);
+        await this.tools.dismissLoading();
+      }
 
-    // Aquí iría la llamada a tu servicio para actualizar el perfil
-    // Ejemplo: this.authService.updateProfile(this.editUser).subscribe(...)
+      this.authService.updateProfile(this.user.id, this.editUser).subscribe({
+        next: (res) => {
+          if (res.data) {
+            this.user = res.data;
+            this.previewImage = this.user.image || '';
+            // Actualizar el objeto de edición para la próxima vez
+            this.editUser = { ...this.user };
+          }
+          this.isEditing = false;
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
+    } catch (error) {
+      this.tools.dismissLoading();
+      this.tools.presentToast('Error inesperado', 'danger');
+    }
+  }
 
-    setTimeout(() => {
-      this.user = { ...this.editUser };
-      // Opcional: Actualizar el usuario en el storage
-      localStorage.setItem('user', JSON.stringify(this.user));
-
-      this.isEditing = false;
-      loading.dismiss();
-      this.tools.presentToast('Perfil actualizado con éxito', 'success');
-    }, 1500);
+  toggleZoom() {
+    if (this.isEditing) return; // No hacer zoom si estamos editando
+    this.isImageZoomed = !this.isImageZoomed;
   }
 }
 

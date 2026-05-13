@@ -73,4 +73,26 @@ class MySQLStoreRepository implements StoreRepository
             $row['id']
         );
     }
+
+    public function update(Store $store): bool
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE stores SET 
+                store = :store, 
+                dialing_code = :dialing_code, 
+                cellphone = :cellphone, 
+                image = :image, 
+                colors = :colors 
+             WHERE id = :id'
+        );
+
+        return $stmt->execute([
+            ':store'        => $store->getStoreName(),
+            ':dialing_code' => $store->getDialingCode(),
+            ':cellphone'    => $store->getCellphone(),
+            ':image'        => $store->getImage(),
+            ':colors'       => $store->getColors(),
+            ':id'           => $store->getId(),
+        ]);
+    }
 }

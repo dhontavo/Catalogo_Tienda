@@ -33,4 +33,12 @@ interface UserRepository
      * @return string ID del usuario insertado
      */
     public function save(User $user): string;
+
+    /**
+     * Actualiza los datos de un usuario existente.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function update(User $user): bool;
 }

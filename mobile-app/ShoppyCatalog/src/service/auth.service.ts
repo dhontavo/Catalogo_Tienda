@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { tap, finalize } from 'rxjs/operators';
 import { ToolsService } from 'src/app/tools/tools';
@@ -51,4 +51,23 @@ export class AuthService {
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
+
+  updateProfile(id: string, user: any) {
+    const body = JSON.stringify(user);
+    this.tools.presentLoading();
+    return this.http.put<any>(`${this.API}users/${id}`, body).pipe(
+      tap(res => {
+        if (res.data) {
+          localStorage.setItem('user', JSON.stringify(res.data));
+        }
+        this.tools.presentToast('Perfil actualizado correctamente', 'success');
+        this.tools.dismissLoading();
+
+      }),
+      finalize(() => {
+        this.tools.dismissLoading();
+      })
+    );
+  }
+
 }

@@ -12,4 +12,5 @@ interface StoreRepository
     public function save(Store $store): string;
     public function findById(string $id): ?Store;
     public function findByName(string $name): ?Store;
+    public function update(Store $store): bool;
 }

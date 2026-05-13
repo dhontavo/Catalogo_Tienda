@@ -89,6 +89,30 @@ class MySQLUserRepository implements UserRepository
         return $row ? (string) $row['id'] : '';
     }
 
+    public function update(User $user): bool
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE users SET 
+                name = :name, 
+                lastname = :lastname, 
+                birthday = :birthday, 
+                email = :email, 
+                username = :username,
+                id_plan = :id_plan
+             WHERE id = :id'
+        );
+
+        return $stmt->execute([
+            ':name'     => $user->getName(),
+            ':lastname' => $user->getLastname(),
+            ':birthday' => $user->getBirthday(),
+            ':email'    => $user->getEmail(),
+            ':username' => $user->getUsername(),
+            ':id_plan'  => $user->getIdPlan(),
+            ':id'       => $user->getId()
+        ]);
+    }
+
     /**
      * Mapea una fila de la base de datos a la entidad User.
      */

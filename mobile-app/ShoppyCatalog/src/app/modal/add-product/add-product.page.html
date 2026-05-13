@@ -41,7 +41,7 @@
       <ion-item lines="none" class="custom-input">
         <ion-icon name="cash-outline" slot="start"></ion-icon>
         <ion-label position="stacked">Precio (MXN) *</ion-label>
-        <ion-input type="number" placeholder="0.00" [(ngModel)]="price"></ion-input>
+        <ion-input type="number" placeholder="0.00" [(ngModel)]="price" (ionInput)="limitDecimals($event)" step="0.01" inputmode="decimal"></ion-input>
       </ion-item>
     </div>
 

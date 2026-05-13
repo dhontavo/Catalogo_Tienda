@@ -5,9 +5,11 @@ namespace App\Controllers;
 use App\UseCases\RegisterUser;
 use App\UseCases\LoginUser;
 use App\UseCases\RegisterStore;
+use App\UseCases\UpdateProfile;
 use App\Infrastructure\MySQLUserRepository;
 use App\Infrastructure\MySQLStoreRepository;
 use App\Infrastructure\SecurityHelper;
+use App\Infrastructure\ImageHelper;
 
 /**
  * Controlador REST para autenticación.
@@ -18,6 +20,7 @@ class AuthController
     private RegisterUser $registerUser;
     private LoginUser $loginUser;
     private RegisterStore $registerStore;
+    private UpdateProfile $updateProfile;
 
     public function __construct()
     {
@@ -27,6 +30,7 @@ class AuthController
         $this->registerUser = new RegisterUser($userRepository);
         $this->loginUser = new LoginUser($userRepository);
         $this->registerStore = new RegisterStore($storeRepository);
+        $this->updateProfile = new UpdateProfile($userRepository, $storeRepository);
     }
 
     /**
@@ -54,12 +58,18 @@ class AuthController
                     SecurityHelper::jsonResponse(['error' => "El campo 'store' (nombre de la tienda) es obligatorio si no se proporciona 'id_store'."], 400);
                 }
 
+                // Procesar imagen del logo si existe
+                $logoData = ['url' => null, 'colors' => null];
+                if (!empty($input['image'])) {
+                    $logoData = ImageHelper::processAndSaveImage($input['image'], 'logos');
+                }
+
                 $storeData = [
                     'store'        => SecurityHelper::sanitize($input['store']),
-                    // 'dialing_code' => isset($input['dialing_code']) ? SecurityHelper::sanitize($input['dialing_code']) : null,
-                    // 'cellphone'    => isset($input['cellphone']) ? SecurityHelper::sanitize($input['cellphone']) : null,
-                    // 'image'        => isset($input['image']) ? SecurityHelper::sanitize($input['image']) : null,
-                    // 'colors'       => isset($input['colors']) ? SecurityHelper::sanitize($input['colors']) : null,
+                    'dialing_code' => isset($input['dialing_code']) ? SecurityHelper::sanitize($input['dialing_code']) : null,
+                    'cellphone'    => isset($input['cellphone']) ? SecurityHelper::sanitize($input['cellphone']) : null,
+                    'image'        => $logoData['url'],
+                    'colors'       => $logoData['colors'],
                 ];
 
                 $idStore = $this->registerStore->execute($storeData);
@@ -127,6 +137,31 @@ class AuthController
         } catch (\Throwable $e) {
             SecurityHelper::jsonResponse(
                 ['error' => 'Error al iniciar sesión: ' . $e->getMessage()],
+                500
+            );
+        }
+    }
+    public function updateProfile(): void
+    {
+        // Obtener el ID del usuario de la URL (PUT /users/{id})
+        $uri = $_SERVER['REQUEST_URI'];
+        $parts = explode('/', rtrim($uri, '/'));
+        $userId = end($parts);
+
+        $input = SecurityHelper::getJsonInput();
+
+        try {
+            $user = $this->updateProfile->execute($userId, $input);
+
+            SecurityHelper::jsonResponse([
+                'message' => 'Perfil actualizado exitosamente.',
+                'data'    => $user->toArray(),
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            SecurityHelper::jsonResponse(['error' => $e->getMessage()], 422);
+        } catch (\Throwable $e) {
+            SecurityHelper::jsonResponse(
+                ['error' => 'Error al actualizar el perfil: ' . $e->getMessage()],
                 500
             );
         }
