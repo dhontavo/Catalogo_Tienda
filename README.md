@@ -1,140 +1,142 @@
 # 🛍️ ShoppyCatalog
 
-> A product catalog mobile app built with **Ionic Angular** and a **PHP REST API** backend, following Clean Architecture and SOLID principles.
+> Catálogo de productos móvil construido con **Ionic Angular** y una **REST API en PHP**, aplicando Clean Architecture y principios SOLID.
 
 ---
 
-## 📌 Project Status
+## 📱 Screenshots
 
-> ⚠️ **This project is currently under active development.**  
-> Core product catalog functionality is implemented. Authentication and order management are planned for upcoming iterations.
+> Capturas de la app corriendo en dispositivo/emulador Android.
+
+<div align="center">
+
+| Pantalla de inicio | Catálogo de productos | Detalle de producto |
+|---|---|---|
+| <img src="screenshots/home.png" width="200"/> | <img src="screenshots/catalog.png" width="200"/> | <img src="screenshots/detail.png" width="200"/> |
+
+</div>
+
+> **¿Cómo agregar tus imágenes?**
+> 1. Crea una carpeta llamada `screenshots/` en la raíz del proyecto.
+> 2. Guarda tus capturas con los nombres: `home.png`, `catalog.png`, `detail.png`.
+> 3. Borra este bloque de instrucciones y sube los cambios con `git push`.
 
 ---
 
-## 🧩 Features (Current)
+## 📌 Estado del proyecto
 
-- 📦 Product catalog listing with dynamic data from the API
-- 🔌 REST API integration between mobile client and PHP backend
-- 🔐 Token-based request protection
-- 🔒 OpenSSL encryption for sensitive data
+> ⚠️ **Proyecto en desarrollo activo.**
+> El catálogo de productos está implementado. Autenticación y gestión de pedidos están planificados para próximas iteraciones.
+
+---
+
+## 🧩 Funcionalidades actuales
+
+- 📦 Listado de productos con datos dinámicos desde la API
+- 🔌 Integración REST API entre el cliente móvil y el backend PHP
+- 🔐 Protección de endpoints con tokens
+- 🔒 Cifrado de datos sensibles con OpenSSL
 
 ## 🗺️ Roadmap
 
-- [ ] User authentication (login / register)
-- [ ] Shopping cart
-- [ ] Order management
-- [ ] Admin panel
+- [ ] Autenticación de usuarios (login / registro)
+- [ ] Carrito de compras
+- [ ] Gestión de pedidos
+- [ ] Panel de administración
 
 ---
 
-## 🏗️ Architecture
-
-This project follows **Clean Architecture** with a clear separation of concerns between layers:
+## 🏗️ Arquitectura
 
 ```
 ShoppyCatalog/
-├── backend/              # PHP REST API
-│   ├── controllers/      # Request handling
-│   ├── models/           # Business logic & data
-│   ├── repositories/     # Database access layer
-│   └── config/           # DB connection & env config
+├── backend/                  # REST API en PHP
+│   ├── controllers/          # Manejo de requests
+│   ├── models/               # Lógica de negocio
+│   ├── repositories/         # Acceso a base de datos
+│   └── config/               # Configuración y conexión
 │
 └── mobile-app/
-    └── ShoppyCatalog/    # Ionic Angular app
-        ├── src/
-        │   ├── app/
-        │   │   ├── pages/        # UI screens
-        │   │   ├── services/     # API communication
-        │   │   └── models/       # TypeScript interfaces
-        │   └── environments/     # API base URLs
+    └── ShoppyCatalog/        # App Ionic Angular
+        └── src/
+            └── app/
+                ├── pages/    # Pantallas de la app
+                ├── services/ # Comunicación con la API
+                └── models/   # Interfaces TypeScript
 ```
 
-**Design principles applied:**
-- ✅ Clean Architecture (separation of concerns by layers)
-- ✅ SOLID Principles
-- ✅ RESTful API design
+**Principios aplicados:**
+- ✅ Clean Architecture
+- ✅ Principios SOLID
+- ✅ Diseño RESTful
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
+| Capa | Tecnología |
 |---|---|
-| Mobile Frontend | Ionic 7 + Angular + TypeScript |
-| Styling | SCSS |
+| Frontend móvil | Ionic 7 + Angular + TypeScript |
+| Estilos | SCSS |
 | Backend | PHP 8 |
-| Database | MySQL |
-| Security | OpenSSL · Token-based auth |
-| API Style | REST |
+| Base de datos | MySQL |
+| Seguridad | OpenSSL · Autenticación por token |
+| API | REST |
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Cómo correr el proyecto
 
-### Prerequisites
+### Requisitos previos
 
 - PHP 8.x
 - MySQL 5.7+
 - Node.js 18+
-- Ionic CLI (`npm install -g @ionic/cli`)
+- Ionic CLI: `npm install -g @ionic/cli`
 
----
-
-### Backend Setup
+### Backend
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/dhontavo/Catalogo_Tienda.git
 cd Catalogo_Tienda/backend
 
-# 2. Configure your database connection
 cp config/config.example.php config/config.php
-# Edit config.php with your DB credentials
+# Edita config.php con tus credenciales de BD
 
-# 3. Import the database schema
-mysql -u root -p your_database < database/schema.sql
+mysql -u root -p tu_base_de_datos < database/schema.sql
 
-# 4. Start a local PHP server
 php -S localhost:8000
 ```
 
----
-
-### Mobile App Setup
+### App móvil
 
 ```bash
 cd mobile-app/ShoppyCatalog
 
-# Install dependencies
 npm install
 
-# Update the API base URL in:
-# src/environments/environment.ts
-# → apiUrl: 'http://localhost:8000/api'
+# Actualiza la URL del API en:
+# src/environments/environment.ts → apiUrl: 'http://localhost:8000/api'
 
-# Run in browser
-ionic serve
-
-# Run on Android
-ionic capacitor run android
+ionic serve                      # correr en navegador
+ionic capacitor run android      # correr en Android
 ```
 
 ---
 
-## 🔐 Security
+## 🔐 Seguridad
 
-- API endpoints are protected using **token-based authentication**
-- Sensitive data is encrypted using **OpenSSL**
-
----
-
-## 👤 Author
-
-**dhontavo**  
-[GitHub Profile](https://github.com/dhontavo)
+- Endpoints protegidos con **autenticación por token**
+- Datos sensibles cifrados con **OpenSSL**
 
 ---
 
-## 📄 License
+## 👤 Autor
 
-This project is open source and available under the [MIT License](LICENSE).
+**dhontavo** — [GitHub](https://github.com/dhontavo)
+
+---
+
+## 📄 Licencia
+
+MIT License
