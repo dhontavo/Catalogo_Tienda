@@ -40,6 +40,7 @@ import {
 
 import { addIcons } from 'ionicons';
 import { TermsConditionsComponent } from 'src/app/modal/terms-conditions/terms-conditions.component';
+import { ToolsService } from 'src/app/tools/tools';
 
 @Component({
   selector: 'app-new-account',
@@ -75,6 +76,7 @@ export class NewAccountPage {
   private router = inject(Router);
   private toastCtrl = inject(ToastController);
   private modalCtrl = inject(ModalController)
+  private tools = inject(ToolsService);
 
   countries = [
     { name: 'México', code: '+52', flag: '🇲🇽' },
@@ -128,21 +130,36 @@ export class NewAccountPage {
   }
 
 
+  isPasswordSecure(password: string): boolean {
+    if (password.length < 8) return false;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSymbol = /[!@#$%^&*()\-=_+[\]{}|;:,.<>?]/.test(password);
+    return hasUpper && hasLower && hasNumber && hasSymbol;
+  }
+
   async register() {
     // Validar campos básicos
     if (!this.form.username || !this.form.password || !this.form.email || !this.form.store) {
-      this.showToast('Por favor rellena los campos obligatorios.', 'warning');
+      this.tools.presentToast('Por favor rellena los campos obligatorios.', 'warning');
+      return;
+    }
+
+    // Validar fortaleza de la contraseña
+    if (!this.isPasswordSecure(this.form.password)) {
+      this.tools.presentToast('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos.', 'warning');
       return;
     }
 
     this.authService.register(this.form).subscribe({
       next: (res: any) => {
-        this.showToast('Cuenta creada con éxito. Ya puedes iniciar sesión.', 'success');
+        this.tools.presentToast('Cuenta creada con éxito. Ya puedes iniciar sesión.', 'success');
         this.router.navigateByUrl('/login');
       },
       error: (err) => {
         const errorMsg = err.error?.error || 'Error al crear la cuenta.';
-        this.showToast(errorMsg, 'danger');
+        this.tools.presentToast(errorMsg, 'danger');
       }
     });
   }

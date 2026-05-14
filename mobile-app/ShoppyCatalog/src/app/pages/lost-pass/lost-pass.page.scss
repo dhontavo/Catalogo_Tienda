@@ -35,18 +35,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 14px;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 16px;
             border-radius: var(--radius-xl);
             background: var(--color-surface);
-            box-shadow: var(--shadow-md);
-            border: 1.5px solid var(--color-border);
+            box-shadow: var(--shadow-lg);
+            border: 2px solid rgba(29, 99, 211, 0.12);
         }
 
         .app-logo {
-            width: 64px;
-            height: 64px;
+            width: 80px;
+            height: 80px;
             display: block;
         }
 
@@ -63,6 +63,13 @@
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
             }
+        }
+
+        .tagline {
+            color: var(--color-muted);
+            font-size: 0.95rem;
+            margin: 0;
+            opacity: 0.85;
         }
     }
 

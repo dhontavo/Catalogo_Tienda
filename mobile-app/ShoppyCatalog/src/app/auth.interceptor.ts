@@ -3,10 +3,12 @@ import { tap } from 'rxjs/operators';
 import { inject } from '@angular/core';
 import { ToolsService } from './tools/tools';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
   const tools = inject(ToolsService);
+  const router = inject(Router);
   let requestToForward = req;
 
   if (token) {
@@ -38,12 +40,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           if (req.url.startsWith(environment.apiUrl)) {
             let errorMsg = 'Ocurrió un error inesperado. Por favor, intenta más tarde.';
 
-            if (!environment.production) {
+            if (error.status === 401) {
+              errorMsg = 'Sesión expirada o acceso no autorizado.';
+              // Limpiar sesión local y redirigir
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+              router.navigateByUrl('/login');
+            } else if (!environment.production) {
               // Modo Desarrollo: Mostrar error técnico detallado
               errorMsg = error.error?.error || error.error?.message || `[${error.status}] ${error.message}`;
             } else {
               // Modo Producción: Mostrar error genérico o un mensaje amigable del backend si existe de forma segura
-              if (error.status === 401) errorMsg = 'Sesión expirada o credenciales inválidas.';
               if (error.status === 400) errorMsg = 'Hubo un problema con los datos enviados.';
             }
 
