@@ -2,3 +2,4 @@
 backend/logs/*.log
 /logs
 backend/public/uploads
+node_modules
