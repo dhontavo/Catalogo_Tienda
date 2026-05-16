@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, inject, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, inject, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
@@ -27,7 +27,7 @@ Chart.register(...registerables);
     MenuComponent
   ]
 })
-export class ViewsPage implements OnInit, AfterViewInit {
+export class ViewsPage implements AfterViewInit {
   @ViewChild('barChart') barChart!: ElementRef;
 
   private productService = inject(ProductService);
@@ -38,7 +38,7 @@ export class ViewsPage implements OnInit, AfterViewInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.productService.getProducts().subscribe(res => {
       this.products = res;
       if (this.products.length > 0) {

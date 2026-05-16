@@ -152,14 +152,17 @@ export class NewAccountPage {
       return;
     }
 
+    await this.tools.presentLoading('Creando cuenta...');
+
     this.authService.register(this.form).subscribe({
       next: (res: any) => {
+        this.tools.dismissLoading();
         this.tools.presentToast('Cuenta creada con éxito. Ya puedes iniciar sesión.', 'success');
         this.router.navigateByUrl('/login');
       },
       error: (err) => {
-        const errorMsg = err.error?.error || 'Error al crear la cuenta.';
-        this.tools.presentToast(errorMsg, 'danger');
+        // El interceptor ya muestra el mensaje de error.
+        this.tools.dismissLoading();
       }
     });
   }

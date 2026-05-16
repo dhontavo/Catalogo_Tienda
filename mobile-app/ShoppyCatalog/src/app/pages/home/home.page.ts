@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonIcon,
@@ -14,13 +14,15 @@ import {
 import { addIcons } from 'ionicons';
 import { add, createOutline, eyeOutline, trashOutline } from 'ionicons/icons';
 import { ProductService } from 'src/service/product.service';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, DecimalPipe } from '@angular/common';
 import { AddProductPage } from '../../modal/add-product/add-product.page';
 
 import { MenuComponent } from '../../componet/menu/menu.component';
 import { ToolsService } from 'src/app/tools/tools';
 import { async } from 'rxjs';
 import { ViewProductComponent } from 'src/app/modal/view-product/view-product.component';
+import { AuthService } from 'src/service/auth.service';
+import { ChangePasswordModalComponent } from '../../modal/change-password/change-password.component';
 import { FilterPipe } from '../../pipes/filter.pipe';
 
 
@@ -39,12 +41,13 @@ import { FilterPipe } from '../../pipes/filter.pipe';
     NgIf,
     MenuComponent,
     IonTitle,
-    FilterPipe
+    FilterPipe,
+    DecimalPipe
   ],
 })
 
 
-export class HomePage implements OnInit {
+export class HomePage {
   private productService = inject(ProductService);
   private modalCtrl = inject(ModalController);
   private actionSheetCtrl = inject(ActionSheetController);
@@ -53,9 +56,28 @@ export class HomePage implements OnInit {
   searchQuery: string = '';
   isModalOpen: boolean = false;
   private tools = inject(ToolsService);
+  private authService = inject(AuthService);
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.loadProducts();
+    this.checkTempPassword();
+  }
+
+  checkTempPassword() {
+    const user = this.authService.getUser();
+    if (user && user.is_temp_pass) {
+      setTimeout(() => {
+        this.showChangePasswordModal();
+      }, 500);
+    }
+  }
+
+  async showChangePasswordModal() {
+    const modal = await this.modalCtrl.create({
+      component: ChangePasswordModalComponent,
+      backdropDismiss: false // Obligatorio cambiarla
+    });
+    return await modal.present();
   }
 
   constructor() {

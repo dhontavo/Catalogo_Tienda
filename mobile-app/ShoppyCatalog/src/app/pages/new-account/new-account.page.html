@@ -24,30 +24,26 @@
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="person-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Nombre (s)</ion-label>
-            <ion-input type="text" [(ngModel)]="form.name"></ion-input>
+            <ion-input label="Nombre (s)" labelPlacement="floating" type="text" [(ngModel)]="form.name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="person-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Apellido (S)</ion-label>
-            <ion-input type="text" [(ngModel)]="form.lastname"></ion-input>
+            <ion-input label="Apellido (S)" labelPlacement="floating" type="text" [(ngModel)]="form.lastname"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="12">
           <ion-item lines="none" class="custom-input">
             <ion-icon name="mail-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Correo electrónico</ion-label>
-            <ion-input type="email" [(ngModel)]="form.email"></ion-input>
+            <ion-input label="Correo electrónico" labelPlacement="floating" type="email" [(ngModel)]="form.email"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="6">
           <ion-item lines="none" class="custom-input">
-            <ion-label position="floating">Lada</ion-label>
-            <ion-select [(ngModel)]="form.dialing_code" interface="popover" toggleIcon="chevron-down-outline"
+            <ion-select label="Lada" labelPlacement="floating" [(ngModel)]="form.dialing_code" interface="popover" toggleIcon="chevron-down-outline"
               [interfaceOptions]="{cssClass: 'lada-select'}">
               <ion-select-option *ngFor="let c of countries" [value]="c.code">
                 {{ c.flag }} {{ c.code }}
@@ -57,20 +53,11 @@
         </ion-col>
         <ion-col size="6">
           <ion-item lines="none" class="custom-input">
-            <!-- <ion-icon name="call-outline" slot="start"></ion-icon> -->
-            <ion-label position="floating">Teléfono</ion-label>
-            <ion-input type="tel" [(ngModel)]="form.cellphone" (ionInput)="formatPhone($event)"
+            <ion-input label="Teléfono" labelPlacement="floating" type="tel" [(ngModel)]="form.cellphone" (ionInput)="formatPhone($event)"
               placeholder="(000) 000-0000"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
-
-      <!-- Usuario -->
-      <ion-item lines="none" class="custom-input">
-        <ion-icon name="at-outline" slot="start"></ion-icon>
-        <ion-label position="floating">Nombre de usuario</ion-label>
-        <ion-input type="text" [(ngModel)]="form.username"></ion-input>
-      </ion-item>
 
       <!-- Fecha de nacimiento -->
       <ion-item lines="none" class="custom-input date-item">
@@ -86,18 +73,22 @@
         </ion-modal>
       </ion-item>
 
+      <!-- Usuario -->
+      <ion-item lines="none" class="custom-input">
+        <ion-icon name="at-outline" slot="start"></ion-icon>
+        <ion-input label="Nombre de usuario" labelPlacement="floating" type="text" [(ngModel)]="form.username"></ion-input>
+      </ion-item>
+
       <!-- Seguridad -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input type="password" [(ngModel)]="form.password"></ion-input>
+        <ion-input label="Contraseña" labelPlacement="floating" type="password" [(ngModel)]="form.password"></ion-input>
       </ion-item>
 
       <!-- Datos de Tienda (Nombre de la tienda) -->
       <ion-item lines="none" class="custom-input">
         <ion-icon name="storefront-outline" slot="start"></ion-icon>
-        <ion-label position="floating">Nombre de tienda</ion-label>
-        <ion-input type="text" [(ngModel)]="form.store"></ion-input>
+        <ion-input label="Nombre de tienda" labelPlacement="floating" type="text" [(ngModel)]="form.store"></ion-input>
       </ion-item>
 
       <!-- Selección de Plan -->

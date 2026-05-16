@@ -14,8 +14,7 @@ export class AuthService {
 
   login(credentials: any) {
     this.tools.presentLoading();
-    const body = JSON.stringify(credentials);
-    return this.http.post<any>(`${this.API}login`, body).pipe(
+    return this.http.post<any>(`${this.API}login`, credentials).pipe(
       tap(res => {
         if (res.data && res.data.token) {
           localStorage.setItem('token', res.data.token);
@@ -30,8 +29,7 @@ export class AuthService {
 
 
   register(userData: any) {
-    const body = JSON.stringify(userData);
-    return this.http.post(`${this.API}register`, body);
+    return this.http.post(`${this.API}register`, userData);
   }
 
   logout() {
@@ -53,9 +51,8 @@ export class AuthService {
   }
 
   updateProfile(id: string, user: any) {
-    const body = JSON.stringify(user);
     this.tools.presentLoading();
-    return this.http.put<any>(`${this.API}users/${id}`, body).pipe(
+    return this.http.put<any>(`${this.API}users/${id}`, user).pipe(
       tap(res => {
         if (res.data) {
           localStorage.setItem('user', JSON.stringify(res.data));
@@ -67,6 +64,13 @@ export class AuthService {
       finalize(() => {
         this.tools.dismissLoading();
       })
+    );
+  }
+
+  changePassword(userId: string, password: string) {
+    this.tools.presentLoading('Actualizando contraseña...');
+    return this.http.post<any>(`${this.API}change-password`, { user_id: userId, password }).pipe(
+      finalize(() => this.tools.dismissLoading())
     );
   }
 

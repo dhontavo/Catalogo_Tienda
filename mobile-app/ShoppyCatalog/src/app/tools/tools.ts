@@ -1,16 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LoadingController, ToastController, AlertController } from '@ionic/angular/standalone';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ToolsService {
+  private toastController = inject(ToastController);
+  private loadingController = inject(LoadingController);
+  private alertController = inject(AlertController);
 
-  constructor(
-    private toastController: ToastController,
-    private loadingController: LoadingController,
-    private alertController: AlertController
-  ) { }
+  constructor() { }
 
 
   /**
@@ -19,9 +18,26 @@ export class ToolsService {
    * @param color Color del toast (primary, success, danger, warning, etc.)
    * @param duration Duración en milisegundos
    */
-  async presentToast(message: string, color: string = 'primary', duration: number = 2000) {
+  async presentToast(message: any, color: string = 'primary', duration: number = 2000) {
+    // Asegurar que el mensaje sea un string para evitar errores con .trim()
+    let msgStr = '';
+    if (typeof message === 'string') {
+      msgStr = message;
+    } else if (message && typeof message === 'object') {
+      msgStr = JSON.stringify(message);
+    } else {
+      msgStr = String(message || '');
+    }
+
+    if (!msgStr || msgStr.trim() === '') {
+      console.warn('ToolsService: Intento de mostrar un toast vacío detectado.');
+      msgStr = 'Ocurrió un evento inesperado (Sin mensaje).';
+    }
+
+
+
     const toast = await this.toastController.create({
-      message: message,
+      message: msgStr,
       duration: duration,
       color: color,
       position: 'bottom'
@@ -51,7 +67,16 @@ export class ToolsService {
    * Cierra el indicador de carga que esté activo.
    */
   async dismissLoading() {
-    return await this.loadingController.dismiss();
+    try {
+      const top = await this.loadingController.getTop();
+      if (top) {
+        return await this.loadingController.dismiss();
+      }
+      return false;
+    } catch (e) {
+      console.warn('ToolsService: Error al cerrar loading:', e);
+      return false;
+    }
   }
 
   /**
@@ -61,25 +86,24 @@ export class ToolsService {
    * @returns Promesa que resuelve a true si el usuario presiona "Sí", o false si presiona "No"
    */
   async presentAlertConfirm(header: string = '', message: string): Promise<boolean> {
-    return new Promise(async (resolve) => {
-      const alert = await this.alertController.create({
-        header: header,
-        message: message,
-        buttons: [
-          {
-            text: 'No',
-            role: 'cancel',
-            handler: () => resolve(false)
-          },
-          {
-            text: 'Sí',
-            handler: () => resolve(true)
-          }
-        ]
-      });
-
-      await alert.present();
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel'
+        },
+        {
+          text: 'Sí',
+          role: 'confirm'
+        }
+      ]
     });
+
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+    return role === 'confirm';
   }
 
   /**
