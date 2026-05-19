@@ -18,7 +18,7 @@ class MySQLStoreRepository implements StoreRepository
     public function save(Store $store): string
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO stores (id, store, dialing_code, cellphone, image, colors)
+            'INSERT INTO stores (id, `store`, dialing_code, cellphone, image, colors)
              VALUES (UUID(), :store, :dialing_code, :cellphone, :image, :colors)'
         );
 
@@ -31,7 +31,7 @@ class MySQLStoreRepository implements StoreRepository
         ]);
 
         // Recuperar el UUID generado
-        $stmt = $this->db->prepare('SELECT id FROM stores WHERE store = :store ORDER BY id DESC LIMIT 1');
+        $stmt = $this->db->prepare('SELECT id FROM stores WHERE `store` = :store ORDER BY id DESC LIMIT 1');
         $stmt->execute([':store' => $store->getStoreName()]);
         $row = $stmt->fetch();
 
@@ -58,7 +58,7 @@ class MySQLStoreRepository implements StoreRepository
 
     public function findByName(string $name): ?Store
     {
-        $stmt = $this->db->prepare('SELECT * FROM stores WHERE store = :store');
+        $stmt = $this->db->prepare('SELECT * FROM stores WHERE `store` = :store');
         $stmt->execute([':store' => $name]);
         $row = $stmt->fetch();
 
@@ -78,7 +78,7 @@ class MySQLStoreRepository implements StoreRepository
     {
         $stmt = $this->db->prepare(
             'UPDATE stores SET 
-                store = :store, 
+                `store` = :store, 
                 dialing_code = :dialing_code, 
                 cellphone = :cellphone, 
                 image = :image, 

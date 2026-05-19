@@ -123,6 +123,16 @@ export class ToolsService {
 
     await alert.present();
   }
+
+  /**
+   * Valida si un correo electrónico tiene un formato correcto.
+   * @param email Correo electrónico a validar
+   * @returns true si es válido, false en caso contrario
+   */
+  validateEmail(email: string): boolean {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
 }
 
 

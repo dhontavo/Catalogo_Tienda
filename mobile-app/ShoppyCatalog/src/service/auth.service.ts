@@ -74,4 +74,12 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string) {
+    this.tools.presentLoading('Enviando correo de recuperación...');
+    return this.http.post<any>(`${this.API}forgot-password`, { email }).pipe(
+      finalize(() => this.tools.dismissLoading())
+    );
+
+  }
+
 }

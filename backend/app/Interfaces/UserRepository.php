@@ -27,6 +27,14 @@ interface UserRepository
     public function findByUsername(string $username): ?User;
 
     /**
+     * Busca un usuario por su email.
+     *
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email): ?User;
+
+    /**
      * Guarda un nuevo usuario.
      *
      * @param User $user

@@ -23,13 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     tap({
       next: (event) => {
         if (event instanceof HttpResponse) {
-          // console.log(`[API SUCCESS 200] ${req.method} ${req.urlWithParams} ->`, event.body);
-
-          // Mostrar mensaje de éxito si el backend lo envía
-          const body = event.body as any;
-          if (body && body.message) {
-            tools.presentToast(body.message, 'success');
-          }
+          // No mostrar mensajes automáticos de éxito aquí para evitar duplicados o mensajes en blanco
         }
       },
       error: (error) => {
@@ -46,12 +40,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               localStorage.removeItem('token');
               localStorage.removeItem('user');
               router.navigateByUrl('/login');
-            } else if (!environment.production) {
-              // Modo Desarrollo: Mostrar error técnico detallado
-              errorMsg = error.error?.error || error.error?.message || `[${error.status}] ${error.message}`;
             } else {
-              // Modo Producción: Mostrar error genérico o un mensaje amigable del backend si existe de forma segura
-              if (error.status === 400) errorMsg = 'Hubo un problema con los datos enviados.';
+              // Extraer mensaje del cuerpo del error (si es JSON) o usar mensaje de estado
+              const apiError = error.error;
+              if (apiError && typeof apiError === 'object') {
+                errorMsg = apiError.error || apiError.message || errorMsg;
+              } else if (typeof apiError === 'string' && apiError.length > 0) {
+                // El error viene como texto plano (posible error de PHP)
+                errorMsg = apiError.length < 100 ? apiError : 'Error interno del servidor (PHP).';
+              } else {
+                errorMsg = `[${error.status}] ${error.statusText || 'Error desconocido'}`;
+              }
             }
 
             tools.presentToast(errorMsg, 'danger');

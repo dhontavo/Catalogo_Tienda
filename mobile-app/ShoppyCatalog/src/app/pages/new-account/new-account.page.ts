@@ -146,6 +146,11 @@ export class NewAccountPage {
       return;
     }
 
+    if (!this.tools.validateEmail(this.form.email)) {
+      this.tools.presentToast('El correo electrónico ingresado no es válido.', 'warning');
+      return;
+    }
+
     // Validar fortaleza de la contraseña
     if (!this.isPasswordSecure(this.form.password)) {
       this.tools.presentToast('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos.', 'warning');

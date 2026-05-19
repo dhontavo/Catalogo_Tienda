@@ -50,12 +50,18 @@ class UpdateProfile
                 $logoData = ImageHelper::processAndSaveImage($data['image'], 'logos');
                 $imageUrl = $logoData['url'];
                 $colors = $logoData['colors'];
+            } elseif (isset($data['colors'])) {
+                // Si no hay imagen nueva pero hay colores manuales, los actualizamos
+                $colors = $data['colors'];
             }
+
+            $dialingCode = $data['dialing_code'] ?? $store->getDialingCode();
+            $cellphone = $data['cellphone'] ?? $store->getCellphone();
             
             $updatedStore = new Store(
                 $storeName,
-                $store->getDialingCode(),
-                $store->getCellphone(),
+                $dialingCode,
+                $cellphone,
                 $imageUrl,
                 $colors,
                 $store->getId()

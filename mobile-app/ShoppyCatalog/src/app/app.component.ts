@@ -74,8 +74,9 @@ export class AppComponent implements OnInit {
   async logOut() {
     if (await this.tools.presentAlertConfirm('Cerrar sesión', '¿Está seguro?')) {
       this.auth.logout();
-      this.router.navigateByUrl('/login');
       this.menuCtrl.close('main-menu');
+      // Forzamos la recarga de la app en /login para limpiar cualquier vista cacheada por Ionic
+      window.location.href = '/login';
     }
   }
 

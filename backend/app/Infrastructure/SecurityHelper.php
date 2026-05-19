@@ -120,4 +120,53 @@ class SecurityHelper
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
+
+    /**
+     * Genera una contraseña aleatoria segura de 8 caracteres.
+     * Incluye mayúsculas, minúsculas, números y símbolos.
+     * 
+     * @param int $length Longitud de la contraseña (default 8)
+     * @return string
+     */
+    public static function generateRandomPassword(int $length = 8): string
+    {
+        $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        $numbers   = '0123456789';
+        $symbols   = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+
+        // Asegurar al menos uno de cada tipo
+        $password = '';
+        $password .= $uppercase[random_int(0, strlen($uppercase) - 1)];
+        $password .= $lowercase[random_int(0, strlen($lowercase) - 1)];
+        $password .= $numbers[random_int(0, strlen($numbers) - 1)];
+        $password .= $symbols[random_int(0, strlen($symbols) - 1)];
+
+        // Rellenar el resto aleatoriamente
+        $all = $uppercase . $lowercase . $numbers . $symbols;
+        for ($i = strlen($password); $i < $length; $i++) {
+            $password .= $all[random_int(0, strlen($all) - 1)];
+        }
+
+        // Mezclar los caracteres
+        return str_shuffle($password);
+    }
+
+    /**
+     * Valida que una contraseña cumpla con los requisitos de seguridad:
+     * Al menos 8 caracteres, mayúsculas, minúsculas, números y símbolos.
+     * 
+     * @param string $password
+     * @return bool
+     */
+    public static function validatePassword(string $password): bool
+    {
+        if (strlen($password) < 8) return false;
+        if (!preg_match('/[A-Z]/', $password)) return false;
+        if (!preg_match('/[a-z]/', $password)) return false;
+        if (!preg_match('/[0-9]/', $password)) return false;
+        if (!preg_match('/[!@#$%^&*()\-_=+\[\]{}|;:,.<>?]/', $password)) return false;
+
+        return true;
+    }
 }

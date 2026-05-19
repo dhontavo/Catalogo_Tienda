@@ -1,5 +1,10 @@
 <?php
 
+// ─── Autoload de Composer ────────────────────────────────────
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+}
+
 /**
  * Punto de entrada de la API (Front Controller).
  * Todas las peticiones pasan por aquí gracias al .htaccess.
@@ -30,6 +35,7 @@ use App\Infrastructure\SecurityHelper;
 use App\Controllers\ProductController;
 use App\Controllers\AuthController;
 use App\Controllers\PlanController;
+use App\Controllers\ConfigController;
 
 // ─── Cargar variables de entorno ─────────────────────────────
 Env::load(__DIR__ . '/../.env');
@@ -51,8 +57,19 @@ $path = '/' . ltrim($path, '/');
 $productController = new ProductController();
 $authController = new AuthController();
 $planController = new PlanController();
+$configController = new ConfigController();
 
 switch (true) {
+    // GET /config
+    case $method === 'GET' && $path === '/config':
+        $configController->show();
+        break;
+
+    // PUT /config
+    case $method === 'PUT' && $path === '/config':
+        $configController->update();
+        break;
+
     // GET /plans
     case $method === 'GET' && $path === '/plans':
         $planController->index();
@@ -91,6 +108,16 @@ switch (true) {
     // POST /login
     case $method === 'POST' && $path === '/login':
         $authController->login();
+        break;
+
+    // POST /forgot-password
+    case $method === 'POST' && $path === '/forgot-password':
+        $authController->forgotPassword();
+        break;
+
+    // POST /change-password
+    case $method === 'POST' && $path === '/change-password':
+        $authController->changePassword();
         break;
 
     // Ruta no encontrada
