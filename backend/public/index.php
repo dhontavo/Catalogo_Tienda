@@ -30,6 +30,7 @@ use App\Infrastructure\SecurityHelper;
 use App\Controllers\ProductController;
 use App\Controllers\AuthController;
 use App\Controllers\PlanController;
+use App\Controllers\StoreController;
 
 // ─── Cargar variables de entorno ─────────────────────────────
 Env::load(__DIR__ . '/../.env');
@@ -51,8 +52,19 @@ $path = '/' . ltrim($path, '/');
 $productController = new ProductController();
 $authController = new AuthController();
 $planController = new PlanController();
+$storeController = new StoreController();
 
 switch (true) {
+    // GET /store
+    case $method === 'GET' && $path === '/store':
+        $storeController->show();
+        break;
+
+    // GET /stores
+    case $method === 'GET' && $path === '/stores':
+        $storeController->index();
+        break;
+
     // GET /plans
     case $method === 'GET' && $path === '/plans':
         $planController->index();

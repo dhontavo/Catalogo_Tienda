@@ -13,4 +13,5 @@ interface StoreRepository
     public function findById(string $id): ?Store;
     public function findByName(string $name): ?Store;
     public function update(Store $store): bool;
+    public function findAll(): array;
 }

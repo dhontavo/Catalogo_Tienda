@@ -95,4 +95,22 @@ class MySQLStoreRepository implements StoreRepository
             ':id'           => $store->getId(),
         ]);
     }
+
+    public function findAll(): array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM stores');
+        $stmt->execute();
+        $stores = [];
+        while ($row = $stmt->fetch()) {
+            $stores[] = new Store(
+                $row['store'],
+                $row['dialing_code'],
+                $row['cellphone'],
+                $row['image'],
+                $row['colors'],
+                $row['id']
+            );
+        }
+        return $stores;
+    }
 }
