@@ -36,6 +36,7 @@ use App\Controllers\ProductController;
 use App\Controllers\AuthController;
 use App\Controllers\PlanController;
 use App\Controllers\ConfigController;
+use App\Controllers\StoreController;
 
 // ─── Cargar variables de entorno ─────────────────────────────
 Env::load(__DIR__ . '/../.env');
@@ -68,6 +69,17 @@ switch (true) {
     // PUT /config
     case $method === 'PUT' && $path === '/config':
         $configController->update();
+$storeController = new StoreController();
+
+switch (true) {
+    // GET /store
+    case $method === 'GET' && $path === '/store':
+        $storeController->show();
+        break;
+
+    // GET /stores
+    case $method === 'GET' && $path === '/stores':
+        $storeController->index();
         break;
 
     // GET /plans
