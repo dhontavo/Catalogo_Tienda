@@ -44,11 +44,31 @@ class MySQLUserRepository implements UserRepository
     public function findByUsername(string $username): ?User
     {
         $stmt = $this->db->prepare(
-            'SELECT us.id, name, lastname, birthday, email, username, password, id_store, id_plan, st.store, st.dialing_code, st.cellphone, st.image, st.colors
+            'SELECT us.id, name, lastname, birthday, email, username, password, id_store, id_plan, st.`store`, st.dialing_code, st.cellphone, st.image, st.colors
              FROM users AS us LEFT JOIN stores AS st on us.id_store = st.id
              WHERE us.username = :username'
         );
         $stmt->execute([':username' => $username]);
+        $row = $stmt->fetch();
+
+        if (!$row) {
+            return null;
+        }
+
+        return $this->mapRowToUser($row);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findByEmail(string $email): ?User
+    {
+        $stmt = $this->db->prepare(
+            'SELECT us.id, name, lastname, birthday, email, username, password, id_store, id_plan, st.store, st.dialing_code, st.cellphone, st.image, st.colors
+             FROM users AS us LEFT JOIN stores AS st on us.id_store = st.id
+             WHERE us.email = :email'
+        );
+        $stmt->execute([':email' => $email]);
         $row = $stmt->fetch();
 
         if (!$row) {
@@ -98,6 +118,7 @@ class MySQLUserRepository implements UserRepository
                 birthday = :birthday, 
                 email = :email, 
                 username = :username,
+                password = :password,
                 id_plan = :id_plan
              WHERE id = :id'
         );
@@ -108,6 +129,7 @@ class MySQLUserRepository implements UserRepository
             ':birthday' => $user->getBirthday(),
             ':email'    => $user->getEmail(),
             ':username' => $user->getUsername(),
+            ':password' => $user->getPassword(),
             ':id_plan'  => $user->getIdPlan(),
             ':id'       => $user->getId()
         ]);

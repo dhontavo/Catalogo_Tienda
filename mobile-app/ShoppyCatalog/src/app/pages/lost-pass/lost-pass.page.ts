@@ -11,6 +11,8 @@ import {
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { mailOutline } from 'ionicons/icons';
+import { AuthService } from 'src/service/auth.service';
+import { ToolsService } from 'src/app/tools/tools';
 
 @Component({
   selector: 'app-lost-pass',
@@ -29,6 +31,9 @@ import { mailOutline } from 'ionicons/icons';
 })
 export class LostPassPage implements OnInit {
   private router = inject(Router);
+  private authService = inject(AuthService);
+  private tools = inject(ToolsService);
+  email: string = '';
 
   constructor() {
     addIcons({ mailOutline });
@@ -40,5 +45,27 @@ export class LostPassPage implements OnInit {
   goToLogin() {
     this.router.navigate(['/login']);
   }
-}
 
+  sendResetLink() {
+    if (this.email === '') {
+      this.tools.presentToast('Ingrese su correo electrónico', 'danger');
+      return;
+    }
+
+    if (!this.tools.validateEmail(this.email)) {
+      this.tools.presentToast('Ingrese un correo electrónico válido', 'danger');
+      return;
+    }
+
+    this.authService.forgotPassword(this.email).subscribe({
+      next: (res) => {
+        this.tools.presentToast(res.message, 'success');
+        this.email = '';
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        this.tools.presentToast(err.error?.message || 'Error al enviar correo', 'danger');
+      }
+    });
+  }
+}

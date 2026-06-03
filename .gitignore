@@ -3,3 +3,4 @@ backend/logs/*.log
 /logs
 backend/public/uploads
 node_modules
+mobile-app/ShoppyCatalog/node_modules

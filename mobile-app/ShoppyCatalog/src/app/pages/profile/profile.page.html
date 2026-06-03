@@ -27,49 +27,47 @@
         <!-- Nombre -->
         <ion-item class="custom-field">
           <ion-icon name="person-outline" slot="start"></ion-icon>
-          <ion-label position="stacked">Nombre</ion-label>
-          <p *ngIf="!isEditing">{{ user.name }}</p>
-          <ion-input *ngIf="isEditing" [(ngModel)]="editUser.name" type="text"></ion-input>
+          <p *ngIf="!isEditing" class="view-mode-text"><small>Nombre</small><br>{{ user.name }}</p>
+          <ion-input *ngIf="isEditing" label="Nombre" labelPlacement="stacked" [(ngModel)]="editUser.name" type="text"></ion-input>
         </ion-item>
 
         <!-- Apellido -->
         <ion-item class="custom-field">
           <ion-icon name="people-outline" slot="start"></ion-icon>
-          <ion-label position="stacked">Apellido</ion-label>
-          <p *ngIf="!isEditing">{{ user.lastname }}</p>
-          <ion-input *ngIf="isEditing" [(ngModel)]="editUser.lastname" type="text"></ion-input>
+          <p *ngIf="!isEditing" class="view-mode-text"><small>Apellido</small><br>{{ user.lastname }}</p>
+          <ion-input *ngIf="isEditing" label="Apellido" labelPlacement="stacked" [(ngModel)]="editUser.lastname" type="text"></ion-input>
         </ion-item>
 
         <!-- Usuario -->
         <ion-item class="custom-field">
           <ion-icon name="at-outline" slot="start"></ion-icon>
-          <ion-label position="stacked">Nombre de Usuario</ion-label>
-          <p *ngIf="!isEditing">{{ user.username }}</p>
-          <ion-input *ngIf="isEditing" [(ngModel)]="editUser.username" type="text"></ion-input>
+          <p *ngIf="!isEditing" class="view-mode-text"><small>Nombre de Usuario</small><br>{{ user.username }}</p>
+          <ion-input *ngIf="isEditing" label="Nombre de Usuario" labelPlacement="stacked" [(ngModel)]="editUser.username" type="text"></ion-input>
         </ion-item>
 
         <!-- Fecha de Nacimiento -->
         <ion-item class="custom-field">
           <ion-icon name="calendar-outline" slot="start"></ion-icon>
-          <ion-label position="stacked">Cumpleaños</ion-label>
-          <p *ngIf="!isEditing">{{ user.birthday | date:'dd/MM/yyyy' }}</p>
-          <ion-datetime-button *ngIf="isEditing" datetime="edit-birthday"></ion-datetime-button>
+          <div class="date-wrapper-profile">
+            <ion-label *ngIf="!isEditing" position="stacked">Cumpleaños</ion-label>
+            <p *ngIf="!isEditing">{{ user.birthday | date:'dd/MM/yyyy' }}</p>
+            <ion-label *ngIf="isEditing" position="stacked">Cumpleaños</ion-label>
+            <ion-datetime-button *ngIf="isEditing" datetime="edit-birthday"></ion-datetime-button>
+          </div>
         </ion-item>
 
         <!-- Tienda -->
         <ion-item class="custom-field">
           <ion-icon name="storefront-outline" slot="start"></ion-icon>
-          <ion-label position="stacked">Nombre de tienda</ion-label>
-          <p *ngIf="!isEditing">{{ user.store }}</p>
-          <ion-input *ngIf="isEditing" [(ngModel)]="editUser.store" type="text"></ion-input>
+          <p *ngIf="!isEditing" class="view-mode-text"><small>Nombre de tienda</small><br>{{ user.store }}</p>
+          <ion-input *ngIf="isEditing" label="Nombre de tienda" labelPlacement="stacked" [(ngModel)]="editUser.store" type="text"></ion-input>
         </ion-item>
 
         <!-- Teléfono -->
         <ion-item class="custom-field">
           <ion-icon name="call-outline" slot="start"></ion-icon>
-          <ion-label position="stacked">Lada</ion-label>
-          <p *ngIf="!isEditing">{{ user.dialing_code }}</p>
-          <ion-select *ngIf="isEditing" [(ngModel)]="editUser.dialing_code" interface="popover"
+          <p *ngIf="!isEditing" class="view-mode-text"><small>Lada</small><br>{{ user.dialing_code }}</p>
+          <ion-select *ngIf="isEditing" label="Lada" labelPlacement="stacked" [(ngModel)]="editUser.dialing_code" interface="popover"
             toggleIcon="chevron-down-outline">
             <ion-select-option *ngFor="let c of countries" [value]="c.code">
               {{ c.flag }} {{ c.code }}
@@ -79,10 +77,30 @@
 
         <ion-item class="custom-field">
           <ion-icon name="call-outline" slot="start"></ion-icon>
-          <ion-label position="stacked">Teléfono</ion-label>
-          <p *ngIf="!isEditing">{{ user.cellphone }}</p>
-          <ion-input *ngIf="isEditing" type="tel" [(ngModel)]="editUser.cellphone" (ionInput)="formatPhone($event)"
+          <p *ngIf="!isEditing" class="view-mode-text"><small>Teléfono</small><br>{{ user.cellphone }}</p>
+          <ion-input *ngIf="isEditing" label="Teléfono" labelPlacement="stacked" type="tel" [(ngModel)]="editUser.cellphone" (ionInput)="formatPhone($event)"
             placeholder="(000) 000-0000"></ion-input>
+        </ion-item>
+
+        <!-- Colores del Catálogo -->
+        <div class="colors-section" *ngIf="!isEditing">
+          <ion-item lines="none" class="custom-field">
+            <ion-icon name="color-palette-outline" slot="start"></ion-icon>
+            <ion-label position="stacked">Paleta de colores (Catálogo)</ion-label>
+          </ion-item>
+          <div class="color-grid">
+            <div *ngFor="let color of getColorsArray(user.colors)" class="color-dot" [style.background]="color"></div>
+          </div>
+        </div>
+
+        <ion-item button (click)="isColorModalOpen = true" *ngIf="isEditing" class="custom-field">
+          <ion-icon name="color-palette-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Editar Colores</h3>
+          </ion-label>
+          <div slot="end" style="display: flex; gap: 4px;">
+            <div *ngFor="let color of getColorsArray(editUser.colors)" style="width: 16px; height: 16px; border-radius: 50%;" [style.background]="color"></div>
+          </div>
         </ion-item>
 
       </ion-list>
@@ -109,4 +127,46 @@
       </ion-button>
     </div>
   </div>
+
+  <!-- Modal para seleccionar colores -->
+  <ion-modal [isOpen]="isColorModalOpen" (didDismiss)="isColorModalOpen = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Elegir Colores</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isColorModalOpen = false">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="colors-section">
+          <p class="color-hint" style="text-align: center; margin-bottom: 20px; font-weight: bold; font-size: 1rem;">
+            {{ getColorsArray(editUser.colors).length }} / 5 seleccionados
+          </p>
+          <p class="color-hint" style="text-align: center; margin-bottom: 20px;">
+            Selecciona hasta 5 colores para tu tienda online.
+          </p>
+          <div class="color-grid" style="justify-content: center;">
+            <div *ngFor="let color of getColorsArray(editUser.colors)" class="color-dot selected" [style.background]="color"
+              (click)="toggleColor(color)">
+              <ion-icon name="close-outline"></ion-icon>
+            </div>
+
+            <!-- Botón para agregar color personalizado -->
+            <div class="color-dot add-color">
+              <ion-icon name="add-outline"></ion-icon>
+              <!-- Input de color transparente para máxima compatibilidad móvil -->
+              <input 
+                type="color" 
+                class="mobile-color-input" 
+                (change)="onCustomColorSelected($event)"
+              >
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
 </app-menu>

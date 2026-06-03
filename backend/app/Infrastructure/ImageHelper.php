@@ -53,7 +53,7 @@ class ImageHelper
 
         return [
             'url' => $url,
-            'colors' => json_encode($colors)
+            'colors' => implode(',', $colors)
         ];
     }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -12,7 +12,12 @@ import {
   IonModal,
   IonDatetime,
   IonSelect,
-  IonSelectOption
+  IonSelectOption,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonContent
 } from '@ionic/angular/standalone';
 import { MenuComponent } from 'src/app/componet/menu/menu.component';
 import { AuthService } from 'src/service/auth.service';
@@ -27,7 +32,11 @@ import {
   storefrontOutline,
   cameraOutline,
   callOutline,
-  chevronDownOutline
+  chevronDownOutline,
+  colorPaletteOutline,
+  checkmarkOutline,
+  addOutline,
+  closeOutline
 } from 'ionicons/icons';
 import { FileUploadService } from 'src/service/file-upload.service';
 
@@ -48,13 +57,18 @@ import { FileUploadService } from 'src/service/file-upload.service';
     IonDatetime,
     IonSelect,
     IonSelectOption,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonContent,
     CommonModule,
     FormsModule,
     MenuComponent
   ]
 })
 
-export class ProfilePage implements OnInit {
+export class ProfilePage {
   private authService = inject(AuthService);
   private tools = inject(ToolsService);
   private fileUploadService = inject(FileUploadService);
@@ -70,8 +84,14 @@ export class ProfilePage implements OnInit {
     { name: 'Ecuador', code: '+593', flag: '🇪🇨' }
   ];
 
+  predefinedColors = [
+    '#1d63d3', '#2ab88c', '#ff5733', '#9b59b6', '#34495e',
+    '#e67e22', '#e74c3c', '#2c3e50', '#27ae60', '#f1c40f'
+  ];
+
   // Estado y datos
   isEditing: boolean = false;
+  isColorModalOpen: boolean = false;
   user: any = {};
   editUser: any = {
     name: '',
@@ -81,7 +101,8 @@ export class ProfilePage implements OnInit {
     store_image: '',
     store: '',
     dialing_code: '',
-    cellphone: ''
+    cellphone: '',
+    colors: ''
   };
   previewImage: string = '';
   isImageZoomed: boolean = false;
@@ -96,7 +117,11 @@ export class ProfilePage implements OnInit {
       storefrontOutline,
       cameraOutline,
       callOutline,
-      chevronDownOutline
+      chevronDownOutline,
+      colorPaletteOutline,
+      checkmarkOutline,
+      addOutline,
+      closeOutline
     });
   }
 
@@ -113,7 +138,46 @@ export class ProfilePage implements OnInit {
     event.target.value = this.editUser.cellphone;
   }
 
-  ngOnInit() {
+  // Helper para obtener los colores como array
+  getColorsArray(colorsStr: string): string[] {
+    if (!colorsStr) return [];
+    return colorsStr.split(',').filter(c => c.trim() !== '');
+  }
+
+  // Seleccionar/Deseleccionar un color
+  toggleColor(color: string) {
+    if (!this.isEditing) return;
+
+    let currentColors = this.getColorsArray(this.editUser.colors);
+    const index = currentColors.indexOf(color);
+
+    if (index > -1) {
+      currentColors.splice(index, 1);
+    } else {
+      // Limitamos a 5 colores por ahora
+      if (currentColors.length < 5) {
+        currentColors.push(color);
+      } else {
+        this.tools.presentToast('Máximo 5 colores seleccionados', 'warning');
+      }
+    }
+
+    this.editUser.colors = currentColors.join(',');
+  }
+
+  // Manejar la selección de un color personalizado (Nativo)
+  onCustomColorSelected(event: any) {
+    const color = event.target.value;
+    if (color) {
+      // Usar spread para asegurar detección de cambios en Angular
+      if (!this.predefinedColors.includes(color)) {
+        this.predefinedColors = [...this.predefinedColors, color];
+      }
+      this.toggleColor(color);
+    }
+  }
+
+  ionViewWillEnter() {
     this.loadUserData();
   }
 
