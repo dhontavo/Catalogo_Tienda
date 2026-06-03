@@ -66,16 +66,33 @@ async function initializeCatalog() {
         if (store.colors) {
             try {
                 const colorsArray = JSON.parse(store.colors);
-                if (Array.isArray(colorsArray) && colorsArray.length >= 2) {
-                    // Set gradient start and end
-                    document.documentElement.style.setProperty('--bg-gradient-start', colorsArray[0]);
-                    document.documentElement.style.setProperty('--bg-gradient-end', colorsArray[1]);
-                }
                 if (Array.isArray(colorsArray) && colorsArray.length >= 1) {
-                    // Primary color and hover
-                    document.documentElement.style.setProperty('--primary-color', colorsArray[0]);
-                    document.documentElement.style.setProperty('--primary-color-hover', adjustColor(colorsArray[0], -20));
-                    document.documentElement.style.setProperty('--primary-color-rgb', hexToRgb(colorsArray[0]));
+                    const primary = colorsArray[0];
+                    const rgb = hexToRgb(primary);
+
+                    // Primary color, hover variant, and RGB for shadows
+                    document.documentElement.style.setProperty('--primary-color', primary);
+                    document.documentElement.style.setProperty('--primary-color-hover', adjustColor(primary, -20));
+                    document.documentElement.style.setProperty('--primary-color-rgb', rgb);
+
+                    // Derive soft background gradient from the primary color
+                    // (very light tint → slightly stronger tint)
+                    const [r, g, b] = rgb.split(',').map(Number);
+                    const gradStart = `rgba(${r}, ${g}, ${b}, 0.06)`;
+                    const gradEnd   = `rgba(${r}, ${g}, ${b}, 0.15)`;
+                    document.documentElement.style.setProperty('--bg-gradient-start', gradStart);
+                    document.documentElement.style.setProperty('--bg-gradient-end', gradEnd);
+
+                    // Tint the header glassmorphism & card borders with the primary
+                    document.documentElement.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.18)`);
+
+                    // Apply gradient to the store name text
+                    const nameEl = document.getElementById('store-name');
+                    if (nameEl) {
+                        nameEl.style.background = `linear-gradient(to right, ${primary}, ${adjustColor(primary, 40)})`;
+                        nameEl.style.webkitBackgroundClip = 'text';
+                        nameEl.style.webkitTextFillColor = 'transparent';
+                    }
                 }
             } catch (e) {
                 console.warn('Failed to parse store.colors', e);

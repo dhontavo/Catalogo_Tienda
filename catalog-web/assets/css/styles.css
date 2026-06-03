@@ -46,8 +46,9 @@ header {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    /* cart on left, brand on right */
+    /* brand on left, cart on right */
     flex-direction: row;
+    justify-content: flex-start;
 }
 
 .header-brand {
@@ -55,8 +56,8 @@ header {
     align-items: center;
     gap: 1rem;
     flex: 1;
-    /* push brand to right side */
-    justify-content: flex-end;
+    /* brand on left, cart pushed to right */
+    justify-content: flex-start;
 }
 
 #store-logo {
@@ -313,10 +314,6 @@ main {
 
 
 /* ─── Cart Button in Header ─────────────────────────────────────────────────── */
-/* override second definition – cart is on the LEFT now */
-.header-content {
-    justify-content: flex-start;
-}
 
 .cart-button {
     position: relative;
@@ -333,7 +330,7 @@ main {
     box-shadow: 0 4px 15px rgba(var(--primary-color-rgb), 0.35);
     transition: background 0.3s ease, transform 0.2s ease;
     flex-shrink: 0;
-    /* no margin-left: auto – cart is intentionally on the left */
+    /* cart sits on the right end of the header */
 }
 
 .cart-button:hover {
@@ -619,7 +616,7 @@ main {
 
 .btn-cart-remove {
     background: none;
-    border: 1px solid rgba(0,0,0,0.12);
+    border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 8px;
     padding: 2px 7px;
     font-size: 0.8rem;
@@ -647,7 +644,7 @@ main {
     color: var(--text-main);
     text-align: right;
     padding-top: 0.8rem;
-    border-top: 1px solid rgba(0,0,0,0.08);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .btn-clear-cart {
