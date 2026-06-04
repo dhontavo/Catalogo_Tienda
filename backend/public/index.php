@@ -59,6 +59,7 @@ $productController = new ProductController();
 $authController = new AuthController();
 $planController = new PlanController();
 $configController = new ConfigController();
+$storeController = new StoreController();
 
 switch (true) {
     // GET /config
@@ -69,9 +70,8 @@ switch (true) {
     // PUT /config
     case $method === 'PUT' && $path === '/config':
         $configController->update();
-$storeController = new StoreController();
+        break;
 
-switch (true) {
     // GET /store
     case $method === 'GET' && $path === '/store':
         $storeController->show();
