@@ -62,41 +62,48 @@ async function initializeCatalog() {
             logoEl.style.display = 'block';
         }
 
+        // Default colors based on the provided image
+        let primaryColor = '#0058b8';
+        let gradientStart = '#e0efff';
+        let gradientEnd = '#f8f9fb';
+
         // Apply custom primary color and gradient based on store.colors
         if (store.colors) {
             try {
                 const colorsArray = JSON.parse(store.colors);
                 if (Array.isArray(colorsArray) && colorsArray.length >= 1) {
-                    const primary = colorsArray[0];
-                    const rgb = hexToRgb(primary);
-
-                    // Primary color, hover variant, and RGB for shadows
-                    document.documentElement.style.setProperty('--primary-color', primary);
-                    document.documentElement.style.setProperty('--primary-color-hover', adjustColor(primary, -20));
-                    document.documentElement.style.setProperty('--primary-color-rgb', rgb);
-
-                    // Derive soft background gradient from the primary color
-                    // (very light tint → slightly stronger tint)
+                    primaryColor = colorsArray[0];
+                    const rgb = hexToRgb(primaryColor);
                     const [r, g, b] = rgb.split(',').map(Number);
-                    const gradStart = `rgba(${r}, ${g}, ${b}, 0.06)`;
-                    const gradEnd   = `rgba(${r}, ${g}, ${b}, 0.15)`;
-                    document.documentElement.style.setProperty('--bg-gradient-start', gradStart);
-                    document.documentElement.style.setProperty('--bg-gradient-end', gradEnd);
-
-                    // Tint the header glassmorphism & card borders with the primary
-                    document.documentElement.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.18)`);
-
-                    // Apply gradient to the store name text
-                    const nameEl = document.getElementById('store-name');
-                    if (nameEl) {
-                        nameEl.style.background = `linear-gradient(to right, ${primary}, ${adjustColor(primary, 40)})`;
-                        nameEl.style.webkitBackgroundClip = 'text';
-                        nameEl.style.webkitTextFillColor = 'transparent';
-                    }
+                    // Derive soft background gradient from the primary color
+                    gradientStart = `rgba(${r}, ${g}, ${b}, 0.06)`;
+                    gradientEnd   = `rgba(${r}, ${g}, ${b}, 0.15)`;
                 }
             } catch (e) {
                 console.warn('Failed to parse store.colors', e);
             }
+        }
+
+        // Apply theme variables
+        const primaryRgb = hexToRgb(primaryColor);
+        const [r, g, b] = primaryRgb.split(',').map(Number);
+
+        document.documentElement.style.setProperty('--primary-color', primaryColor);
+        document.documentElement.style.setProperty('--primary-color-hover', adjustColor(primaryColor, -20));
+        document.documentElement.style.setProperty('--primary-color-rgb', primaryRgb);
+
+        document.documentElement.style.setProperty('--bg-gradient-start', gradientStart);
+        document.documentElement.style.setProperty('--bg-gradient-end', gradientEnd);
+
+        // Tint the header glassmorphism & card borders with the primary color
+        document.documentElement.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.18)`);
+
+        // Apply gradient to the store name text
+        const nameEl = document.getElementById('store-name');
+        if (nameEl) {
+            nameEl.style.background = `linear-gradient(to right, ${primaryColor}, ${adjustColor(primaryColor, 40)})`;
+            nameEl.style.webkitBackgroundClip = 'text';
+            nameEl.style.webkitTextFillColor = 'transparent';
         }
         // Dynamically set favicon to store logo if available
         if (store.image) {
