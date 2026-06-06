@@ -60,6 +60,7 @@ $authController = new AuthController();
 $planController = new PlanController();
 $configController = new ConfigController();
 $storeController = new StoreController();
+$orderController = new OrderController();
 
 switch (true) {
     // GET /config
@@ -70,6 +71,11 @@ switch (true) {
     // PUT /config
     case $method === 'PUT' && $path === '/config':
         $configController->update();
+        break;
+
+    // POST /orders
+    case $method === 'POST' && $path === '/orders':
+        $orderController->order();
         break;
 
     // GET /store

@@ -37,7 +37,8 @@ class MySQLConfigRepository implements ConfigRepository
                 '',
                 '',
                 'uploads/logos/',
-                'uploads/products/'
+                'uploads/products/',
+                ''
             );
         }
 
@@ -49,7 +50,8 @@ class MySQLConfigRepository implements ConfigRepository
             $row['api_whatsapp'],
             $row['logo'],
             $row['logo_path'],
-            $row['product_path']
+            $row['product_path'],
+            $row['host']
         );
     }
 
@@ -74,12 +76,13 @@ class MySQLConfigRepository implements ConfigRepository
                     api_whatsapp = :api_whatsapp, 
                     logo = :logo, 
                     logo_path = :logo_path, 
-                    product_path = :product_path'
+                    product_path = :product_path, 
+                    host = :host'
             );
         } else {
             $stmt = $this->db->prepare(
-                'INSERT INTO config (`name`, email, password, port, api_whatsapp, logo, logo_path, product_path)
-                 VALUES (:name, :email, :password, :port, :api_whatsapp, :logo, :logo_path, :product_path)'
+                'INSERT INTO config (`name`, email, password, port, api_whatsapp, logo, logo_path, product_path, host)
+                 VALUES (:name, :email, :password, :port, :api_whatsapp, :logo, :logo_path, :product_path, :host)'
             );
         }
 
@@ -91,7 +94,8 @@ class MySQLConfigRepository implements ConfigRepository
             ':api_whatsapp' => $config->getApiWhatsapp(),
             ':logo'         => $config->getLogo(),
             ':logo_path'    => $config->getLogoPath(),
-            ':product_path' => $config->getProductPath()
+            ':product_path' => $config->getProductPath(),
+            ':host'         => $config->getHost()
         ]);
     }
 }

@@ -130,4 +130,21 @@ class MySQLProductRepository implements ProductRepository
         $stmt = $this->db->prepare('DELETE FROM products WHERE id = :id');
         return $stmt->execute([':id' => $id]);
     }
+
+     /**
+     * {@inheritdoc}
+     */
+    public function view(string $id): bool
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE products
+             SET view = view + 1
+             WHERE id = :id'
+        );
+
+        return $stmt->execute([
+            ':id'          => $id,
+        ]);
+    }
+
 }

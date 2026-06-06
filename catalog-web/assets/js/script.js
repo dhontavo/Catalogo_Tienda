@@ -1,6 +1,8 @@
 // API Base URL (Ajustada según el backend existente)
 const API_BASE = '/Catalogo_Tienda/backend/public';
 
+
+
 // Utility: Convert Hex to RGB for shadow manipulation
 function hexToRgb(hex) {
     let c;
@@ -12,10 +14,9 @@ function hexToRgb(hex) {
         c = '0x' + c.join('');
         return [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',');
     }
-    return '99, 102, 241'; // Fallback indigo
+    return '99, 102, 241';
 }
 
-// Utility: Lighten/Darken color for hover states
 function adjustColor(color, amount) {
     return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
 }
@@ -23,7 +24,6 @@ function adjustColor(color, amount) {
 function showMessage(title, desc) {
     document.getElementById('loader').style.display = 'none';
     document.getElementById('product-grid').style.display = 'none';
-
     const msgBox = document.getElementById('message-container');
     msgBox.style.display = 'block';
     document.getElementById('msg-title').innerText = title;
@@ -40,7 +40,6 @@ async function initializeCatalog() {
     }
 
     try {
-        // 1. Fetch Store Information
         const storeResponse = await fetch(`${API_BASE}/store?id_store=${idStore}`);
         const storeResult = await storeResponse.json();
 
@@ -50,24 +49,19 @@ async function initializeCatalog() {
 
         const store = storeResult.data;
 
-        // Update UI with store details
-        // Note: API returns 'store' for name, 'image' for logo, and 'colors' for color data.
         document.title = `${store.store ?? 'Tienda'} - Catálogo`;
         document.getElementById('store-name').innerText = store.store ?? 'ShoppyCatalog';
 
-        // Set store logo if available
         if (store.image) {
             const logoEl = document.getElementById('store-logo');
             logoEl.src = store.image;
             logoEl.style.display = 'block';
         }
 
-        // Default colors based on the provided image
         let primaryColor = '#0058b8';
         let gradientStart = '#e0efff';
         let gradientEnd = '#f8f9fb';
 
-        // Apply custom primary color and gradient based on store.colors
         if (store.colors) {
             try {
                 const colorsArray = JSON.parse(store.colors);
@@ -75,37 +69,31 @@ async function initializeCatalog() {
                     primaryColor = colorsArray[0];
                     const rgb = hexToRgb(primaryColor);
                     const [r, g, b] = rgb.split(',').map(Number);
-                    // Derive soft background gradient from the primary color
                     gradientStart = `rgba(${r}, ${g}, ${b}, 0.06)`;
-                    gradientEnd   = `rgba(${r}, ${g}, ${b}, 0.15)`;
+                    gradientEnd = `rgba(${r}, ${g}, ${b}, 0.15)`;
                 }
             } catch (e) {
                 console.warn('Failed to parse store.colors', e);
             }
         }
 
-        // Apply theme variables
         const primaryRgb = hexToRgb(primaryColor);
         const [r, g, b] = primaryRgb.split(',').map(Number);
 
         document.documentElement.style.setProperty('--primary-color', primaryColor);
         document.documentElement.style.setProperty('--primary-color-hover', adjustColor(primaryColor, -20));
         document.documentElement.style.setProperty('--primary-color-rgb', primaryRgb);
-
         document.documentElement.style.setProperty('--bg-gradient-start', gradientStart);
         document.documentElement.style.setProperty('--bg-gradient-end', gradientEnd);
-
-        // Tint the header glassmorphism & card borders with the primary color
         document.documentElement.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.18)`);
 
-        // Apply gradient to the store name text
         const nameEl = document.getElementById('store-name');
         if (nameEl) {
             nameEl.style.background = `linear-gradient(to right, ${primaryColor}, ${adjustColor(primaryColor, 40)})`;
             nameEl.style.webkitBackgroundClip = 'text';
             nameEl.style.webkitTextFillColor = 'transparent';
         }
-        // Dynamically set favicon to store logo if available
+
         if (store.image) {
             const faviconLink = document.getElementById('dynamic-favicon') || (function () {
                 const link = document.createElement('link');
@@ -117,8 +105,7 @@ async function initializeCatalog() {
             faviconLink.href = store.image;
         }
 
-        // 2. Fetch Products
-        const productsResponse = await fetch(`${API_BASE}/products?id_store=${idStore}&limit=100`); // Assuming reasonable limit
+        const productsResponse = await fetch(`${API_BASE}/products?id_store=${idStore}&limit=100`);
         const productsResult = await productsResponse.json();
 
         document.getElementById('loader').style.display = 'none';
@@ -134,7 +121,10 @@ async function initializeCatalog() {
             return;
         }
 
+        getConfig();
         renderProducts(products);
+        loadCart();
+        updateCartUI();
 
     } catch (error) {
         console.error('Error inicializando el catálogo:', error);
@@ -142,8 +132,77 @@ async function initializeCatalog() {
     }
 }
 
-// ─── Cart state ──────────────────────────────────────────────────────────────
-const cart = [];
+async function storeDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const idStore = urlParams.get('id_store');
+    const response = await fetch(`${API_BASE}/store?id_store=${idStore}`);
+    const data = await response.json();
+    if (data.success) {
+        return data.data;
+    }
+}
+// ─── Config  ───────────────────────────────────────────────────────────────
+
+let config = [];
+
+async function getConfig() {
+    const response = await fetch(`${API_BASE}/config`);
+    const data = await response.json();
+    if (data.success) {
+        config = data.data;
+    }
+}
+
+async function placeOrder() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const idStore = urlParams.get('id_store');
+    const response = await fetch(`${API_BASE}/orders`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id_store: idStore,
+            products: cart,
+        }),
+    });
+    const data = await response.json();
+    if (data.success) {
+        clearCart();
+        showMessage('Pedido realizado', 'Tu pedido ha sido realizado exitosamente.');
+    }
+}
+
+// ─── Cart state ───────────────────────────────────────────────────────────────
+let cart = [];
+
+// Una sola clave por tienda → array completo de productos
+function getCartStorageKey() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const idStore = urlParams.get('id_store');
+    return idStore ? `cart_${idStore}` : null;
+}
+
+function saveCart() {
+    const key = getCartStorageKey();
+    if (key) localStorage.setItem(key, JSON.stringify(cart));
+}
+
+function loadCart() {
+    const key = getCartStorageKey();
+    if (!key) return;
+    const stored = localStorage.getItem(key);
+    if (stored) {
+        try {
+            cart = JSON.parse(stored).map(p => ({
+                ...p,
+                id_product: String(p.id_product) // normaliza a string
+            }));
+        }
+        catch (e) { cart = []; }
+    }
+}
+
 let currentProduct = null;
 
 function formatMXN(amount) {
@@ -156,24 +215,49 @@ function updateCartUI() {
     document.getElementById('cart-count').innerText = count;
 
     const list = document.getElementById('cart-items');
+
     if (cart.length === 0) {
         list.innerHTML = '<li class="cart-empty">No hay productos en el carrito.</li>';
         document.getElementById('cart-total').innerText = '';
         return;
     }
 
-    list.innerHTML = cart.map(p => `
-        <li class="cart-item">
-            <div class="cart-item-info">
-                <span class="cart-item-name">${p.name}</span>
-                <span class="cart-item-qty">× ${p.quantity}</span>
-            </div>
-            <div class="cart-item-right">
-                <span class="cart-item-price">${formatMXN(p.price * p.quantity)}</span>
-                <button class="btn-cart-remove" data-id="${p.id_product}" title="Eliminar">✕</button>
-            </div>
-        </li>
-    `).join('');
+    list.innerHTML = cart.map(p => {
+        const imgSrc = p.image && p.image.trim() !== ''
+            ? p.image
+            : 'http://localhost/Catalogo_Tienda/backend/public/uploads/image.png';
+
+        return `
+            <li class="cart-item" id="cart-item-${p.id_product}">
+                <div class="cart-item-image">
+                    <img src="${imgSrc}"
+                         alt="${p.name}"
+                         onerror="this.src='http://localhost/Catalogo_Tienda/backend/public/uploads/image.png'">
+                </div>
+                <div class="cart-item-details">
+                    <div class="cart-item-header">
+                        <span class="cart-item-name">${p.name}</span>
+                        <button class="btn-cart-remove" data-id="${p.id_product}" title="Eliminar" aria-label="Eliminar producto">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="cart-item-footer">
+                        <div class="cart-item-qty-controls">
+                            <button class="btn-qty" data-id="${p.id_product}" data-action="decrease" aria-label="Disminuir">−</button>
+                            <span class="cart-item-qty">${p.quantity}</span>
+                            <button class="btn-qty" data-id="${p.id_product}" data-action="increase" aria-label="Aumentar">+</button>
+                        </div>
+                        <div class="cart-item-price-wrapper">
+                            <span class="cart-item-price">${formatMXN(p.price * p.quantity)}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        `;
+    }).join('');
 
     const total = cart.reduce((s, p) => s + p.price * p.quantity, 0);
     document.getElementById('cart-total').innerText = `Total: ${formatMXN(total)}`;
@@ -208,17 +292,33 @@ function closeProductModal() {
 
 function addCurrentToCart() {
     if (!currentProduct) return;
-    const existing = cart.find(p => p.id_product === currentProduct.id_product);
+
+    const productId = String(currentProduct.id);
+
+    const existing = cart.find(p => String(p.id) === productId);
     if (existing) {
         existing.quantity += 1;
     } else {
-        cart.push({ ...currentProduct, quantity: 1 });
+        cart.push({ id: productId, name: currentProduct.name, price: currentProduct.price, image: currentProduct.image, quantity: 1 });
     }
+
+    saveCart();
     updateCartUI();
     closeProductModal();
-    showCartToast(currentProduct.name);
-}
 
+
+    setTimeout(() => {
+        openCartModal();
+        setTimeout(() => {
+            const li = document.getElementById(`cart-item-${productId}`);
+            if (li) {
+                li.classList.add('cart-item-highlight');
+                li.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                setTimeout(() => li.classList.remove('cart-item-highlight'), 800);
+            }
+        }, 150);
+    }, 100);
+}
 // ─── Cart Modal ───────────────────────────────────────────────────────────────
 function openCartModal() {
     updateCartUI();
@@ -234,18 +334,50 @@ function closeCartModal() {
 }
 
 function clearCart() {
-    cart.length = 0;
+    cart = [];
+    saveCart();
     updateCartUI();
 }
 
-// Remove individual item
-document.getElementById('cart-items').addEventListener('click', e => {
-    const btn = e.target.closest('.btn-cart-remove');
-    if (!btn) return;
-    const id = btn.dataset.id;
-    const idx = cart.findIndex(p => p.id_product === id);
-    if (idx !== -1) cart.splice(idx, 1);
-    updateCartUI();
+// ─── Delegación de eventos sobre document (sobrevive rerenders del innerHTML) ─
+document.addEventListener('click', e => {
+    // Eliminar item
+    const removeBtn = e.target.closest('.btn-cart-remove');
+    if (removeBtn) {
+        const id = removeBtn.dataset.id;
+        const idx = cart.findIndex(p => String(p.id_product) === String(id));
+        if (idx !== -1) cart.splice(idx, 1);
+        saveCart();
+        updateCartUI();
+        return;
+    }
+
+    // Aumentar / disminuir cantidad
+    const qtyBtn = e.target.closest('.btn-qty');
+    if (qtyBtn) {
+        const id = qtyBtn.dataset.id;
+        const action = qtyBtn.dataset.action;
+        const item = cart.find(p => String(p.id_product) === String(id));
+        if (!item) return;
+
+        if (action === 'increase') {
+            item.quantity += 1;
+        } else if (action === 'decrease') {
+            item.quantity -= 1;
+            if (item.quantity <= 0) {
+                cart.splice(cart.indexOf(item), 1);
+            }
+        }
+
+        saveCart();
+        updateCartUI();
+
+        const li = document.getElementById(`cart-item-${id}`);
+        if (li) {
+            li.classList.add('cart-item-highlight');
+            setTimeout(() => li.classList.remove('cart-item-highlight'), 600);
+        }
+    }
 });
 
 // ─── Toast notification ───────────────────────────────────────────────────────
@@ -263,31 +395,27 @@ function showCartToast(name) {
     toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// ─── Close modals on overlay click ───────────────────────────────────────────
+// ─── Cerrar modales ───────────────────────────────────────────────────────────
 document.getElementById('product-modal').addEventListener('click', e => {
     if (e.target === document.getElementById('product-modal')) closeProductModal();
 });
 document.getElementById('cart-modal').addEventListener('click', e => {
     if (e.target === document.getElementById('cart-modal')) closeCartModal();
 });
-// Close with Escape key
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeProductModal(); closeCartModal(); }
 });
 
-// Cart button
 document.getElementById('cart-button').addEventListener('click', openCartModal);
 
 // ─── Product rendering ────────────────────────────────────────────────────────
 function renderProducts(products) {
     const grid = document.getElementById('product-grid');
 
-    const html = products.map((product, index) => {
+    grid.innerHTML = products.map((product, index) => {
         const imageSrc = product.image && product.image.trim() !== ''
             ? product.image
             : 'http://localhost/Catalogo_Tienda/backend/public/uploads/image.png';
-
-        const priceFormatted = formatMXN(product.price);
 
         return `
             <div class="product-card" style="animation-delay: ${index * 0.05}s">
@@ -299,7 +427,7 @@ function renderProducts(products) {
                     <h3 class="product-title">${product.name}</h3>
                     <p class="product-description">${product.description || 'Sin descripción detallada.'}</p>
                     <div class="product-footer">
-                        <span class="product-price">${priceFormatted}</span>
+                        <span class="product-price">${formatMXN(product.price)}</span>
                         <button class="btn-view" data-index="${index}">Ver más</button>
                     </div>
                 </div>
@@ -307,17 +435,12 @@ function renderProducts(products) {
         `;
     }).join('');
 
-    grid.innerHTML = html;
-
-    // Delegated click → open modal
     grid.addEventListener('click', e => {
         const btn = e.target.closest('.btn-view');
         if (!btn) return;
-        const idx = parseInt(btn.dataset.index, 10);
-        openProductModal(products[idx]);
+        openProductModal(products[parseInt(btn.dataset.index, 10)]);
     });
 
-    // Trigger entrance animation
     setTimeout(() => grid.classList.add('visible'), 100);
 }
 
