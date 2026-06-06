@@ -25,7 +25,8 @@ class Config
         ?string $apiWhatsapp = null,
         string $logo = '',
         string $logoPath = '',
-        string $productPath = ''
+        string $productPath = '',
+        string $host = ''
     ) {
         $this->name = $name;
         $this->email = $email;
@@ -35,6 +36,7 @@ class Config
         $this->logo = $logo;
         $this->logoPath = $logoPath;
         $this->productPath = $productPath;
+        $this->host = $host;
     }
 
     public function getName(): ?string { return $this->name; }

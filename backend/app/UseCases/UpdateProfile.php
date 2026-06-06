@@ -39,7 +39,7 @@ class UpdateProfile
         if (isset($data['id_plan'])) $user->setIdPlan((int)$data['id_plan']);
 
         // 3. Cargar y actualizar tienda asociada
-        $store = $this->storeRepository->findById($user->getIdStore());
+        $store = $this->storeRepository->findById($user->getStoreId());
         if ($store) {
             $storeName = $data['store'] ?? $store->getStoreName();
             $imageUrl = $store->getImage();

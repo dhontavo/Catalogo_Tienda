@@ -95,7 +95,7 @@ class MySQLUserRepository implements UserRepository
             ':email'    => $user->getEmail(),
             ':username' => $user->getUsername(),
             ':password' => $user->getPassword(),
-            ':id_store' => $user->getIdStore(),
+            ':id_store' => $user->getStoreId(),
             ':id_plan'  => $user->getIdPlan()
         ]);
 
