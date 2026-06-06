@@ -390,7 +390,7 @@ main {
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
     padding: 2rem;
     width: 100%;
-    max-width: 520px;
+    max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;

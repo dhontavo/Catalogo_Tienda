@@ -77,7 +77,7 @@ async function initializeCatalog() {
                     const [r, g, b] = rgb.split(',').map(Number);
                     // Derive soft background gradient from the primary color
                     gradientStart = `rgba(${r}, ${g}, ${b}, 0.06)`;
-                    gradientEnd   = `rgba(${r}, ${g}, ${b}, 0.15)`;
+                    gradientEnd = `rgba(${r}, ${g}, ${b}, 0.15)`;
                 }
             } catch (e) {
                 console.warn('Failed to parse store.colors', e);
