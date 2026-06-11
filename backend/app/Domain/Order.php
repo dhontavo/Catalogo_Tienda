@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Domain;
+
 /**
  * Entidad de dominio Order.
  */

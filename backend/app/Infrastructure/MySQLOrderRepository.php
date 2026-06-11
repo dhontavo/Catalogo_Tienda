@@ -4,6 +4,7 @@ namespace App\Infrastructure;
 
 use App\Interfaces\OrderRepository;
 use App\Domain\Order;
+use PDO;
 
 /**
  * Repositorio MySQL para la gestión de pedidos.
@@ -12,23 +13,26 @@ class MySQLOrderRepository implements OrderRepository
 {
     private PDO $db;
 
-    public function __construct(PDO $db)
+    public function __construct()
     {
-        $this->db = $db;
+        $this->db = Database::getConnection();
     }
+
     /**
-     * Obtiene los pedidos actual de una tienda.
+     * Obtiene los pedidos de una tienda.
      *
      * @param string $id_store
      * @return Order
      */
     public function get(string $id_store): Order
     {
-        $stmt = $this->db->query('SELECT id, id_store, id_product, create_at FROM orders WHERE id_store = :id_store');
-        $stmt->bindValue(':id_store', $id_store, PDO::PARAM_STR);
-        
+        $stmt = $this->db->prepare(
+            'SELECT id, id_store, id_product, create_at FROM orders WHERE id_store = :id_store'
+        );
+        $stmt->execute([':id_store' => $id_store]);
+
         $orders = [];
-        while ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $orders[] = new Order(
                 $row['id'],
                 $row['id_store'],
@@ -54,10 +58,10 @@ class MySQLOrderRepository implements OrderRepository
         );
 
         $stmt->execute([
-            ':id_store'    => $order->getStoreId(),
-            ':id_product'    => $order->getProductId()
+            ':id_store'   => $order->getStoreId(),
+            ':id_product' => $order->getProductId()
         ]);
 
         return (string) $this->db->lastInsertId();
     }
-}
+}

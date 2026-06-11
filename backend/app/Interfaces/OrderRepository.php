@@ -10,12 +10,12 @@ use App\Domain\Order;
 interface OrderRepository
 {
     /**
-     * Obtiene los pedidos actual de una tienda.
-     * Si no existe ninguna fila, puede retornar un objeto Order vacío o valores por defecto.
+     * Obtiene los pedidos de una tienda.
      *
-     * @return Order
+     * @param string $id_store ID de la tienda
+     * @return array Lista de objetos Order
      */
-    public function get(string $id_store): Order;
+    public function get(string $id_store): array;
 
     /**
      * Guarda un nuevo pedido y devuelve el ID generado.

@@ -1,6 +1,21 @@
-// API Base URL (Ajustada según el backend existente)
-const API_BASE = '/Catalogo_Tienda/backend/public';
+// Valores cargados dinámicamente desde env.php
+let API_BASE = '';
+let API_KEY = '';
+let HEADERS = {};
 
+async function loadEnv() {
+    try {
+        const response = await fetch('env.php');
+        if (!response.ok) throw new Error('No se pudo cargar la configuración de entorno');
+        const config = await response.json();
+        
+        API_BASE = config.API_BASE || '';
+        API_KEY = config.API_KEY || '';
+        HEADERS['X-API-Key'] = API_KEY;
+    } catch (error) {
+        console.error('Error cargando configuración:', error);
+    }
+}
 
 
 // Utility: Convert Hex to RGB for shadow manipulation
@@ -26,11 +41,20 @@ function showMessage(title, desc) {
     document.getElementById('product-grid').style.display = 'none';
     const msgBox = document.getElementById('message-container');
     msgBox.style.display = 'block';
-    document.getElementById('msg-title').innerText = title;
-    document.getElementById('msg-desc').innerText = desc;
+    // document.getElementById('msg-title').innerText = title;
+    // document.getElementById('msg-desc').innerText = desc;
+    if (title === 'Error' || desc === 'Error') {
+
+        msgBox.style.backgroundImage = 'url(http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png)';
+        msgBox.style.backgroundSize = 'contain';
+        msgBox.style.backgroundRepeat = 'no-repeat';
+        msgBox.style.backgroundPosition = 'center';
+    }
 }
 
 async function initializeCatalog() {
+    await loadEnv();
+
     const urlParams = new URLSearchParams(window.location.search);
     const idStore = urlParams.get('id_store');
 
@@ -40,7 +64,7 @@ async function initializeCatalog() {
     }
 
     try {
-        const storeResponse = await fetch(`${API_BASE}/store?id_store=${idStore}`);
+        const storeResponse = await fetch(`${API_BASE}/store?id_store=${idStore}`, { headers: HEADERS });
         const storeResult = await storeResponse.json();
 
         if (!storeResult.success || !storeResult.data) {
@@ -105,7 +129,7 @@ async function initializeCatalog() {
             faviconLink.href = store.image;
         }
 
-        const productsResponse = await fetch(`${API_BASE}/products?id_store=${idStore}&limit=100`);
+        const productsResponse = await fetch(`${API_BASE}/products?id_store=${idStore}&limit=100`, { headers: HEADERS });
         const productsResult = await productsResponse.json();
 
         document.getElementById('loader').style.display = 'none';
@@ -135,7 +159,7 @@ async function initializeCatalog() {
 async function storeDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const idStore = urlParams.get('id_store');
-    const response = await fetch(`${API_BASE}/store?id_store=${idStore}`);
+    const response = await fetch(`${API_BASE}/store?id_store=${idStore}`, { headers: HEADERS });
     const data = await response.json();
     if (data.success) {
         return data.data;
@@ -146,7 +170,7 @@ async function storeDetails() {
 let config = [];
 
 async function getConfig() {
-    const response = await fetch(`${API_BASE}/config`);
+    const response = await fetch(`${API_BASE}/config`, { headers: HEADERS });
     const data = await response.json();
     if (data.success) {
         config = data.data;
@@ -160,6 +184,7 @@ async function placeOrder() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            ...HEADERS
         },
         body: JSON.stringify({
             id_store: idStore,
@@ -225,14 +250,14 @@ function updateCartUI() {
     list.innerHTML = cart.map(p => {
         const imgSrc = p.image && p.image.trim() !== ''
             ? p.image
-            : 'http://localhost/Catalogo_Tienda/backend/public/uploads/image.png';
+            : 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png';
 
         return `
             <li class="cart-item" id="cart-item-${p.id_product}">
                 <div class="cart-item-image">
                     <img src="${imgSrc}"
                          alt="${p.name}"
-                         onerror="this.src='http://localhost/Catalogo_Tienda/backend/public/uploads/image.png'">
+                         onerror="this.src='http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png'">
                 </div>
                 <div class="cart-item-details">
                     <div class="cart-item-header">
@@ -268,12 +293,12 @@ function openProductModal(product) {
     currentProduct = product;
     const imgSrc = product.image && product.image.trim() !== ''
         ? product.image
-        : 'http://localhost/Catalogo_Tienda/backend/public/uploads/image.png';
+        : 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png';
 
     document.getElementById('modal-title').innerText = product.name;
     document.getElementById('modal-image').src = imgSrc;
     document.getElementById('modal-image').onerror = function () {
-        this.src = 'http://localhost/Catalogo_Tienda/backend/public/uploads/image.png';
+        this.src = 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png';
     };
     document.getElementById('modal-description').innerText = product.description || 'Sin descripción detallada.';
     document.getElementById('modal-price').innerText = formatMXN(product.price);
@@ -415,13 +440,13 @@ function renderProducts(products) {
     grid.innerHTML = products.map((product, index) => {
         const imageSrc = product.image && product.image.trim() !== ''
             ? product.image
-            : 'http://localhost/Catalogo_Tienda/backend/public/uploads/image.png';
+            : 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png';
 
         return `
             <div class="product-card" style="animation-delay: ${index * 0.05}s">
                 <div class="product-image-container">
                     <img src="${imageSrc}" alt="${product.name}" class="product-image"
-                         onerror="this.src='http://localhost/Catalogo_Tienda/backend/public/uploads/image.png'">
+                         onerror="this.src='http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png'">
                 </div>
                 <div class="product-info">
                     <h3 class="product-title">${product.name}</h3>
