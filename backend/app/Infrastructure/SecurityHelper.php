@@ -30,15 +30,34 @@ class SecurityHelper
     }
 
     /**
-     * Valida que la petición incluya una API Key válida.
+     * Valida que la petición incluya una API Key válida en el header X-API-Key.
      *
      * @param string $apiKey API Key enviada en el header
      * @return bool
      */
     public static function validateApiKey(string $apiKey): bool
     {
-        // TODO: Validar contra la base de datos
-        return !empty($apiKey) && strlen($apiKey) >= 32;
+        $validKey = $_ENV['API_KEY'] ?? null;
+        return !empty($validKey) && hash_equals($validKey, $apiKey);
+    }
+
+    /**
+     * Requiere una API Key válida. Si no se provee o es incorrecta,
+     * responde con 401 y termina la ejecución.
+     */
+    public static function requireApiKey(): void
+    {
+        $headers  = getallheaders();
+        $headersLower = array_change_key_case($headers, CASE_LOWER);
+        
+        $apiKey = $headersLower['x-api-key'] ?? $_SERVER['HTTP_X_API_KEY'] ?? $_GET['api_key'] ?? '';
+
+        if (!self::validateApiKey($apiKey)) {
+            self::jsonResponse(
+                ['error' => 'API Key inválida o no proporcionada.'],
+                401
+            );
+        }
     }
 
     /**

@@ -55,7 +55,7 @@ class User
     public function getEmail(): string { return $this->email; }
     public function getUsername(): string { return $this->username; }
     public function getPassword(): string { return $this->password; }
-    public function getIdStore(): string { return $this->idStore; }
+    public function getStoreId(): string { return $this->idStore; }
     public function getIdPlan(): int { return $this->idPlan; }
     public function getCreatedAt(): string { return $this->createdAt; }
     public function getUpdateAt(): string { return $this->updateAt; }
