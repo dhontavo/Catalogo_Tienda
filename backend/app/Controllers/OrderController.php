@@ -4,6 +4,9 @@ namespace App\Controllers;
 
 
 use App\UseCases\Order;
+use App\Infrastructure\MySQLOrderRepository;
+use App\Infrastructure\MySQLProductRepository;
+use App\Infrastructure\SecurityHelper;
 
 /**
  * Controlador REST para autenticación.

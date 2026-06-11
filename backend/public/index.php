@@ -37,15 +37,20 @@ use App\Controllers\AuthController;
 use App\Controllers\PlanController;
 use App\Controllers\ConfigController;
 use App\Controllers\StoreController;
+use App\Controllers\OrderController;
 
 // ─── Cargar variables de entorno ─────────────────────────────
 Env::load(__DIR__ . '/../.env');
 
 
-// ─── CORS & Headers ─────────────────────────────────────────
+// ─── CORS & Headers ─────────────────────────────────────
 SecurityHelper::setCorsHeaders();
 
-// ─── Routing simple ─────────────────────────────────────────
+// ─── Autenticación por API Key ───────────────────────────
+// Todas las rutas requieren el header X-API-Key con la clave correcta.
+SecurityHelper::requireApiKey();
+
+// ─── Routing simple ─────────────────────────────────────
 $method = $_SERVER['REQUEST_METHOD'];
 $uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
