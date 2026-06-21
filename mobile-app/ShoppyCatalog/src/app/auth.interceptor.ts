@@ -9,15 +9,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
   const tools = inject(ToolsService);
   const router = inject(Router);
-  let requestToForward = req;
+
+  // Construir los headers: siempre incluir X-API-Key, y Bearer token si existe
+  const headers: { [key: string]: string } = {
+    'X-API-Key': environment.apiKey
+  };
 
   if (token) {
-    requestToForward = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    headers['Authorization'] = `Bearer ${token}`;
   }
+
+  const requestToForward = req.clone({ setHeaders: headers });
 
   return next(requestToForward).pipe(
     tap({

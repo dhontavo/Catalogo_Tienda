@@ -22,9 +22,9 @@ class MySQLOrderRepository implements OrderRepository
      * Obtiene los pedidos de una tienda.
      *
      * @param string $id_store
-     * @return Order
+     * @return array
      */
-    public function get(string $id_store): Order
+    public function get(string $id_store): array
     {
         $stmt = $this->db->prepare(
             'SELECT id, id_store, id_product, create_at FROM orders WHERE id_store = :id_store'
