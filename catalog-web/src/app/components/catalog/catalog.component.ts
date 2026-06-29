@@ -5,7 +5,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 
 import { CatalogService, Product, Store } from '../../services/catalog.service';
 import { CartService } from '../../services/cart.service';
@@ -22,55 +22,67 @@ const FALLBACK_IMG = 'http://localhost/Catalogo_Tienda/backend/public/uploads/lo
   templateUrl: './catalog.component.html',
 })
 export class CatalogComponent implements OnInit, OnDestroy {
-  private route       = inject(ActivatedRoute);
-  private catalogSvc  = inject(CatalogService);
-  readonly cartSvc    = inject(CartService);
-  private titleSvc    = inject(Title);
-  private platformId  = inject(PLATFORM_ID);
-  private isBrowser   = isPlatformBrowser(this.platformId);
+  private route = inject(ActivatedRoute);
+  private catalogSvc = inject(CatalogService);
+  readonly cartSvc = inject(CartService);
+  private titleSvc = inject(Title);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   // ─── State ────────────────────────────────────────────────────────────────
-  idStore   = '';
-  loading   = signal(true);
-  errorMsg  = signal<string | null>(null);
-  products  = signal<Product[]>([]);
-  store     = signal<Store | null>(null);
+  idStore = '';
+  loading = signal(true);
+  errorMsg = signal<string | null>(null);
+  products = signal<Product[]>([]);
+  store = signal<Store | null>(null);
+  config = signal<any[]>([]);
 
   selectedProduct = signal<Product | null>(null);
-  cartOpen        = signal(false);
-  gridVisible     = false;
+  cartOpen = signal(false);
+  gridVisible = false;
 
   private subs = new Subscription();
 
   // ─── Toast ────────────────────────────────────────────────────────────────
-  toastMsg    = signal('');
+  toastMsg = signal('');
   toastActive = signal(false);
   private toastTimer?: ReturnType<typeof setTimeout>;
 
   // ─── Lifecycle ────────────────────────────────────────────────────────────
   ngOnInit(): void {
-    this.idStore = this.route.snapshot.queryParamMap.get('id_store') ?? '';
-
-    if (!this.idStore) {
-      this.loading.set(false);
-      this.errorMsg.set('Enlace inválido. Por favor proporciona el id_store en la URL.');
-      return;
-    }
-
-    // Cargar tienda + productos
     this.subs.add(
-      this.catalogSvc.getStore(this.idStore).subscribe({
-        next: (res) => {
-          if (!res.success || !res.data) {
-            this.setError('Tienda no encontrada.');
-            return;
-          }
-          this.store.set(res.data);
-          this.applyStoreTheme(res.data);
-          this.titleSvc.setTitle(`${res.data.store ?? 'Tienda'} - Catálogo`);
-          this.loadProducts();
-        },
-        error: () => this.setError('No se pudo conectar con el servidor.'),
+      combineLatest([
+        this.route.params,
+        this.route.queryParams
+      ]).subscribe(([params, queryParams]) => {
+        this.idStore = params['id_store'] || queryParams['id_store'] || '';
+        console.log(this.idStore);
+        if (!this.idStore) {
+          this.loading.set(false);
+          this.errorMsg.set('Enlace inválido. Por favor proporciona el id_store en la URL.');
+          return;
+        }
+
+        this.loading.set(true);
+        this.errorMsg.set(null);
+
+        // Cargar tienda + productos + configuración
+        this.subs.add(
+          this.catalogSvc.getStore(this.idStore).subscribe({
+            next: (res) => {
+              if (!res.success || !res.data) {
+                this.setError('Tienda no encontrada.');
+                return;
+              }
+              this.store.set(res.data);
+              this.applyStoreTheme(res.data);
+              this.titleSvc.setTitle(`${res.data.store ?? 'Tienda'} - Catálogo`);
+              this.loadProducts();
+              this.loadConfig();
+            },
+            error: () => this.setError('No se pudo conectar con el servidor.'),
+          })
+        );
       })
     );
 
@@ -109,10 +121,24 @@ export class CatalogComponent implements OnInit, OnDestroy {
     );
   }
 
+  private loadConfig(): void {
+    this.subs.add(
+      this.catalogSvc.getConfig().subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.config.set(res.data);
+          }
+        },
+        error: (err) => console.error('Error al cargar la configuración:', err)
+      })
+    );
+  }
+
   private setError(msg: string): void {
     this.loading.set(false);
     this.errorMsg.set(msg);
   }
+
 
   // ─── Theme ────────────────────────────────────────────────────────────────
   private applyStoreTheme(store: Store): void {
@@ -130,9 +156,9 @@ export class CatalogComponent implements OnInit, OnDestroy {
           const rgb = this.hexToRgb(primaryColor);
           const [r, g, b] = rgb.split(',').map(Number);
           gradientStart = `rgba(${r},${g},${b},0.06)`;
-          gradientEnd   = `rgba(${r},${g},${b},0.15)`;
+          gradientEnd = `rgba(${r},${g},${b},0.15)`;
         }
-      } catch {}
+      } catch { }
     }
 
     const rgb = this.hexToRgb(primaryColor);
