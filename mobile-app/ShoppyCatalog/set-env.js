@@ -13,7 +13,8 @@ const targetPaths = [
 const envConfigFile = (isProd) => `export const environment = {
   production: ${isProd},
   apiUrl: '${process.env.API_URL}',
-  appVersion: '${process.env.APP_VERSION}'
+  appVersion: '${process.env.APP_VERSION}',
+  apiKey: '${process.env.API_KEY}'
 };
 `;
 
