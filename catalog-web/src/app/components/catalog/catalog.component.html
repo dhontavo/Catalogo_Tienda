@@ -1,0 +1,78 @@
+<!-- Header -->
+<header>
+  <div class="header-content">
+    <div class="header-brand">
+      <img
+        id="store-logo"
+        [src]="storeLogoSrc"
+        alt="Logo de la tienda"
+        [style.display]="storeLogoVisible ? 'block' : 'none'"
+      />
+      <h1 id="store-name">{{ storeName }}</h1>
+    </div>
+    <button id="cart-button" class="cart-button" (click)="openCartModal()" aria-label="Ver carrito">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M0 1a1 1 0 0 1 1-1h1.5a.5.5 0 0 1 .485.379L3.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L1.01 3.607 0 1zM4.415 4l1.07 5.8h6.03L11.585 4H4.415zM6 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm5 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+      </svg>
+      <span id="cart-count" class="cart-badge">{{ cartCount }}</span>
+    </button>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main>
+  <!-- Loader -->
+  @if (loading()) {
+    <div id="loader" class="loader-container">
+      <div class="spinner"></div>
+      <div class="loader-text">Preparando el catálogo...</div>
+    </div>
+  }
+
+  <!-- Error / Empty message -->
+  @if (!loading() && errorMsg()) {
+    <div id="message-container" class="message-box">
+      <h2 id="msg-title">{{ errorMsg() }}</h2>
+    </div>
+  }
+
+  <!-- Product Grid -->
+  @if (!loading() && !errorMsg() && products().length > 0) {
+    <div id="product-grid" class="product-grid" [class.visible]="gridVisible">
+      @for (product of products(); track product.id; let i = $index) {
+        <app-product-card
+          [product]="product"
+          [index]="i"
+          (verMas)="openProductModal($event)"
+        />
+      }
+    </div>
+  }
+</main>
+
+<!-- Product Detail Modal -->
+<app-product-modal
+  [product]="selectedProduct()"
+  (close)="closeProductModal()"
+  (addToCart)="onAddToCart($event)"
+/>
+
+<!-- Cart Modal -->
+<app-cart-modal
+  [open]="cartOpen()"
+  [idStore]="idStore"
+  [items]="cartItems"
+  [totalAmount]="cartTotal"
+  (closeModal)="closeCartModal()"
+  (orderPlaced)="onOrderPlaced()"
+  (quantityChanged)="onQuantityChanged($event)"
+  (removed)="onRemoved($event)"
+  (cleared)="onCleared()"
+/>
+
+<!-- Toast notification -->
+<div
+  id="cart-toast"
+  class="cart-toast"
+  [class.show]="toastActive()"
+>{{ toastMsg() }}</div>
