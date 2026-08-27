@@ -50,6 +50,38 @@ header {
     justify-content: flex-start;
 }
 
+.btn-back-stores {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--text-main);
+    text-decoration: none;
+    padding: 0.5rem 0.9rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.btn-back-stores:hover {
+    background: white;
+    transform: translateX(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    color: var(--primary-color);
+}
+
+.btn-back-stores svg {
+    transition: transform 0.25s ease;
+}
+
+.btn-back-stores:hover svg {
+    transform: translateX(-2px);
+}
+
 .header-brand {
     display: flex;
     align-items: center;
@@ -728,4 +760,308 @@ main {
 .cart-item-highlight {
     animation: cartHighlight 0.6s ease-out forwards;
     border-radius: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STORE LIST – Home Page
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Hero Section ──────────────────────────────────────────────────────────── */
+.store-list-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 3.5rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.store-list-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+.hero-content {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    margin-bottom: 1.5rem;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: heroIconFloat 3s ease-in-out infinite;
+}
+
+@keyframes heroIconFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0.8rem;
+    letter-spacing: -1px;
+    line-height: 1.1;
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* ─── Store List Main ───────────────────────────────────────────────────────── */
+.store-list-main {
+    max-width: 1100px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+    min-height: 40vh;
+}
+
+/* ─── Store Grid ────────────────────────────────────────────────────────────── */
+.store-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.store-grid.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ─── Store Card ────────────────────────────────────────────────────────────── */
+.store-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.08);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: storeCardIn 0.5s ease both;
+}
+
+@keyframes storeCardIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.store-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(31, 38, 135, 0.15);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.store-card:active {
+    transform: translateY(-4px) scale(1.0);
+    transition-duration: 0.1s;
+}
+
+/* Color accent strip at top */
+.store-card-accent {
+    height: 5px;
+    width: 100%;
+    opacity: 0.85;
+    transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.store-card:hover .store-card-accent {
+    height: 6px;
+    opacity: 1;
+}
+
+/* Card body */
+.store-card-body {
+    padding: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+}
+
+/* Logo wrapper */
+.store-card-logo-wrapper {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.store-card:hover .store-card-logo-wrapper {
+    transform: scale(1.06);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.store-card-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Info */
+.store-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.store-card-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* CTA row */
+.store-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6366f1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: gap 0.3s ease, color 0.3s ease;
+}
+
+.store-card:hover .store-card-cta {
+    gap: 0.8rem;
+    color: #4f46e5;
+}
+
+.store-card-cta svg {
+    transition: transform 0.3s ease;
+}
+
+.store-card:hover .store-card-cta svg {
+    transform: translateX(4px);
+}
+
+/* ─── Footer ────────────────────────────────────────────────────────────────── */
+.store-list-footer {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.store-list-footer p {
+    margin: 0;
+}
+
+/* ─── Store List Message Box (override) ─────────────────────────────────────── */
+.store-list-main .message-box {
+    max-width: 550px;
+}
+
+.store-list-main .message-box .message-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    background: rgba(99, 102, 241, 0.08);
+    border-radius: 20px;
+    margin-bottom: 1.2rem;
+    color: #6366f1;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .store-list-hero {
+        padding: 2.5rem 1.5rem 2rem;
+    }
+
+    .store-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .store-card-body {
+        padding: 1.4rem;
+    }
+
+    .store-card-logo-wrapper {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+    }
+
+    .store-card-name {
+        font-size: 1.1rem;
+    }
+
+    .store-list-main {
+        margin: 2rem auto;
+        padding: 0 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.6rem;
+    }
+
+    .hero-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+    }
+
+    .hero-icon svg {
+        width: 36px;
+        height: 36px;
+    }
 }

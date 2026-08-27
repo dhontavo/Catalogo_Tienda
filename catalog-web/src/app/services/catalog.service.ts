@@ -4,7 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface Store {
+  id: string;
   store: string;
+  dialing_code?: string;
+  cellphone?: string;
   image?: string;
   colors?: string;
 }
@@ -31,6 +34,13 @@ export class CatalogService {
 
   constructor(private http: HttpClient) {
     this.headers = new HttpHeaders({ 'X-API-Key': environment.API_KEY });
+  }
+
+  getStores(): Observable<ApiResponse<Store[]>> {
+    return this.http.get<ApiResponse<Store[]>>(
+      `${this.base}/stores`,
+      { headers: this.headers }
+    );
   }
 
   getStore(idStore: string): Observable<ApiResponse<Store>> {
