@@ -3,7 +3,7 @@ import {
   PLATFORM_ID, signal, computed, effect
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subscription, combineLatest } from 'rxjs';
 
@@ -18,7 +18,7 @@ const FALLBACK_IMG = 'http://localhost/Catalogo_Tienda/backend/public/uploads/lo
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, ProductModalComponent, CartModalComponent],
+  imports: [CommonModule, RouterLink, ProductCardComponent, ProductModalComponent, CartModalComponent],
   templateUrl: './catalog.component.html',
 })
 export class CatalogComponent implements OnInit, OnDestroy {
