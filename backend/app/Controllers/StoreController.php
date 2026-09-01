@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Infrastructure\MySQLStoreRepository;
 use App\Infrastructure\SecurityHelper;
+use App\UseCases\GetStores;
 
 /**
  * Controlador REST para tiendas.
@@ -12,15 +13,17 @@ use App\Infrastructure\SecurityHelper;
 class StoreController
 {
     private MySQLStoreRepository $repository;
+    private GetStores $getStores;
 
     public function __construct()
     {
         $this->repository = new MySQLStoreRepository();
+        $this->getStores = new GetStores($this->repository);
     }
 
     /**
      * GET /store?id={id_store} o GET /store?id_store={id_store}
-     * Devuelve la información de la tienda.
+     * Devuelve la información de una tienda.
      */
     public function show(): void
     {
@@ -37,7 +40,7 @@ class StoreController
         try {
             $store = $this->repository->findById($id);
             
-            // Si no se encuentra por ID, intentamos buscar por nombre (por si acaso el ID configurado es un alias legible)
+            // Si no se encuentra por ID, intentamos buscar por nombre
             if (!$store) {
                 $store = $this->repository->findByName($id);
             }
@@ -64,16 +67,15 @@ class StoreController
 
     /**
      * GET /stores
-     * Devuelve la lista de todas las tiendas.
+     * Devuelve la lista de todas las tiendas disponibles.
      */
     public function index(): void
     {
         try {
-            $stores = $this->repository->findAll();
-            $data = array_map(fn($s) => $s->toArray(), $stores);
+            $stores = $this->getStores->execute();
             SecurityHelper::jsonResponse([
                 'success' => true,
-                'data' => $data
+                'data' => $stores
             ]);
         } catch (\Exception $e) {
             SecurityHelper::jsonResponse([
