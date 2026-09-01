@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 import { CatalogService, Store } from '../../services/catalog.service';
 
+const APP_LOGO = 'http://localhost/Catalogo_Tienda/uploads/logos-system/favicon.png';
 const FALLBACK_IMG = 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png';
 
 @Component({
@@ -23,6 +24,10 @@ export class StoreListComponent implements OnInit, OnDestroy {
   private titleSvc = inject(Title);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
+
+  // ─── App Logo ─────────────────────────────────────────────────
+  appLogo = APP_LOGO;
+  appLogoError = signal(false);
 
   // ─── State ────────────────────────────────────────────────────
   loading = signal(true);
@@ -97,6 +102,16 @@ export class StoreListComponent implements OnInit, OnDestroy {
   getGradientStyle(store: Store): string {
     const color = this.getPrimaryColor(store);
     return `linear-gradient(135deg, ${color}18 0%, ${color}08 100%)`;
+  }
+
+  onAppLogoError(): void {
+    this.appLogoError.set(true);
+  }
+
+  getFormattedPhone(store: Store): string | null {
+    if (!store.cellphone?.trim()) return null;
+    const dialing = store.dialing_code ? `${store.dialing_code} ` : '';
+    return `${dialing}${store.cellphone}`.trim();
   }
 
   getAccentBorder(store: Store): string {
