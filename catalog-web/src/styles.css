@@ -956,6 +956,31 @@ main {
     white-space: nowrap;
 }
 
+.store-card-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #475569;
+    background: rgba(15, 23, 42, 0.04);
+    padding: 0.3rem 0.65rem;
+    border-radius: 8px;
+    width: fit-content;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+.store-card:hover .store-card-phone {
+    background: rgba(99, 102, 241, 0.08);
+    color: #1e293b;
+}
+
+.store-card-phone svg {
+    color: #6366f1;
+    flex-shrink: 0;
+}
+
 /* CTA row */
 .store-card-cta {
     display: inline-flex;

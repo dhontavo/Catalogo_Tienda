@@ -99,6 +99,12 @@ export class StoreListComponent implements OnInit, OnDestroy {
     return `linear-gradient(135deg, ${color}18 0%, ${color}08 100%)`;
   }
 
+  getFormattedPhone(store: Store): string | null {
+    if (!store.cellphone?.trim()) return null;
+    const dialing = store.dialing_code ? `${store.dialing_code} ` : '';
+    return `${dialing}${store.cellphone}`.trim();
+  }
+
   getAccentBorder(store: Store): string {
     const color = this.getPrimaryColor(store);
     return `3px solid ${color}`;
