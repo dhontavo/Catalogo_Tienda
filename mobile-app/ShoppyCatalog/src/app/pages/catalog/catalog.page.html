@@ -1,0 +1,176 @@
+<ion-header class="ion-no-border catalog-header">
+  <ion-toolbar>
+    <div class="store-badge-top" *ngIf="selectedStore">
+      <div class="store-avatar" [style.background-color]="selectedStore.color || '#4f46e5'">
+        <img *ngIf="selectedStore.logo" [src]="selectedStore.logo" alt="Logo">
+        <ion-icon *ngIf="!selectedStore.logo" name="storefront-outline"></ion-icon>
+      </div>
+      <div class="store-info">
+        <span class="store-label">Catálogo Digital</span>
+        <h2 class="store-name">{{ selectedStore.name }}</h2>
+      </div>
+    </div>
+
+    <!-- Botón hacia el portal del comerciante -->
+    <ion-buttons slot="end">
+      <ion-button class="merchant-btn" fill="clear" (click)="goToMerchantLogin()">
+        <ion-icon slot="start" name="log-in-outline"></ion-icon>
+        <span class="btn-text">Subir Catálogo</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Selector rápido de tienda SaaS (si hay más de una tienda) -->
+  <ion-toolbar class="sub-bar" *ngIf="stores.length > 1">
+    <div class="store-selector-wrapper">
+      <ion-icon name="storefront-outline" class="selector-icon"></ion-icon>
+      <ion-select
+        placeholder="Cambiar de tienda"
+        [value]="selectedStore?.id"
+        (ionChange)="onStoreChange($event)"
+        interface="popover"
+        class="store-select">
+        <ion-select-option *ngFor="let s of stores" [value]="s.id">
+          {{ s.name }}
+        </ion-select-option>
+      </ion-select>
+    </div>
+  </ion-toolbar>
+
+  <!-- Buscador de productos -->
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar
+      [(ngModel)]="searchQuery"
+      (ionInput)="filterProducts()"
+      placeholder="Buscar en el catálogo..."
+      animated="true"
+      class="catalog-search">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="catalog-content">
+  <!-- Spinner de carga -->
+  <div class="center-spinner" *ngIf="loading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- Estado vacío -->
+  <div class="empty-state" *ngIf="!loading && filteredProducts.length === 0">
+    <ion-icon name="sparkles-outline"></ion-icon>
+    <h3>No se encontraron productos</h3>
+    <p *ngIf="searchQuery">Intenta con otro término de búsqueda.</p>
+    <p *ngIf="!searchQuery">Esta tienda aún no ha subido productos a su catálogo.</p>
+    <ion-button size="small" fill="outline" (click)="goToMerchantLogin()">
+      ¿Eres el dueño? Sube productos aquí
+    </ion-button>
+  </div>
+
+  <!-- Grid de Catálogo de Productos -->
+  <div class="products-grid" *ngIf="!loading && filteredProducts.length > 0">
+    <div class="product-card" *ngFor="let product of filteredProducts">
+      <div class="image-wrapper">
+        <img [src]="product.image || 'assets/icon/favicon.png'" [alt]="product.name" loading="lazy">
+        <span class="price-tag">${{ product.price | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="product-body">
+        <h3 class="product-title">{{ product.name }}</h3>
+        <p class="product-description" *ngIf="product.description">{{ product.description }}</p>
+
+        <div class="card-footer">
+          <ion-button class="add-btn" expand="block" (click)="addToCart(product, $event)">
+            <ion-icon name="cart-outline" slot="start"></ion-icon>
+            Agregar
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Banner de llamada para Comerciantes -->
+  <div class="saas-merchant-banner" (click)="goToMerchantLogin()">
+    <div class="banner-content">
+      <ion-icon name="storefront-outline" class="banner-icon"></ion-icon>
+      <div class="banner-text">
+        <h4>¿Quieres tu propio catálogo digital?</h4>
+        <p>Crea tu tienda gratis, sube tus productos y vende por WhatsApp.</p>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Botón Flotante de Carrito -->
+<ion-footer class="cart-floating-footer" *ngIf="cartItemCount > 0">
+  <div class="cart-bar" (click)="openCart()">
+    <div class="cart-left">
+      <span class="cart-badge">{{ cartItemCount }}</span>
+      <div class="cart-label-info">
+        <span class="cart-items-text">{{ cartItemCount === 1 ? '1 producto' : cartItemCount + ' productos' }}</span>
+        <span class="cart-subtotal">Total: ${{ cartTotal | number:'1.2-2' }} MXN</span>
+      </div>
+    </div>
+    <div class="cart-right">
+      <span class="view-cart-text">Ver Carrito</span>
+      <ion-icon name="cart-outline"></ion-icon>
+    </div>
+  </div>
+</ion-footer>
+
+<!-- Modal de Resumen y Checkout por WhatsApp -->
+<ion-modal [isOpen]="isCartOpen" (didDismiss)="closeCart()" [initialBreakpoint]="0.75" [breakpoints]="[0, 0.75, 1]">
+  <ng-template>
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
+        <ion-title>Carrito de Compras</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeCart()">
+            <ion-icon name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-list lines="none" class="cart-list">
+        <ion-item *ngFor="let item of cart" class="cart-item">
+          <ion-thumbnail slot="start" class="cart-thumb">
+            <img [src]="item.product.image || 'assets/icon/favicon.png'" alt="Thumb">
+          </ion-thumbnail>
+          <ion-label>
+            <h3 class="cart-prod-name">{{ item.product.name }}</h3>
+            <p class="cart-prod-price">${{ item.product.price | number:'1.2-2' }} c/u</p>
+          </ion-label>
+          <div class="qty-control" slot="end">
+            <ion-button size="small" fill="clear" color="medium" (click)="updateQuantity(item, -1)">
+              <ion-icon name="remove-outline"></ion-icon>
+            </ion-button>
+            <span class="qty-number">{{ item.quantity }}</span>
+            <ion-button size="small" fill="clear" color="primary" (click)="updateQuantity(item, 1)">
+              <ion-icon name="add-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-item>
+      </ion-list>
+
+      <div class="cart-summary-box">
+        <div class="summary-line">
+          <span>Tienda</span>
+          <strong>{{ selectedStore?.name }}</strong>
+        </div>
+        <div class="summary-line total-line">
+          <span>Total Estimado</span>
+          <span class="total-amount">${{ cartTotal | number:'1.2-2' }} MXN</span>
+        </div>
+      </div>
+
+      <ion-button expand="block" color="success" class="whatsapp-btn" (click)="checkoutWhatsApp()">
+        <ion-icon name="logo-whatsapp" slot="start"></ion-icon>
+        Pedir por WhatsApp
+      </ion-button>
+      <p class="whatsapp-note">Se enviará el detalle de tu compra directamente al WhatsApp de la tienda.</p>
+    </ion-content>
+  </ng-template>
+</ion-modal>

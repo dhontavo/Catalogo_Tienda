@@ -1,12 +1,57 @@
-<app-menu title="Inicio">
-  <!-- Buscador -->
-  <ion-searchbar placeholder="Buscar productos..." class="cf-search" [(ngModel)]="searchQuery"></ion-searchbar>
+<app-menu title="Subir y Gestionar Catálogo">
 
-  <!-- Grid -->
-  <div class="cf-grid">
+  <!-- Tarjeta de Estado SaaS y Límite de Plan -->
+  <div class="saas-plan-card">
+    <div class="plan-header">
+      <div class="plan-info">
+        <span class="plan-tag">Suscripción SaaS</span>
+        <h3 class="plan-title">{{ planName }}</h3>
+      </div>
+      <ion-badge [color]="isLimitReached ? 'danger' : 'primary'" class="plan-badge" (click)="openPlansModal()">
+        {{ isLimitReached ? 'Límite alcanzado' : 'Mejorar Plan' }}
+      </ion-badge>
+    </div>
+
+    <!-- Barra de progreso de productos -->
+    <div class="plan-usage">
+      <div class="usage-labels">
+        <span>Productos subidos: <strong>{{ products.length }}</strong> de {{ maxProducts }}</span>
+        <span>{{ (productUsagePercent * 100) | number:'1.0-0' }}%</span>
+      </div>
+      <ion-progress-bar [value]="productUsagePercent" [color]="isLimitReached ? 'danger' : (productUsagePercent > 0.8 ? 'warning' : 'primary')"></ion-progress-bar>
+    </div>
+
+    <!-- Acciones Rápidas del Comerciante -->
+    <div class="quick-actions">
+      <ion-button size="small" fill="outline" class="action-btn" (click)="viewPublicCatalog()">
+        <ion-icon name="storefront-outline" slot="start"></ion-icon>
+        Ver Catálogo Cliente
+      </ion-button>
+      <ion-button size="small" fill="outline" class="action-btn" (click)="goToOrders()">
+        <ion-icon name="bagCheckOutline" slot="start"></ion-icon>
+        Pedidos Recibidos
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Buscador -->
+  <ion-searchbar placeholder="Buscar en mis productos..." class="cf-search" [(ngModel)]="searchQuery"></ion-searchbar>
+
+  <!-- Botón Destacado para Subir Producto -->
+  <div class="upload-trigger-box">
+    <ion-button expand="block" class="upload-btn" (click)="openUploadProduct()">
+      <ion-icon name="cloudUploadOutline" slot="start"></ion-icon>
+      Subir Nuevo Producto al Catálogo
+    </ion-button>
+  </div>
+
+  <!-- Grid de Productos -->
+  <div class="cf-grid" *ngIf="products.length > 0">
     <div class="cf-card" *ngFor="let product of products | filter:searchQuery:'name'"
       (click)="OpenModal2(product, 'view')">
-      <img [src]="product.image" />
+      <div class="card-img-wrapper">
+        <img [src]="product.image || 'assets/icon/favicon.png'" />
+      </div>
       <div class="cf-card-body">
         <h3 class="cf-title">{{product.name}}</h3>
         <p class="cf-price">${{product.price | number:'1.2-2'}}</p>
@@ -14,18 +59,21 @@
     </div>
   </div>
 
-  <div class="cf-empty-state" *ngIf="products.length == 0">
-    <ion-icon name="list-outline"></ion-icon>
-    <p>Aún no has agregado productos</p>
-    <span>Presiona el botón + para comenzar</span>
+  <!-- Estado Vacío -->
+  <div class="cf-empty-state" *ngIf="products.length === 0">
+    <ion-icon name="cloudUploadOutline"></ion-icon>
+    <p>Aún no has subido productos a tu catálogo</p>
+    <span>Toca el botón para tomar una foto y subir tu primer producto</span>
+    <ion-button class="start-upload-btn" (click)="openUploadProduct()">
+      Subir mi primer producto
+    </ion-button>
   </div>
 
-  <!-- FAB -->
+  <!-- FAB Flotante para subir producto rápidamente -->
   <ion-fab vertical="bottom" horizontal="end" class="cf-fab">
-    <ion-fab-button (click)="OpenModal2('', 'create')">
+    <ion-fab-button (click)="openUploadProduct()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
 
 </app-menu>

@@ -83,9 +83,19 @@ switch (true) {
         $orderController->order();
         break;
 
+    // GET /orders?id_store=X
+    case $method === 'GET' && $path === '/orders':
+        $orderController->index();
+        break;
+
     // GET /store
     case $method === 'GET' && $path === '/store':
         $storeController->show();
+        break;
+
+    // PUT /store
+    case $method === 'PUT' && ($path === '/store' || $path === '/stores'):
+        $storeController->update();
         break;
 
     // GET /stores

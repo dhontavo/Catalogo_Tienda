@@ -1,0 +1,295 @@
+<!-- SaaS Navigation -->
+<nav class="saas-nav">
+  <div class="saas-nav-container">
+    <a routerLink="/" class="saas-brand">
+      <div class="saas-brand-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+        </svg>
+      </div>
+      <span class="saas-brand-title">Shoppy<span class="gradient-text">Catalog</span> <span class="saas-badge-text">SaaS</span></span>
+    </a>
+
+    <div class="saas-nav-links">
+      <a href="#features" class="saas-link">Características</a>
+      <a href="#pricing" class="saas-link">Planes</a>
+      <a routerLink="/stores" class="saas-link">Tiendas Activas</a>
+    </div>
+
+    <div class="saas-nav-actions">
+      @if (authSvc.isAuthenticated()) {
+        <a routerLink="/admin" class="btn-saas-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+          </svg>
+          Mi Panel ({{ authSvc.storeName() }})
+        </a>
+      } @else {
+        <a routerLink="/login" class="btn-saas-ghost">Iniciar Sesión</a>
+        <a routerLink="/register" class="btn-saas-primary">Crear Mi Tienda</a>
+      }
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="saas-hero">
+  <div class="saas-hero-glow"></div>
+  <div class="saas-hero-container">
+    <div class="saas-hero-badge">
+      <span class="badge-dot"></span>
+      <span>Plataforma SaaS Multi-inquilino de Catálogos Móviles</span>
+    </div>
+
+    <h1 class="saas-hero-title">
+      Lanza tu catálogo online y recibe pedidos por <span class="gradient-text">WhatsApp</span> en minutos
+    </h1>
+
+    <p class="saas-hero-desc">
+      El software como servicio (SaaS) diseñado para que comerciantes y marcas independientes digitalicen su inventario, personalicen su identidad visual y vendan sin intermediarios ni comisiones abusivas.
+    </p>
+
+    <div class="saas-hero-cta">
+      <a routerLink="/register" class="btn-saas-hero-primary">
+        <span>Crear Tienda Gratis</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+        </svg>
+      </a>
+      <a routerLink="/stores" class="btn-saas-hero-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+        </svg>
+        <span>Explorar Tiendas Activas</span>
+      </a>
+    </div>
+
+    <!-- Feature Quick Stats -->
+    <div class="saas-stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Multi-inquilino aislado</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0%</div>
+        <div class="stat-label">Comisiones sobre ventas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2 min</div>
+        <div class="stat-label">Tiempo de configuración</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">&infin;</div>
+        <div class="stat-label">Pedidos directos a WhatsApp</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- How it works / Features -->
+<section id="features" class="saas-section">
+  <div class="saas-section-header">
+    <span class="section-tag">¿Cómo Funciona el SaaS?</span>
+    <h2 class="section-title">Todo lo que necesitas para operar tu catálogo comercial</h2>
+    <p class="section-subtitle">Cada tienda dispone de su propio espacio aislado, catálogo con branding único y panel administrativo.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon icon-purple">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4" />
+        </svg>
+      </div>
+      <h3 class="feature-title">Tu Tienda, Tu Identidad</h3>
+      <p class="feature-desc">Personaliza el logo, la paleta cromática y el número de contacto. Tu catálogo reflejará fielmente la imagen corporativa de tu marca.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon icon-green">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+        </svg>
+      </div>
+      <h3 class="feature-title">Cierre Directo por WhatsApp</h3>
+      <p class="feature-desc">Los clientes arman su carrito y el pedido llega formateado con un solo clic a tu WhatsApp para coordinar el pago y la entrega.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon icon-blue">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+        </svg>
+      </div>
+      <h3 class="feature-title">Panel de Control para Comerciantes</h3>
+      <p class="feature-desc">Gestiona tus productos en segundos: sube fotos, ajusta precios, controla el stock y visualiza las órdenes recibidas en tiempo real.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon icon-amber">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+        </svg>
+      </div>
+      <h3 class="feature-title">Arquitectura Multi-tenant Robusta</h3>
+      <p class="feature-desc">Cada comercio tiene aislamiento de datos, tokens seguros, soporte para subida de imágenes y endpoints optimizados con Clean Architecture.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Plans -->
+<section id="pricing" class="saas-section pricing-section">
+  <div class="saas-section-header">
+    <span class="section-tag">Planes y Precios SaaS</span>
+    <h2 class="section-title">Elige el plan ideal para impulsar tu negocio</h2>
+    <p class="section-subtitle">Comienza gratis hoy mismo y escala según el volumen de tu inventario sin contratos forzosos.</p>
+  </div>
+
+  <div class="pricing-grid">
+    @for (plan of plans(); track plan.id) {
+      <div class="pricing-card" [class.featured-plan]="plan.id === 2">
+        @if (plan.id === 2) {
+          <div class="featured-badge">Más Elegido</div>
+        }
+
+        <div class="pricing-header">
+          <h3 class="plan-name">{{ plan.plan }}</h3>
+          <div class="plan-price">
+            <span class="currency">$</span>
+            <span class="amount">{{ (plan.price ?? 0) === 0 ? '0' : (plan.price | number:'1.2-2') }}</span>
+            <span class="period">/ mes</span>
+          </div>
+          <p class="plan-tagline">
+            @if (plan.id === 1) { Perfecto para comenzar a probar tu catálogo digital. }
+            @if (plan.id === 2) { Ideal para tiendas en crecimiento con catálogo amplio. }
+            @if (plan.id === 3) { Para empresas y negocios de alto volumen con stock masivo. }
+          </p>
+        </div>
+
+        <ul class="plan-features">
+          <li class="feature-item">
+            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            <span><strong>{{ plan.max_product ? plan.max_product + ' productos' : 'Productos Ilimitados' }}</strong></span>
+          </li>
+          <li class="feature-item">
+            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            <span>Pedidos ilimitados por WhatsApp</span>
+          </li>
+          <li class="feature-item">
+            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            <span>Personalización de Logo y Colores</span>
+          </li>
+          <li class="feature-item">
+            @if (plan.advertisement === 'NO') {
+              <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span><strong>Sin Publicidad</strong> de la plataforma</span>
+            } @else {
+              <svg class="warning-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg>
+              <span>Incluye badge de plataforma</span>
+            }
+          </li>
+          <li class="feature-item">
+            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            <span>Hasta {{ plan.max_adduser ?? 1 }} {{ (plan.max_adduser ?? 1) > 1 ? 'usuarios administradores' : 'usuario administrador' }}</span>
+          </li>
+        </ul>
+
+        <button class="btn-plan-select" (click)="selectPlan(plan.id)">
+          {{ (plan.price ?? 0) === 0 ? 'Comenzar Gratis' : 'Seleccionar Plan' }}
+        </button>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Active Stores Showcase -->
+@if (featuredStores().length > 0) {
+<section class="saas-section stores-section">
+  <div class="saas-section-header">
+    <span class="section-tag">Tiendas en la Plataforma</span>
+    <h2 class="section-title">Descubre marcas que ya usan nuestro catálogo</h2>
+    <p class="section-subtitle">Explora cómo cada comercio adapta su catálogo a su identidad única.</p>
+  </div>
+
+  <div class="showcase-grid">
+    @for (store of featuredStores(); track store.id) {
+      <div class="showcase-card" [routerLink]="['/store', store.id]">
+        <div class="showcase-card-accent" [style.background]="getStoreColor(store)"></div>
+        <div class="showcase-card-body">
+          <div class="showcase-logo-box">
+            <img [src]="getStoreImage(store)" [alt]="store.store" (error)="onImgError($event)" />
+          </div>
+          <div class="showcase-info">
+            <h4 class="showcase-name">{{ store.store }}</h4>
+            <span class="showcase-link">Ver catálogo &rarr;</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="showcase-footer">
+    <a routerLink="/stores" class="btn-view-all-stores">
+      <span>Ver todas las tiendas registradas</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+      </svg>
+    </a>
+  </div>
+</section>
+}
+
+<!-- Final Call to Action -->
+<section class="saas-cta-banner">
+  <div class="cta-banner-content">
+    <h2>¿Listo para digitalizar tu negocio?</h2>
+    <p>Únete hoy a los comerciantes que venden directamente a sus clientes con ShoppyCatalog SaaS.</p>
+    <a routerLink="/register" class="btn-cta-banner">Comenzar Ahora Mismo</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="saas-footer">
+  <div class="saas-footer-container">
+    <div class="footer-col-brand">
+      <div class="saas-brand">
+        <div class="saas-brand-icon sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+          </svg>
+        </div>
+        <span class="saas-brand-title">Shoppy<span class="gradient-text">Catalog</span> SaaS</span>
+      </div>
+      <p class="footer-tagline">Solución multi-tienda para comercio independiente.</p>
+    </div>
+
+    <div class="footer-links-grid">
+      <div class="footer-col">
+        <h4>Plataforma</h4>
+        <a routerLink="/">Inicio</a>
+        <a routerLink="/stores">Directorio de Tiendas</a>
+        <a href="#pricing">Planes y Precios</a>
+      </div>
+      <div class="footer-col">
+        <h4>Comerciantes</h4>
+        <a routerLink="/login">Acceso a mi Panel</a>
+        <a routerLink="/register">Registrar mi Tienda</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; {{ currentYear }} ShoppyCatalog SaaS. Todos los derechos reservados.</p>
+  </div>
+</footer>

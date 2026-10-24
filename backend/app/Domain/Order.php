@@ -11,18 +11,21 @@ class Order {
     private string $id_store;
     private string $id_product;
     private string $create_at;
+    private ?array $productDetails = null;
 
     // Constructor
     public function __construct(
         string $id = '',
         string $id_store = '',
         string $id_product = '',
-        string $create_at = ''
+        string $create_at = '',
+        ?array $productDetails = null
     ) {
         $this->id = $id ?: $this->generateUuid();
         $this->id_store = $id_store;
         $this->id_product = $id_product;
         $this->create_at = $create_at ?: date('Y-m-d H:i:s');
+        $this->productDetails = $productDetails;
     }
 
     // Getters
@@ -42,6 +45,10 @@ class Order {
         return $this->create_at;
     }
 
+    public function getProductDetails(): ?array {
+        return $this->productDetails;
+    }
+
     // Setters
     public function setIdStore(string $id_store): void {
         $this->id_store = $id_store;
@@ -51,18 +58,26 @@ class Order {
         $this->id_product = $id_product;
     }
 
+    public function setProductDetails(?array $details): void {
+        $this->productDetails = $details;
+    }
+
     // Método para generar UUID (simple)
     private function generateUuid(): string {
         return bin2hex(random_bytes(16));
     }
 
-    // Método para convertir a array (útil para insertar en DB)
+    // Método para convertir a array (útil para insertar en DB y API)
     public function toArray(): array {
-        return [
+        $res = [
             'id' => $this->id,
             'id_store' => $this->id_store,
             'id_product' => $this->id_product,
             'create_at' => $this->create_at
         ];
+        if ($this->productDetails !== null) {
+            $res['product'] = $this->productDetails;
+        }
+        return $res;
     }
 }

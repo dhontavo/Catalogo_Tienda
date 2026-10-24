@@ -3,23 +3,25 @@ import {
   PLATFORM_ID, signal
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 
 import { CatalogService, Store } from '../../services/catalog.service';
+import { AuthService } from '../../services/auth.service';
 
-const APP_LOGO = 'http://localhost/Catalogo_Tienda/uploads/logos-system/favicon.png';
-const FALLBACK_IMG = 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png';
+const APP_LOGO = 'favicon.png';
+const FALLBACK_IMG = 'favicon.png';
 
 @Component({
   selector: 'app-store-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './store-list.component.html',
 })
 export class StoreListComponent implements OnInit, OnDestroy {
   private catalogSvc = inject(CatalogService);
+  readonly authSvc = inject(AuthService);
   private router = inject(Router);
   private titleSvc = inject(Title);
   private platformId = inject(PLATFORM_ID);
@@ -41,7 +43,20 @@ export class StoreListComponent implements OnInit, OnDestroy {
   // ─── Lifecycle ────────────────────────────────────────────────
   ngOnInit(): void {
     this.titleSvc.setTitle('Catálogo de Tiendas');
+    this.resetFavicon();
     this.loadStores();
+  }
+
+  private resetFavicon(): void {
+    if (!this.isBrowser) return;
+    let link = document.getElementById('dynamic-favicon') as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      link.id = 'dynamic-favicon';
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = APP_LOGO;
   }
 
   ngOnDestroy(): void {

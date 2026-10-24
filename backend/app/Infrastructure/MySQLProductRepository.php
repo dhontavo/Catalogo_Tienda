@@ -147,4 +147,13 @@ class MySQLProductRepository implements ProductRepository
         ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function countByStoreId(string $storeId): int
+    {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM products WHERE id_store = :id_store');
+        $stmt->execute([':id_store' => $storeId]);
+        return (int) $stmt->fetchColumn();
+    }
 }
