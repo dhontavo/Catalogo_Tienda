@@ -13,7 +13,8 @@ import { ProductCardComponent } from '../product-card/product-card.component';
 import { ProductModalComponent } from '../product-modal/product-modal.component';
 import { CartModalComponent } from '../cart-modal/cart-modal.component';
 
-const FALLBACK_IMG = 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png';
+const DEFAULT_LOGO = 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/favicon.png';
+const FALLBACK_IMG = 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/favicon.png';
 
 @Component({
   selector: 'app-catalog',
@@ -40,6 +41,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   selectedProduct = signal<Product | null>(null);
   cartOpen = signal(false);
   gridVisible = false;
+  currentYear = new Date().getFullYear();
 
   private subs = new Subscription();
 
@@ -171,17 +173,16 @@ export class CatalogComponent implements OnInit, OnDestroy {
     const [r, g, b] = rgb.split(',').map(Number);
     root.style.setProperty('--card-border', `rgba(${r},${g},${b},0.18)`);
 
-    // Favicon dinámico
-    if (store.image) {
-      let link = document.getElementById('dynamic-favicon') as HTMLLinkElement | null;
-      if (!link) {
-        link = document.createElement('link');
-        link.id = 'dynamic-favicon';
-        link.rel = 'icon';
-        document.head.appendChild(link);
-      }
-      link.href = store.image;
+    // Favicon dinámico (tienda o logo por defecto)
+    const faviconUrl = store.image?.trim() ? store.image : DEFAULT_LOGO;
+    let link = document.getElementById('dynamic-favicon') as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      link.id = 'dynamic-favicon';
+      link.rel = 'icon';
+      document.head.appendChild(link);
     }
+    link.href = faviconUrl;
   }
 
   private hexToRgb(hex: string): string {
@@ -270,10 +271,16 @@ export class CatalogComponent implements OnInit, OnDestroy {
   };
 
   // ─── Helpers para template ────────────────────────────────────────────────
-  get storeLogoSrc(): string { return this.store()?.image ?? ''; }
-  get storeLogoVisible(): boolean { return !!(this.store()?.image); }
+  get storeLogoSrc(): string {
+    return this.store()?.image?.trim() ? this.store()!.image! : DEFAULT_LOGO;
+  }
+  get storeLogoVisible(): boolean { return true; }
   get storeName(): string { return this.store()?.store ?? 'Catálogo'; }
   get cartCount(): number { return this.cartSvc.totalCount(); }
   get cartItems() { return this.cartSvc.items(); }
   get cartTotal(): number { return this.cartSvc.totalAmount(); }
+
+  onLogoError(event: Event): void {
+    (event.target as HTMLImageElement).src = DEFAULT_LOGO;
+  }
 }

@@ -84,4 +84,70 @@ class StoreController
             ], 500);
         }
     }
+
+    /**
+     * PUT /store
+     * Actualiza la información y personalización de una tienda.
+     */
+    public function update(): void
+    {
+        $input = SecurityHelper::getJsonInput();
+        $id = $input['id'] ?? $input['id_store'] ?? $_GET['id'] ?? $_GET['id_store'] ?? null;
+
+        if (!$id) {
+            SecurityHelper::jsonResponse([
+                'success' => false,
+                'error'   => 'Falta el ID de la tienda a actualizar.'
+            ], 400);
+            return;
+        }
+
+        try {
+            $existing = $this->repository->findById($id);
+            if (!$existing) {
+                SecurityHelper::jsonResponse([
+                    'success' => false,
+                    'error'   => 'Tienda no encontrada.'
+                ], 404);
+                return;
+            }
+
+            $storeName   = !empty($input['store']) ? SecurityHelper::sanitize($input['store']) : $existing->getStoreName();
+            $dialingCode = isset($input['dialing_code']) ? SecurityHelper::sanitize($input['dialing_code']) : $existing->getDialingCode();
+            $cellphone   = isset($input['cellphone']) ? SecurityHelper::sanitize($input['cellphone']) : $existing->getCellphone();
+            $colors      = isset($input['colors']) ? $input['colors'] : $existing->getColors();
+            $image       = $existing->getImage();
+
+            if (!empty($input['image']) && strpos($input['image'], 'data:image') === 0) {
+                $logoData = \App\Infrastructure\ImageHelper::processAndSaveImage($input['image'], 'logos');
+                $image = $logoData['url'];
+                if (empty($input['colors']) && !empty($logoData['colors'])) {
+                    $colors = $logoData['colors'];
+                }
+            }
+
+            $updatedStore = new \App\Domain\Store(
+                $storeName,
+                $dialingCode,
+                $cellphone,
+                $image,
+                $colors,
+                $id
+            );
+
+            $this->repository->update($updatedStore);
+
+            SecurityHelper::jsonResponse([
+                'success' => true,
+                'message' => 'Tienda actualizada exitosamente.',
+                'data'    => $updatedStore->toArray()
+            ]);
+        } catch (\Throwable $e) {
+            SecurityHelper::jsonResponse([
+                'success' => false,
+                'error'   => 'Error al actualizar la tienda: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
+

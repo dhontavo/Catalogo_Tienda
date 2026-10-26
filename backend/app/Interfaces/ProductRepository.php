@@ -49,4 +49,12 @@ interface ProductRepository
      * @return bool
      */
     public function delete(string $id): bool;
+
+    /**
+     * Cuenta el total de productos de una tienda.
+     *
+     * @param string $storeId
+     * @return int
+     */
+    public function countByStoreId(string $storeId): int;
 }

@@ -1,0 +1,224 @@
+<div class="auth-page">
+  <div class="auth-container register-container">
+    <div class="auth-header">
+      <a routerLink="/" class="auth-back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+        <span>Volver al inicio</span>
+      </a>
+
+      <div class="auth-brand-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+        </svg>
+      </div>
+
+      <h1 class="auth-title">Crea tu Tienda en ShoppyCatalog SaaS</h1>
+      <p class="auth-subtitle">Completa el asistente en 3 simples pasos y ten tu catálogo listo hoy mismo</p>
+
+      <!-- Step Indicator -->
+      <div class="wizard-steps">
+        <div class="wizard-step" [class.active]="step() >= 1" [class.current]="step() === 1">
+          <div class="step-num">1</div>
+          <span class="step-label">Tu Cuenta</span>
+        </div>
+        <div class="wizard-step-line" [class.active]="step() >= 2"></div>
+        <div class="wizard-step" [class.active]="step() >= 2" [class.current]="step() === 2">
+          <div class="step-num">2</div>
+          <span class="step-label">Tu Tienda</span>
+        </div>
+        <div class="wizard-step-line" [class.active]="step() >= 3"></div>
+        <div class="wizard-step" [class.active]="step() >= 3" [class.current]="step() === 3">
+          <div class="step-num">3</div>
+          <span class="step-label">Tu Plan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-card register-card">
+      @if (errorMessage()) {
+        <div class="auth-alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+          </svg>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- ─── PASO 1: CUENTA DEL COMERCIANTE ────────────────────────── -->
+      @if (step() === 1) {
+        <div class="wizard-content">
+          <h2 class="step-heading">1. Datos del Propietario</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name" class="form-label">Nombre</label>
+              <input id="name" type="text" [(ngModel)]="name" placeholder="Ej: Carlos" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="lastname" class="form-label">Apellidos</label>
+              <input id="lastname" type="text" [(ngModel)]="lastname" placeholder="Ej: Gómez" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input id="email" type="email" [(ngModel)]="email" placeholder="carlos@mitienda.com" class="form-control" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="username" class="form-label">Nombre de Usuario</label>
+              <input id="username" type="text" [(ngModel)]="username" placeholder="carlos_tienda" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="password" class="form-label">Contraseña</label>
+              <input id="password" type="password" [(ngModel)]="password" placeholder="Mín. 8 caracteres (A-z, 0-9, !@#)" class="form-control" required />
+            </div>
+          </div>
+
+          <button type="button" class="btn-wizard-next" (click)="goToStep(2)">
+            <span>Continuar a Datos de la Tienda</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+            </svg>
+          </button>
+        </div>
+      }
+
+      <!-- ─── PASO 2: DATOS DE LA TIENDA ────────────────────────────── -->
+      @if (step() === 2) {
+        <div class="wizard-content">
+          <h2 class="step-heading">2. Personalización de tu Tienda</h2>
+
+          <div class="form-group">
+            <label for="storeName" class="form-label">Nombre Comercial de la Tienda</label>
+            <input id="storeName" type="text" [(ngModel)]="storeName" placeholder="Ej: Boutique Elegance" class="form-control" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-group-sm">
+              <label for="dialingCode" class="form-label">Indicativo</label>
+              <select id="dialingCode" [(ngModel)]="dialingCode" class="form-control">
+                <option value="+57">+57 (Colombia)</option>
+                <option value="+52">+52 (México)</option>
+                <option value="+1">+1 (USA/Canadá)</option>
+                <option value="+34">+34 (España)</option>
+                <option value="+54">+54 (Argentina)</option>
+                <option value="+56">+56 (Chile)</option>
+                <option value="+51">+51 (Perú)</option>
+                <option value="+593">+593 (Ecuador)</option>
+              </select>
+            </div>
+            <div class="form-group form-group-lg">
+              <label for="cellphone" class="form-label">WhatsApp para Recibir Pedidos</label>
+              <input id="cellphone" type="tel" [(ngModel)]="cellphone" placeholder="Ej: 3001234567" class="form-control" required />
+            </div>
+          </div>
+
+          <!-- Logo Upload -->
+          <div class="form-group">
+            <label class="form-label">Logo de tu Tienda (Opcional)</label>
+            <div class="logo-upload-box">
+              @if (logoBase64) {
+                <div class="logo-preview-wrapper">
+                  <img [src]="logoBase64" alt="Logo preview" class="logo-preview-img" />
+                  <button type="button" class="btn-remove-logo" (click)="logoBase64 = ''">Eliminar</button>
+                </div>
+              } @else {
+                <label class="logo-dropzone">
+                  <input type="file" accept="image/*" (change)="onLogoChange($event)" class="file-input-hidden" />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                  </svg>
+                  <span>Haz clic para subir el logo (JPG, PNG o WebP)</span>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Color Palette Picker -->
+          <div class="form-group">
+            <label class="form-label">Color Principal de tu Marca</label>
+            <div class="color-palette">
+              @for (color of colorOptions; track color) {
+                <button
+                  type="button"
+                  class="color-circle"
+                  [style.background]="color"
+                  [class.selected]="selectedColor === color"
+                  (click)="selectedColor = color"
+                ></button>
+              }
+            </div>
+          </div>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn-wizard-back" (click)="goToStep(1)">&larr; Anterior</button>
+            <button type="button" class="btn-wizard-next" (click)="goToStep(3)">
+              <span>Elegir Plan SaaS</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ─── PASO 3: ELECCIÓN DE PLAN SAAS ──────────────────────────── -->
+      @if (step() === 3) {
+        <div class="wizard-content">
+          <h2 class="step-heading">3. Selecciona tu Plan SaaS</h2>
+          <p class="step-subheading">Puedes cambiar de plan o actualizar en cualquier momento desde tu panel de control.</p>
+
+          <div class="plan-selection-grid">
+            @for (p of plans(); track p.id) {
+              <div
+                class="plan-select-card"
+                [class.selected]="selectedPlanId() === p.id"
+                (click)="selectPlan(p.id)"
+              >
+                <div class="plan-select-radio">
+                  <div class="radio-inner" [class.checked]="selectedPlanId() === p.id"></div>
+                </div>
+                <div class="plan-select-body">
+                  <div class="plan-select-header">
+                    <h4>{{ p.plan }}</h4>
+                    <span class="plan-select-price">
+                      {{ (p.price ?? 0) === 0 ? 'Gratis' : ('$' + (p.price | number:'1.2-2') + '/mes') }}
+                    </span>
+                  </div>
+                  <ul class="plan-select-perks">
+                    <li>{{ p.max_product ? 'Hasta ' + p.max_product + ' productos' : 'Productos Ilimitados' }}</li>
+                    <li>{{ p.advertisement === 'NO' ? 'Sin publicidad de la plataforma' : 'Con badge de la plataforma' }}</li>
+                    <li>Pedidos directos a WhatsApp</li>
+                  </ul>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn-wizard-back" (click)="goToStep(2)">&larr; Anterior</button>
+            <button type="button" class="btn-wizard-submit" [disabled]="loading()" (click)="submitRegistration()">
+              @if (loading()) {
+                <span class="auth-spinner"></span>
+                <span>Creando tu tienda...</span>
+              } @else {
+                <span>¡Crear Mi Tienda y Lanzar!</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+              }
+            </button>
+          </div>
+        </div>
+      }
+
+      <div class="auth-footer-prompt">
+        <span>¿Ya tienes una tienda creada?</span>
+        <a routerLink="/login" class="auth-link-bold">Iniciar Sesión</a>
+      </div>
+    </div>
+  </div>
+</div>

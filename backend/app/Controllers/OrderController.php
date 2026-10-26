@@ -63,4 +63,34 @@ class OrderController
             );
         }
     }
-}
+
+    /**
+     * GET /orders?id_store={id}
+     * Lista las órdenes de una tienda para el dashboard de comerciante.
+     */
+    public function index(): void
+    {
+        $storeId = $_GET['id_store'] ?? null;
+
+        if (!$storeId) {
+            SecurityHelper::jsonResponse([
+                'success' => false,
+                'error'   => 'Falta el parámetro id_store de la tienda.'
+            ], 400);
+            return;
+        }
+
+        try {
+            $orders = $this->orderRepository->get($storeId);
+            SecurityHelper::jsonResponse([
+                'success' => true,
+                'data'    => array_map(fn($o) => $o->toArray(), $orders)
+            ]);
+        } catch (\Throwable $e) {
+            SecurityHelper::jsonResponse([
+                'success' => false,
+                'error'   => 'Error al obtener las órdenes: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+}

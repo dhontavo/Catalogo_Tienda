@@ -27,17 +27,32 @@ class MySQLOrderRepository implements OrderRepository
     public function get(string $id_store): array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, id_store, id_product, create_at FROM orders WHERE id_store = :id_store'
+            'SELECT o.id, o.id_store, o.id_product, o.create_at,
+                    p.name AS product_name, p.price AS product_price, p.image AS product_image
+             FROM orders o
+             LEFT JOIN products p ON o.id_product = p.id
+             WHERE o.id_store = :id_store
+             ORDER BY o.create_at DESC'
         );
         $stmt->execute([':id_store' => $id_store]);
 
         $orders = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $productDetails = null;
+            if (!empty($row['product_name'])) {
+                $productDetails = [
+                    'name'  => $row['product_name'],
+                    'price' => isset($row['product_price']) ? (float)$row['product_price'] : 0.0,
+                    'image' => $row['product_image'] ?? null,
+                ];
+            }
+
             $orders[] = new Order(
-                $row['id'],
-                $row['id_store'],
-                $row['id_product'],
-                $row['create_at']
+                (string)$row['id'],
+                (string)$row['id_store'],
+                (string)$row['id_product'],
+                (string)($row['create_at'] ?? ''),
+                $productDetails
             );
         }
 

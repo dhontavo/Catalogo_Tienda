@@ -1,3 +1,58 @@
-<p>
-  plan-modal works!
-</p>
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Planes de Suscripción</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding plans-content">
+  <div class="plans-intro">
+    <ion-icon name="rocket-outline" class="intro-icon"></ion-icon>
+    <h2>Haz crecer tu negocio</h2>
+    <p>Aumenta el límite de productos que puedes subir a tu catálogo digital</p>
+  </div>
+
+  <div class="plans-grid">
+    <ion-card *ngFor="let plan of plans" class="plan-card" [class.popular]="plan.id === 2">
+      <ion-badge *ngIf="plan.id === 2" color="warning" class="popular-badge">
+        <ion-icon name="star-outline"></ion-icon> Más Popular
+      </ion-badge>
+      <ion-card-header>
+        <ion-card-title>{{ plan.name }}</ion-card-title>
+        <ion-card-subtitle>
+          <span class="plan-price">${{ plan.price }}</span>
+          <span class="plan-period">/ mes</span>
+        </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ul class="features-list">
+          <li>
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Hasta <strong>{{ plan.max_product }}</strong> productos en catálogo
+          </li>
+          <li>
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Subida con cámara y galería
+          </li>
+          <li>
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Pedidos directos a WhatsApp
+          </li>
+          <li>
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Catálogo web y móvil sincronizados
+          </li>
+        </ul>
+
+        <ion-button expand="block" [color]="plan.id === 2 ? 'warning' : 'primary'" (click)="selectPlan(plan)">
+          {{ plan.id === currentPlanId ? 'Plan Actual' : 'Elegir Plan' }}
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

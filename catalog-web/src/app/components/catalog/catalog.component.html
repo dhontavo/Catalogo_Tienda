@@ -11,8 +11,8 @@
       <img
         id="store-logo"
         [src]="storeLogoSrc"
-        alt="Logo de la tienda"
-        [style.display]="storeLogoVisible ? 'block' : 'none'"
+        [alt]="storeName"
+        (error)="onLogoError($event)"
       />
       <h1 id="store-name">{{ storeName }}</h1>
     </div>
@@ -55,6 +55,17 @@
     </div>
   }
 </main>
+
+<!-- Store Footer with SaaS attribution -->
+<footer class="store-saas-footer">
+  <div class="store-footer-content">
+    <p class="store-copyright">{{ storeName }} &copy; {{ currentYear }}</p>
+    <a routerLink="/" class="saas-powered-badge" title="Crea tu catálogo digital gratis">
+      <span>Impulsado por <strong>ShoppyCatalog SaaS</strong></span>
+      <span class="badge-tag">Crea tu tienda &rarr;</span>
+    </a>
+  </div>
+</footer>
 
 <!-- Product Detail Modal -->
 <app-product-modal

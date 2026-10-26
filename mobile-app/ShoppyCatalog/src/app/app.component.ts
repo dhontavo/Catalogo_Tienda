@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { 
   IonApp, 
   IonRouterOutlet, 
@@ -11,6 +12,8 @@ import {
   IonIcon, 
   IonLabel,
   IonToggle,
+  IonListHeader,
+  IonBadge,
   MenuController
 } from '@ionic/angular/standalone';
 import { ThemeService } from 'src/service/theme.service';
@@ -24,7 +27,14 @@ import {
   personOutline, 
   barChartOutline, 
   moonOutline, 
-  sunnyOutline 
+  sunnyOutline,
+  storefrontOutline,
+  cartOutline,
+  cloudUploadOutline,
+  bagCheckOutline,
+  logInOutline,
+  personAddOutline,
+  sparklesOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -32,6 +42,7 @@ import {
   templateUrl: 'app.component.html',
   standalone: true,
   imports: [
+    CommonModule,
     IonApp, 
     IonRouterOutlet, 
     IonMenu, 
@@ -42,12 +53,14 @@ import {
     IonItem, 
     IonIcon, 
     IonLabel,
-    IonToggle
+    IonToggle,
+    IonListHeader,
+    IonBadge
   ],
 })
 export class AppComponent implements OnInit {
   private router = inject(Router);
-  private auth = inject(AuthService);
+  public auth = inject(AuthService);
   private tools = inject(ToolsService);
   private menuCtrl = inject(MenuController);
 
@@ -58,12 +71,23 @@ export class AppComponent implements OnInit {
       personOutline, 
       barChartOutline, 
       moonOutline, 
-      sunnyOutline 
+      sunnyOutline,
+      storefrontOutline,
+      cartOutline,
+      cloudUploadOutline,
+      bagCheckOutline,
+      logInOutline,
+      personAddOutline,
+      sparklesOutline
     });
   }
 
   ngOnInit() {
     this.themeService.initializeTheme();
+  }
+
+  get user() {
+    return this.auth.getUser();
   }
 
   navigate(url: string) {
@@ -72,11 +96,10 @@ export class AppComponent implements OnInit {
   }
 
   async logOut() {
-    if (await this.tools.presentAlertConfirm('Cerrar sesión', '¿Está seguro?')) {
+    if (await this.tools.presentAlertConfirm('Cerrar sesión', '¿Deseas salir del modo comerciante?')) {
       this.auth.logout();
       this.menuCtrl.close('main-menu');
-      // Forzamos la recarga de la app en /login para limpiar cualquier vista cacheada por Ionic
-      window.location.href = '/login';
+      window.location.href = '/catalog';
     }
   }
 
@@ -84,7 +107,3 @@ export class AppComponent implements OnInit {
     this.themeService.toggleTheme(event.detail.checked);
   }
 }
-
-
-
-

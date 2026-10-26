@@ -1,0 +1,66 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pedidos Recibidos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding orders-content">
+  <ion-refresher slot="fixed" (ionRefresh)="loadOrders($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Métricas Rápidas -->
+  <div class="metrics-row">
+    <div class="metric-card">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <div class="metric-info">
+        <span class="metric-num">{{ orders.length }}</span>
+        <span class="metric-lbl">Total Pedidos</span>
+      </div>
+    </div>
+
+    <div class="metric-card highlight">
+      <ion-icon name="cash-outline"></ion-icon>
+      <div class="metric-info">
+        <span class="metric-num">${{ totalSales | number:'1.2-2' }}</span>
+        <span class="metric-lbl">Ventas Totales</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spinner -->
+  <div class="center-spinner" *ngIf="loading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Cargando pedidos...</p>
+  </div>
+
+  <!-- Estado Vacío -->
+  <div class="empty-state" *ngIf="!loading && orders.length === 0">
+    <ion-icon name="bagCheckOutline"></ion-icon>
+    <h3>Aún no tienes pedidos</h3>
+    <p>Cuando tus clientes ordenen desde tu catálogo web o móvil por WhatsApp, aparecerán aquí.</p>
+  </div>
+
+  <!-- Lista de Pedidos -->
+  <ion-list lines="none" class="orders-list" *ngIf="!loading && orders.length > 0">
+    <ion-item *ngFor="let order of orders" class="order-card">
+      <ion-thumbnail slot="start" class="order-thumb">
+        <img [src]="order.product_image || 'assets/icon/favicon.png'" alt="Producto">
+      </ion-thumbnail>
+      <ion-label>
+        <div class="order-header-line">
+          <h3 class="order-name">{{ order.product_name || 'Producto #' + order.id_product }}</h3>
+          <span class="order-price">${{ order.total_price | number:'1.2-2' }}</span>
+        </div>
+        <p class="order-meta">
+          <span>Cantidad: <strong>{{ order.quantity }}</strong></span>
+          <span class="bullet">•</span>
+          <span>{{ order.created_at | date:'short' }}</span>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
