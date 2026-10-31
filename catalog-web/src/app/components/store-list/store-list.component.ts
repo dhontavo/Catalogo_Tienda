@@ -104,14 +104,20 @@ export class StoreListComponent implements OnInit, OnDestroy {
 
   getPrimaryColor(store: Store): string {
     if (store.colors) {
+      const raw = store.colors.trim();
+      // Intento 1: JSON array  ["#aabbcc", ...]
       try {
-        const colors: string[] = JSON.parse(store.colors);
+        const colors: string[] = JSON.parse(raw);
         if (Array.isArray(colors) && colors.length >= 1) {
           return colors[0];
         }
       } catch { }
+      // Intento 2: string plano (hex, rgb, nombre)  #10b981
+      if (raw.length > 0) {
+        return raw.split(',')[0].trim();
+      }
     }
-    return '#6366f1';
+    return '#10b981';
   }
 
   getGradientStyle(store: Store): string {

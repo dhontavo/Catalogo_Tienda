@@ -113,10 +113,10 @@ export class DashboardComponent implements OnInit {
     const user = this.authSvc.currentUser();
     if (user) {
       this.storeForm.store = user.store || '';
-      this.storeForm.dialing_code = user.dialing_code || '+57';
+      this.storeForm.dialing_code = user.dialing_code || '+52';
       this.storeForm.cellphone = user.cellphone || '';
-      this.storeForm.image = user.image || '';
-      this.storeForm.colors = user.colors?.split(',')[0]?.trim() || '#6366f1';
+      this.storeForm.image = user.store_image || 'favicon.png';
+      this.storeForm.colors = user.colors?.split(',')[0]?.trim() || '#10b981';
     }
   }
 
