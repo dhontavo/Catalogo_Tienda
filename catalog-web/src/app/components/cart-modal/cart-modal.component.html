@@ -1,0 +1,66 @@
+@if (open) {
+  <div
+    id="cart-modal"
+    class="modal"
+    [class.hidden]="!open"
+    [class.visible]="visible"
+    (click)="onOverlayClick($event)"
+  >
+    <div class="modal-content">
+      <span class="modal-close" (click)="onClose()" role="button" aria-label="Cerrar">&times;</span>
+      <h2>Carrito</h2>
+
+      <ul id="cart-items" class="cart-list">
+        @if (items.length === 0) {
+          <li class="cart-empty">No hay productos en el carrito.</li>
+        } @else {
+          @for (item of items; track item.id_product) {
+            <li class="cart-item" [id]="'cart-item-' + item.id_product">
+              <div class="cart-item-image">
+                <img
+                  [src]="imgSrc(item)"
+                  [alt]="item.name"
+                  (error)="onImgError($event)"
+                />
+              </div>
+              <div class="cart-item-details">
+                <div class="cart-item-header">
+                  <span class="cart-item-name">{{ item.name }}</span>
+                  <button
+                    class="btn-cart-remove"
+                    (click)="remove(item.id_product)"
+                    [title]="'Eliminar ' + item.name"
+                    aria-label="Eliminar producto"
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18"
+                         stroke="currentColor" stroke-width="2" fill="none"
+                         stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="cart-item-footer">
+                  <div class="cart-item-qty-controls">
+                    <button class="btn-qty" (click)="decrease(item.id_product)" aria-label="Disminuir">−</button>
+                    <span class="cart-item-qty">{{ item.quantity }}</span>
+                    <button class="btn-qty" (click)="increase(item.id_product)" aria-label="Aumentar">+</button>
+                  </div>
+                  <div class="cart-item-price-wrapper">
+                    <span class="cart-item-price">{{ formatMXN(item.price * item.quantity) }}</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          }
+        }
+      </ul>
+
+      @if (items.length > 0) {
+        <p id="cart-total" class="cart-total">Total: {{ formatMXN(totalAmount) }}</p>
+        <button class="btn-clear-cart" (click)="clearAll()">Vaciar carrito</button>
+        <button class="btn-place-order-cart" (click)="placeOrder()">Realizar pedido</button>
+      }
+    </div>
+  </div>
+}

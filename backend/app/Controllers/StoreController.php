@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Infrastructure\MySQLStoreRepository;
 use App\Infrastructure\SecurityHelper;
+use App\UseCases\GetStores;
 
 /**
  * Controlador REST para tiendas.
@@ -12,15 +13,17 @@ use App\Infrastructure\SecurityHelper;
 class StoreController
 {
     private MySQLStoreRepository $repository;
+    private GetStores $getStores;
 
     public function __construct()
     {
         $this->repository = new MySQLStoreRepository();
+        $this->getStores = new GetStores($this->repository);
     }
 
     /**
      * GET /store?id={id_store} o GET /store?id_store={id_store}
-     * Devuelve la información de la tienda.
+     * Devuelve la información de una tienda.
      */
     public function show(): void
     {
@@ -37,7 +40,7 @@ class StoreController
         try {
             $store = $this->repository->findById($id);
             
-            // Si no se encuentra por ID, intentamos buscar por nombre (por si acaso el ID configurado es un alias legible)
+            // Si no se encuentra por ID, intentamos buscar por nombre
             if (!$store) {
                 $store = $this->repository->findByName($id);
             }
@@ -64,16 +67,15 @@ class StoreController
 
     /**
      * GET /stores
-     * Devuelve la lista de todas las tiendas.
+     * Devuelve la lista de todas las tiendas disponibles.
      */
     public function index(): void
     {
         try {
-            $stores = $this->repository->findAll();
-            $data = array_map(fn($s) => $s->toArray(), $stores);
+            $stores = $this->getStores->execute();
             SecurityHelper::jsonResponse([
                 'success' => true,
-                'data' => $data
+                'data' => $stores
             ]);
         } catch (\Exception $e) {
             SecurityHelper::jsonResponse([
@@ -82,4 +84,70 @@ class StoreController
             ], 500);
         }
     }
+
+    /**
+     * PUT /store
+     * Actualiza la información y personalización de una tienda.
+     */
+    public function update(): void
+    {
+        $input = SecurityHelper::getJsonInput();
+        $id = $input['id'] ?? $input['id_store'] ?? $_GET['id'] ?? $_GET['id_store'] ?? null;
+
+        if (!$id) {
+            SecurityHelper::jsonResponse([
+                'success' => false,
+                'error'   => 'Falta el ID de la tienda a actualizar.'
+            ], 400);
+            return;
+        }
+
+        try {
+            $existing = $this->repository->findById($id);
+            if (!$existing) {
+                SecurityHelper::jsonResponse([
+                    'success' => false,
+                    'error'   => 'Tienda no encontrada.'
+                ], 404);
+                return;
+            }
+
+            $storeName   = !empty($input['store']) ? SecurityHelper::sanitize($input['store']) : $existing->getStoreName();
+            $dialingCode = isset($input['dialing_code']) ? SecurityHelper::sanitize($input['dialing_code']) : $existing->getDialingCode();
+            $cellphone   = isset($input['cellphone']) ? SecurityHelper::sanitize($input['cellphone']) : $existing->getCellphone();
+            $colors      = isset($input['colors']) ? $input['colors'] : $existing->getColors();
+            $image       = $existing->getImage();
+
+            if (!empty($input['image']) && strpos($input['image'], 'data:image') === 0) {
+                $logoData = \App\Infrastructure\ImageHelper::processAndSaveImage($input['image'], 'logos');
+                $image = $logoData['url'];
+                if (empty($input['colors']) && !empty($logoData['colors'])) {
+                    $colors = $logoData['colors'];
+                }
+            }
+
+            $updatedStore = new \App\Domain\Store(
+                $storeName,
+                $dialingCode,
+                $cellphone,
+                $image,
+                $colors,
+                $id
+            );
+
+            $this->repository->update($updatedStore);
+
+            SecurityHelper::jsonResponse([
+                'success' => true,
+                'message' => 'Tienda actualizada exitosamente.',
+                'data'    => $updatedStore->toArray()
+            ]);
+        } catch (\Throwable $e) {
+            SecurityHelper::jsonResponse([
+                'success' => false,
+                'error'   => 'Error al actualizar la tienda: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
+

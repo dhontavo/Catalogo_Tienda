@@ -10,4 +10,10 @@ interface PlanRepository
      * @return Plan[]
      */
     public function findAll(): array;
+
+    /**
+     * @param int $id
+     * @return Plan|null
+     */
+    public function findById(int $id): ?Plan;
 }

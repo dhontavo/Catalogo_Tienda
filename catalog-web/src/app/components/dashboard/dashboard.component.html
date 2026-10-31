@@ -1,0 +1,574 @@
+<div class="dashboard-layout">
+  <!-- Top Bar -->
+  <header class="dash-topbar">
+    <div class="dash-topbar-left">
+      <a routerLink="/" class="dash-logo-link" title="Ir al inicio de la plataforma">
+        <div class="saas-brand-icon sm">
+          <img [src]="storeForm.image || 'favicon.png'" alt="Panel Icon">
+        </div>
+      </a>
+      <div class="dash-store-identity">
+        <h2 class="dash-store-title">{{ authSvc.storeName() }}</h2>
+        <span class="dash-plan-badge" [class.pro]="authSvc.userPlanId() >= 2">
+          {{ currentPlan().plan }}
+        </span>
+      </div>
+    </div>
+
+    <div class="dash-topbar-right">
+      <a [href]="getStoreCatalogUrl()" target="_blank" class="btn-dash-preview"
+        title="Abrir catálogo público de la tienda">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+        <span>Ver Mi Catálogo</span>
+      </a>
+
+      <button type="button" class="btn-dash-logout" (click)="logout()" title="Cerrar sesión">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+        </svg>
+        <span>Salir</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="dash-body">
+    <!-- Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <nav class="dash-nav">
+        <button type="button" class="dash-nav-item" [class.active]="activeTab() === 'overview'"
+          (click)="activeTab.set('overview')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+          </svg>
+          <span>Resumen</span>
+        </button>
+
+        <button type="button" class="dash-nav-item" [class.active]="activeTab() === 'products'"
+          (click)="activeTab.set('products')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+          </svg>
+          <span>Productos ({{ products().length }})</span>
+        </button>
+
+        <button type="button" class="dash-nav-item" [class.active]="activeTab() === 'orders'"
+          (click)="activeTab.set('orders')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+          <span>Pedidos ({{ orders().length }})</span>
+        </button>
+
+        <button type="button" class="dash-nav-item" [class.active]="activeTab() === 'store'"
+          (click)="activeTab.set('store')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
+          </svg>
+          <span>Mi Tienda & Branding</span>
+        </button>
+
+        <button type="button" class="dash-nav-item" [class.active]="activeTab() === 'plan'"
+          (click)="activeTab.set('plan')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+          </svg>
+          <span>Mi Plan SaaS</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dash-content">
+      <!-- ─── TAB: RESUMEN (OVERVIEW) ─────────────────────────────────── -->
+      @if (activeTab() === 'overview') {
+      <div class="dash-tab-pane">
+        <div class="dash-pane-header">
+          <div>
+            <h1 class="pane-title">Panel de Control</h1>
+            <p class="pane-subtitle">Bienvenido, {{ authSvc.currentUser()?.name }}. Aquí tienes el resumen de tu
+              negocio.</p>
+          </div>
+          <button type="button" class="btn-primary-action" (click)="openNewProductModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span>Nuevo Producto</span>
+          </button>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="dash-kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon icon-indigo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+              </svg>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-title">Productos en Catálogo</span>
+              <span class="kpi-value">{{ products().length }}</span>
+              <span class="kpi-subtext">Activos en línea</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon icon-emerald">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+              </svg>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-title">Uso de tu Plan ({{ currentPlan().plan }})</span>
+              <span class="kpi-value">
+                {{ planProgress().count }} / {{ planProgress().isUnlimited ? '∞' : planProgress().max }}
+              </span>
+              <div class="kpi-progress-bar">
+                <div class="kpi-progress-fill" [style.width.%]="planProgress().percent"
+                  [class.full]="planProgress().isFull"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon icon-rose">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-title">Pedidos Registrados</span>
+              <span class="kpi-value">{{ orders().length }}</span>
+              <span class="kpi-subtext">Directos vía WhatsApp</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Share Store Link Card -->
+        <div class="share-link-card">
+          <div class="share-link-content">
+            <h3>Enlace Público de tu Catálogo</h3>
+            <p>Comparte este enlace en la bio de tu Instagram, estados de WhatsApp, Facebook y tarjetas de presentación:
+            </p>
+            <div class="share-link-bar">
+              <input type="text" readonly [value]="getStoreCatalogUrl()" class="share-link-input" />
+              <button type="button" class="btn-copy-link" (click)="copyCatalogLink()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375m-7.5-10.375h6.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125H9.375A1.125 1.125 0 0 1 8.25 18V9c0-.621.504-1.125 1.125-1.125Z" />
+                </svg>
+                <span>Copiar Enlace</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plan Upsell Banner (if Free) -->
+        @if (authSvc.userPlanId() === 1) {
+        <div class="plan-upsell-banner">
+          <div class="upsell-text">
+            <h4>🚀 ¿Necesitas más productos y eliminar la publicidad?</h4>
+            <p>Actualiza a <strong>Pro Emprendedor</strong> por solo $9.99/mes y obtén hasta 50 productos, sin
+              publicidad y soporte prioritario.</p>
+          </div>
+          <button type="button" class="btn-upsell" (click)="activeTab.set('plan')">Mejorar Plan Ahora</button>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- ─── TAB: PRODUCTOS ─────────────────────────────────────────── -->
+      @if (activeTab() === 'products') {
+      <div class="dash-tab-pane">
+        <div class="dash-pane-header">
+          <div>
+            <h1 class="pane-title">Catálogo de Productos</h1>
+            <p class="pane-subtitle">Administra los artículos visibles para tus clientes</p>
+          </div>
+          <button type="button" class="btn-primary-action" (click)="openNewProductModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span>+ Añadir Producto</span>
+          </button>
+        </div>
+
+        <!-- Search Filter -->
+        <div class="dash-search-bar">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+          <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
+            placeholder="Buscar productos por nombre o descripción..." class="dash-search-input" />
+        </div>
+
+        <!-- Product Grid -->
+        @if (loadingProducts()) {
+        <div class="dash-loading-box">
+          <div class="spinner"></div>
+          <span>Cargando tus productos...</span>
+        </div>
+        } @else if (filteredProducts().length === 0) {
+        <div class="dash-empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+          </svg>
+          <h3>Aún no tienes productos registrados</h3>
+          <p>Comienza publicando tu primer artículo para que tus clientes puedan comprar.</p>
+          <button type="button" class="btn-primary-action" (click)="openNewProductModal()">Añadir Mi Primer
+            Producto</button>
+        </div>
+        } @else {
+        <div class="dash-product-grid">
+          @for (prod of filteredProducts(); track prod.id) {
+          <div class="dash-product-card">
+            <div class="dash-product-img-box">
+              <img [src]="prod.image || 'favicon.png'" [alt]="prod.name" />
+              <span class="dash-product-price">${{ prod.price | number:'1.2-2' }}</span>
+            </div>
+            <div class="dash-product-body">
+              <h3 class="dash-product-name">{{ prod.name }}</h3>
+              <p class="dash-product-desc">{{ prod.description || 'Sin descripción' }}</p>
+              <div class="dash-product-actions">
+                <button type="button" class="btn-product-edit" (click)="openEditProductModal(prod)"
+                  title="Editar producto">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                  </svg>
+                  <span>Editar</span>
+                </button>
+                <button type="button" class="btn-product-delete" (click)="deleteProduct(prod.id)"
+                  title="Eliminar producto">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                  <span>Eliminar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+
+      <!-- ─── TAB: PEDIDOS ───────────────────────────────────────────── -->
+      @if (activeTab() === 'orders') {
+      <div class="dash-tab-pane">
+        <div class="dash-pane-header">
+          <div>
+            <h1 class="pane-title">Pedidos Registrados</h1>
+            <p class="pane-subtitle">Historial de carritos y órdenes enviadas por tus clientes</p>
+          </div>
+        </div>
+
+        @if (loadingOrders()) {
+        <div class="dash-loading-box">
+          <div class="spinner"></div>
+          <span>Cargando órdenes...</span>
+        </div>
+        } @else if (orders().length === 0) {
+        <div class="dash-empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+          <h3>No hay pedidos registrados todavía</h3>
+          <p>Cuando un comprador agregue productos y confirme su compra por WhatsApp, aparecerá aquí.</p>
+        </div>
+        } @else {
+        <div class="dash-orders-table-wrapper">
+          <table class="dash-orders-table">
+            <thead>
+              <tr>
+                <th>Fecha / Hora</th>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (order of orders(); track order.id) {
+              <tr>
+                <td class="order-date">{{ order.create_at }}</td>
+                <td class="order-product">
+                  <div class="order-product-cell">
+                    @if (order.product?.image) {
+                    <img [src]="order.product?.image" [alt]="order.product?.name" class="order-prod-thumb" />
+                    }
+                    <span>{{ order.product?.name || 'Producto #' + order.id_product }}</span>
+                  </div>
+                </td>
+                <td class="order-price">${{ (order.product?.price ?? 0) | number:'1.2-2' }}</td>
+                <td>
+                  <span class="order-status-badge">Completado por WhatsApp</span>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- ─── TAB: MI TIENDA & BRANDING ───────────────────────────────── -->
+      @if (activeTab() === 'store') {
+      <div class="dash-tab-pane">
+        <div class="dash-pane-header">
+          <div>
+            <h1 class="pane-title">Configuración de Tienda</h1>
+            <p class="pane-subtitle">Personaliza la identidad visual y datos de contacto de tu tienda</p>
+          </div>
+        </div>
+
+        <div class="dash-store-form-card">
+          <div class="form-group">
+            <label for="dashStoreName" class="form-label">Nombre Comercial de la Tienda</label>
+            <input id="dashStoreName" type="text" [(ngModel)]="storeForm.store" class="form-control" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-group-sm">
+              <label for="dashDialingCode" class="form-label">Indicativo</label>
+              <select id="dashDialingCode" [(ngModel)]="storeForm.dialing_code" class="form-control">
+                <option value="+57">+57 (Colombia)</option>
+                <option value="+52">+52 (México)</option>
+                <option value="+1">+1 (USA/Canadá)</option>
+                <option value="+34">+34 (España)</option>
+                <option value="+54">+54 (Argentina)</option>
+                <option value="+56">+56 (Chile)</option>
+                <option value="+51">+51 (Perú)</option>
+              </select>
+            </div>
+            <div class="form-group form-group-lg">
+              <label for="dashCellphone" class="form-label">WhatsApp para Recibir Pedidos</label>
+              <input id="dashCellphone" type="tel" [(ngModel)]="storeForm.cellphone" class="form-control" />
+            </div>
+          </div>
+
+          <!-- Logo Upload -->
+          <div class="form-group">
+            <label class="form-label">Logo de la Tienda</label>
+            <div class="dash-logo-box">
+              @if (storeForm.image) {
+              <img [src]="storeForm.image" alt="Logo" class="dash-logo-preview" />
+              }
+              <label class="btn-upload-file">
+                <input type="file" accept="image/*" (change)="onStoreLogoChange($event)" class="file-input-hidden" />
+                <span>Subir Nuevo Logo</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Brand Color -->
+          <div class="form-group">
+            <label class="form-label">Color de Marca Principal</label>
+            <div class="color-palette">
+              @for (c of colorOptions; track c) {
+              <button type="button" class="color-circle" [style.background]="c"
+                [class.selected]="storeForm.colors === c" (click)="storeForm.colors = c"></button>
+              }
+            </div>
+    <div class="form-group">
+      <label class="form-label">Color Personalizado</label>
+      <input type="color" [(ngModel)]="storeForm.colors" class="form-control"/>
+    </div>
+          </div>
+
+          <div class="dash-form-actions">
+            <button type="button" class="btn-primary-action" [disabled]="savingStore()" (click)="saveStoreSettings()">
+              @if (savingStore()) {
+              <span class="auth-spinner"></span>
+              <span>Guardando...</span>
+              } @else {
+              <span>Guardar Cambios</span>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- ─── TAB: MI PLAN SAAS ──────────────────────────────────────── -->
+      @if (activeTab() === 'plan') {
+      <div class="dash-tab-pane">
+        <div class="dash-pane-header">
+          <div>
+            <h1 class="pane-title">Suscripción y Planes SaaS</h1>
+            <p class="pane-subtitle">Gestiona o actualiza tu plan según el crecimiento de tu tienda</p>
+          </div>
+        </div>
+
+        <div class="dash-plan-current-card">
+          <div class="current-plan-header">
+            <span class="plan-sub-tag">Plan Activo</span>
+            <h2>{{ currentPlan().plan }}</h2>
+            <span class="current-plan-price">
+              {{ (currentPlan().price ?? 0) === 0 ? 'Gratis' : ('$' + (currentPlan().price | number:'1.2-2') + ' / mes')
+              }}
+            </span>
+          </div>
+          <div class="current-plan-specs">
+            <div class="spec-item">
+              <span class="spec-label">Límite de Productos</span>
+              <span class="spec-val">{{ currentPlan().max_product ? currentPlan().max_product : 'Ilimitados' }}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Publicidad</span>
+              <span class="spec-val">{{ currentPlan().advertisement === 'NO' ? 'Sin Publicidad' : 'Badge ShoppyCatalog'
+                }}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Usuarios Permitidos</span>
+              <span class="spec-val">{{ currentPlan().max_adduser ?? 1 }} usuario(s)</span>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="plans-switch-title">Cambiar de Plan</h3>
+        <div class="pricing-grid dash-pricing-grid">
+          @for (p of plans(); track p.id) {
+          <div class="pricing-card" [class.current-active]="p.id === authSvc.userPlanId()">
+            <div class="pricing-header">
+              <h3 class="plan-name">{{ p.plan }}</h3>
+              <div class="plan-price">
+                <span class="currency">$</span>
+                <span class="amount">{{ (p.price ?? 0) === 0 ? '0' : (p.price | number:'1.2-2') }}</span>
+                <span class="period">/ mes</span>
+              </div>
+            </div>
+
+            <ul class="plan-features">
+              <li class="feature-item">
+                <span>{{ p.max_product ? p.max_product + ' productos' : 'Productos ilimitados' }}</span>
+              </li>
+              <li class="feature-item">
+                <span>{{ p.advertisement === 'NO' ? 'Sin publicidad' : 'Con badge' }}</span>
+              </li>
+              <li class="feature-item">
+                <span>Pedidos por WhatsApp</span>
+              </li>
+            </ul>
+
+            @if (p.id === authSvc.userPlanId()) {
+            <button type="button" class="btn-plan-select btn-plan-disabled" disabled>Plan Actual</button>
+            } @else {
+            <button type="button" class="btn-plan-select" (click)="changePlan(p.id)">
+              {{ (p.price ?? 0) > (currentPlan().price ?? 0) ? 'Mejorar a este Plan' : 'Cambiar a este Plan' }}
+            </button>
+            }
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </main>
+  </div>
+</div>
+
+<!-- ─── MODAL CREAR / EDITAR PRODUCTO ──────────────────────────────────────── -->
+@if (productModalOpen()) {
+<div class="modal-backdrop" (click)="closeProductModal()">
+  <div class="modal-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ isEditingProduct() ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
+      <button type="button" class="btn-modal-close" (click)="closeProductModal()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="prodName" class="form-label">Nombre del Producto</label>
+        <input id="prodName" type="text" [(ngModel)]="productForm.name" placeholder="Ej: Camiseta Oversize Negra"
+          class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="prodDesc" class="form-label">Descripción</label>
+        <textarea id="prodDesc" rows="3" [(ngModel)]="productForm.description"
+          placeholder="Detalles, materiales, tallas disponibles..." class="form-control"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="prodPrice" class="form-label">Precio ($)</label>
+        <input id="prodPrice" type="number" step="0.01" [(ngModel)]="productForm.price" placeholder="0.00"
+          class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Foto del Producto</label>
+        <div class="prod-img-upload-box">
+          @if (productImagePreview()) {
+          <div class="prod-img-preview-wrap">
+            <img [src]="productImagePreview()" alt="Preview" class="prod-preview-img" />
+            <button type="button" class="btn-remove-logo"
+              (click)="productForm.image = ''; productImagePreview.set('')">Cambiar Imagen</button>
+          </div>
+          } @else {
+          <label class="logo-dropzone">
+            <input type="file" accept="image/*" (change)="onProductImageChange($event)" class="file-input-hidden" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+            <span>Haz clic para subir la foto del producto</span>
+          </label>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-wizard-back" (click)="closeProductModal()">Cancelar</button>
+      <button type="button" class="btn-primary-action" [disabled]="savingProduct()" (click)="saveProduct()">
+        @if (savingProduct()) {
+        <span class="auth-spinner"></span>
+        <span>Guardando...</span>
+        } @else {
+        <span>{{ isEditingProduct() ? 'Guardar Cambios' : 'Publicar Producto' }}</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Toast Feedback -->
+<div class="toast-popup" [class.show]="toastActive()">
+  <span>{{ toastMsg() }}</span>
+</div>

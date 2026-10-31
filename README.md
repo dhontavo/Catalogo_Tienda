@@ -1,142 +1,126 @@
-# 🛍️ ShoppyCatalog
+# 🛍️ ShoppyCatalog SaaS — Plataforma Multi-inquilino de Catálogos Digitales
 
-> Catálogo de productos móvil construido con **Ionic Angular** y una **REST API en PHP**, aplicando Clean Architecture y principios SOLID.
-
----
-
-## 📱 Screenshots
-
-> Capturas de la app corriendo en dispositivo/emulador Android.
-
-<div align="center">
-
-| Pantalla de inicio | Catálogo de productos | Detalle de producto |
-|---|---|---|
-| <img src="screenshots/home.png" width="200"/> | <img src="screenshots/catalog.png" width="200"/> | <img src="screenshots/detail.png" width="200"/> |
-
-</div>
-
-> **¿Cómo agregar tus imágenes?**
-> 1. Crea una carpeta llamada `screenshots/` en la raíz del proyecto.
-> 2. Guarda tus capturas con los nombres: `home.png`, `catalog.png`, `detail.png`.
-> 3. Borra este bloque de instrucciones y sube los cambios con `git push`.
+> Plataforma **SaaS (Software as a Service)** multi-tienda desarrollada con **Angular 21** en el frontend web, **Ionic Angular** para la app móvil y una **REST API en PHP 8** bajo Clean Architecture y principios SOLID.
 
 ---
 
-## 📌 Estado del proyecto
+## 🚀 Características del Sistema SaaS
 
-> ⚠️ **Proyecto en desarrollo activo.**
-> El catálogo de productos está implementado. Autenticación y gestión de pedidos están planificados para próximas iteraciones.
-
----
-
-## 🧩 Funcionalidades actuales
-
-- 📦 Listado de productos con datos dinámicos desde la API
-- 🔌 Integración REST API entre el cliente móvil y el backend PHP
-- 🔐 Protección de endpoints con tokens
-- 🔒 Cifrado de datos sensibles con OpenSSL
-
-## 🗺️ Roadmap
-
-- [ ] Autenticación de usuarios (login / registro)
-- [ ] Carrito de compras
-- [ ] Gestión de pedidos
-- [ ] Panel de administración
+- 🏢 **Multi-inquilino (Multi-tenant)**: Cada comercio opera en un espacio independiente con su propio catálogo, colores de marca, logo y número de WhatsApp para pedidos.
+- 💎 **Planes de Suscripción Flexibles**:
+  - **Plan Gratuito ($0/mes)**: Hasta 10 productos, pedidos ilimitados por WhatsApp, badge de la plataforma.
+  - **Plan Pro Emprendedor ($9.99/mes)**: Hasta 50 productos, sin publicidad de la plataforma, hasta 3 usuarios administradores.
+  - **Plan Empresarial ($24.99/mes)**: Productos ilimitados, sin publicidad, hasta 10 usuarios y soporte prioritario.
+- 🎯 **Control de Límites por Plan**: El backend valida en tiempo real la cantidad de productos registrados frente al límite del plan contratado antes de permitir la publicación.
+- 🪄 **Onboarding en 3 Pasos**: Asistente de registro para comerciantes (Datos del Propietario &rarr; Datos y Branding de la Tienda &rarr; Selección de Plan SaaS) con inicio de sesión automático.
+- 📊 **Panel de Administración (Merchant Dashboard)**:
+  - **Resumen**: KPIs en tiempo real (productos activos, barra de uso del plan, pedidos recibidos), enlace directo para compartir con botón de copiar y banner de upgrade.
+  - **Gestión de Catálogo (CRUD)**: Creación con subida de imágenes y previsualización local, edición, eliminación y búsqueda en tiempo real.
+  - **Bandeja de Pedidos**: Historial de órdenes realizadas por clientes con detalle del producto y fecha.
+  - **Personalización de Marca**: Modificación de nombre, WhatsApp de contacto, logo y paleta cromática interactiva.
+  - **Mi Plan**: Visualización de especificaciones y cambio de plan de suscripción instantáneo.
+- 🛒 **Storefront Público por Tienda**: Los clientes acceden a su tienda favorita (`/store/:id_store`), exploran productos, gestionan el carrito y envían el pedido formateado directamente a WhatsApp.
 
 ---
 
-## 🏗️ Arquitectura
+## 🏗️ Arquitectura de la Plataforma
 
 ```
-ShoppyCatalog/
-├── backend/                  # REST API en PHP
-│   ├── controllers/          # Manejo de requests
-│   ├── models/               # Lógica de negocio
-│   ├── repositories/         # Acceso a base de datos
-│   └── config/               # Configuración y conexión
+Catalogo_Tienda/
+│
+├── backend/                              # REST API en PHP 8
+│   ├── app/
+│   │   ├── Domain/                      # Modelos de dominio (Store, Plan, User, Product, Order)
+│   │   ├── UseCases/                    # Lógica de negocio SaaS (CreateProduct con límite de plan, RegisterStore, etc.)
+│   │   ├── Interfaces/                  # Contratos de repositorios (ProductRepository, PlanRepository, etc.)
+│   │   ├── Infrastructure/              # Implementaciones MySQL, JWT, Cifrado, Helpers
+│   │   └── Controllers/                 # Controladores HTTP (Store, Product, Plan, Auth, Order)
+│   ├── db/
+│   │   └── schema.sql                   # Esquema relacional SaaS y semillas de planes
+│   ├── public/
+│   │   └── index.php                    # Front Controller y Router
+│   └── config/database.php              # Conexión MySQL
+│
+├── catalog-web/                          # Frontend Web SaaS (Angular 21 + SSR)
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── components/
+│   │   │   │   ├── landing/             # Portada SaaS, características, planes y vitrina
+│   │   │   │   ├── store-list/          # Directorio de tiendas activas
+│   │   │   │   ├── login/               # Inicio de sesión de comerciantes
+│   │   │   │   ├── register/            # Asistente de onboarding en 3 pasos
+│   │   │   │   ├── dashboard/           # Panel administrativo del comerciante
+│   │   │   │   └── catalog/             # Catálogo público del cliente final
+│   │   │   └── services/
+│   │   │       ├── auth.service.ts      # Gestión de sesión, tokens y perfil
+│   │   │       ├── auth.guard.ts        # Protección de rutas /admin
+│   │   │       ├── catalog.service.ts   # Comunicación con API REST
+│   │   │       └── cart.service.ts      # Carrito de compras
+│   │   └── styles.css                   # Sistema de diseño SaaS y Storefront
+│   └── package.json
 │
 └── mobile-app/
-    └── ShoppyCatalog/        # App Ionic Angular
-        └── src/
-            └── app/
-                ├── pages/    # Pantallas de la app
-                ├── services/ # Comunicación con la API
-                └── models/   # Interfaces TypeScript
+    └── ShoppyCatalog/                   # App móvil para Android/iOS (Ionic 8 + Angular 20)
+        ├── src/
+        │   ├── app/                     # Módulos, páginas y servicios de la app móvil
+        │   └── environments/            # Variables de entorno generadas por set-env.js
+        ├── set-env.js                   # Script de configuración de entorno desde .env
+        └── package.json
 ```
 
-**Principios aplicados:**
-- ✅ Clean Architecture
-- ✅ Principios SOLID
-- ✅ Diseño RESTful
+---
+
+## 🔌 Endpoints de la API REST
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| `GET` | `/plans` | Lista los planes de suscripción disponibles |
+| `POST` | `/register` | Registra comerciante, crea la tienda y asigna el plan |
+| `POST` | `/login` | Inicia sesión y retorna JWT + datos de la tienda |
+| `PUT` | `/users/{id}` | Actualiza perfil, cambia plan o branding |
+| `GET` | `/stores` | Directorio de tiendas disponibles |
+| `GET` | `/store?id_store=X` | Consulta la tienda por ID o nombre |
+| `PUT` | `/store` | Actualiza branding, logo y teléfono de la tienda |
+| `GET` | `/products?id_store=X` | Lista productos de una tienda |
+| `POST` | `/products` | Crea producto (valida límite según el plan SaaS) |
+| `PUT` | `/products?id=X` | Actualiza un producto existente |
+| `DELETE` | `/products?id=X` | Elimina un producto |
+| `GET` | `/orders?id_store=X` | Lista pedidos de la tienda para el dashboard |
+| `POST` | `/orders` | Registra un pedido realizado desde el catálogo |
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Puesta en Marcha
 
-| Capa | Tecnología |
-|---|---|
-| Frontend móvil | Ionic 7 + Angular + TypeScript |
-| Estilos | SCSS |
-| Backend | PHP 8 |
-| Base de datos | MySQL |
-| Seguridad | OpenSSL · Autenticación por token |
-| API | REST |
-
----
-
-## 🚀 Cómo correr el proyecto
-
-### Requisitos previos
-
-- PHP 8.x
-- MySQL 5.7+
-- Node.js 18+
-- Ionic CLI: `npm install -g @ionic/cli`
-
-### Backend
-
+### 1. Base de Datos MySQL
+Importa el esquema relacional con los planes iniciales:
 ```bash
-git clone https://github.com/dhontavo/Catalogo_Tienda.git
-cd Catalogo_Tienda/backend
-
-cp config/config.example.php config/config.php
-# Edita config.php con tus credenciales de BD
-
-mysql -u root -p tu_base_de_datos < database/schema.sql
-
-php -S localhost:8000
+mysql -u root -p catalogo_tienda < backend/db/schema.sql
 ```
 
-### App móvil
+### 2. Backend PHP
+Asegúrate de que Apache o el servidor de PHP apunte al directorio `public/`:
+```bash
+cd backend
+php -S localhost:8000 -t public
+```
 
+### 3. Frontend Web (Angular 21)
+```bash
+cd catalog-web
+npm install
+npm start
+```
+Abre tu navegador en `http://localhost:4200` para acceder a la plataforma SaaS.
+
+### 4. App Móvil (Ionic 8 + Angular 20)
 ```bash
 cd mobile-app/ShoppyCatalog
-
 npm install
-
-# Actualiza la URL del API en:
-# src/environments/environment.ts → apiUrl: 'http://localhost:8000/api'
-
-ionic serve                      # correr en navegador
-ionic capacitor run android      # correr en Android
+npm start
 ```
-
----
-
-## 🔐 Seguridad
-
-- Endpoints protegidos con **autenticación por token**
-- Datos sensibles cifrados con **OpenSSL**
-
----
-
-## 👤 Autor
-
-**dhontavo** — [GitHub](https://github.com/dhontavo)
-
----
-
-## 📄 Licencia
-
-MIT License
+Para desplegar en dispositivo/emulador Android:
+```bash
+npx cap sync android
+npx cap open android
+```

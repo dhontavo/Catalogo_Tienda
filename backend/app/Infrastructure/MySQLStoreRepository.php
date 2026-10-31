@@ -98,7 +98,9 @@ class MySQLStoreRepository implements StoreRepository
 
     public function findAll(): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM stores');
+        $stmt = $this->db->prepare(
+            'SELECT `id`, `store`, `dialing_code`, `cellphone`, `image`, `colors` FROM `stores`'
+        );
         $stmt->execute();
         $stores = [];
         while ($row = $stmt->fetch()) {

@@ -34,4 +34,23 @@ class MySQLPlanRepository implements PlanRepository
 
         return $plans;
     }
+
+    public function findById(int $id): ?Plan
+    {
+        $stmt = $this->db->prepare('SELECT id, plan, advertisement, max_product, add_user, max_adduser, price FROM plans WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch();
+
+        if (!$row) return null;
+
+        return new Plan(
+            $row['plan'],
+            $row['advertisement'],
+            isset($row['max_product']) ? (int)$row['max_product'] : null,
+            $row['add_user'],
+            isset($row['max_adduser']) ? (int)$row['max_adduser'] : null,
+            isset($row['price']) ? (float)$row['price'] : null,
+            (int)$row['id']
+        );
+    }
 }
