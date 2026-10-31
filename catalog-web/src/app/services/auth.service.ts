@@ -16,7 +16,7 @@ export interface UserSession {
   store?: string;
   dialing_code?: string;
   cellphone?: string;
-  image?: string;
+  store_image?: string;
   colors?: string;
 }
 
@@ -63,6 +63,10 @@ export class AuthService {
   storeId = computed(() => this.currentUser()?.id_store || '');
   storeName = computed(() => this.currentUser()?.store || 'Mi Tienda');
   userPlanId = computed(() => this.currentUser()?.id_plan ?? 1);
+  storeImage = computed(() => this.currentUser()?.store_image || 'favicon.png');
+  storeColors = computed(() => this.currentUser()?.colors || '#10b981');
+  storeDialingCode = computed(() => this.currentUser()?.dialing_code || '+52');
+  storeCellphone = computed(() => this.currentUser()?.cellphone || '');
 
   constructor() {
     this.restoreSession();

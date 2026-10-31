@@ -42,23 +42,30 @@ Catalogo_Tienda/
 │   └── config/database.php              # Conexión MySQL
 │
 ├── catalog-web/                          # Frontend Web SaaS (Angular 21 + SSR)
-│   ├── src/app/
-│   │   ├── components/
-│   │   │   ├── landing/                 # Portada SaaS, características, planes y vitrina
-│   │   │   ├── store-list/              # Directorio de tiendas activas
-│   │   │   ├── login/                   # Inicio de sesión de comerciantes
-│   │   │   ├── register/                # Asistente de onboarding en 3 pasos
-│   │   │   ├── dashboard/               # Panel administrativo del comerciante
-│   │   │   └── catalog/                 # Catálogo público del cliente final
-│   │   └── services/
-│   │       ├── auth.service.ts          # Gestión de sesión, tokens y perfil
-│   │       ├── auth.guard.ts            # Protección de rutas /admin
-│   │       ├── catalog.service.ts       # Comunicación con API REST
-│   │       └── cart.service.ts          # Carrito de compras
-│   └── src/styles.css                   # Sistema de diseño SaaS y Storefront
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── components/
+│   │   │   │   ├── landing/             # Portada SaaS, características, planes y vitrina
+│   │   │   │   ├── store-list/          # Directorio de tiendas activas
+│   │   │   │   ├── login/               # Inicio de sesión de comerciantes
+│   │   │   │   ├── register/            # Asistente de onboarding en 3 pasos
+│   │   │   │   ├── dashboard/           # Panel administrativo del comerciante
+│   │   │   │   └── catalog/             # Catálogo público del cliente final
+│   │   │   └── services/
+│   │   │       ├── auth.service.ts      # Gestión de sesión, tokens y perfil
+│   │   │       ├── auth.guard.ts        # Protección de rutas /admin
+│   │   │       ├── catalog.service.ts   # Comunicación con API REST
+│   │   │       └── cart.service.ts      # Carrito de compras
+│   │   └── styles.css                   # Sistema de diseño SaaS y Storefront
+│   └── package.json
 │
 └── mobile-app/
-    └── ShoppyCatalog/                   # App móvil para Android/iOS (Ionic 7 + Angular)
+    └── ShoppyCatalog/                   # App móvil para Android/iOS (Ionic 8 + Angular 20)
+        ├── src/
+        │   ├── app/                     # Módulos, páginas y servicios de la app móvil
+        │   └── environments/            # Variables de entorno generadas por set-env.js
+        ├── set-env.js                   # Script de configuración de entorno desde .env
+        └── package.json
 ```
 
 ---
@@ -105,3 +112,15 @@ npm install
 npm start
 ```
 Abre tu navegador en `http://localhost:4200` para acceder a la plataforma SaaS.
+
+### 4. App Móvil (Ionic 8 + Angular 20)
+```bash
+cd mobile-app/ShoppyCatalog
+npm install
+npm start
+```
+Para desplegar en dispositivo/emulador Android:
+```bash
+npx cap sync android
+npx cap open android
+```

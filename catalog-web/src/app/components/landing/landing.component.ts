@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './landing.component.html',
+  styleUrls: ['./landing.component.scss'],
 })
 export class LandingComponent implements OnInit {
   private catalogSvc = inject(CatalogService);
@@ -85,7 +86,7 @@ export class LandingComponent implements OnInit {
       const colors = store.colors.split(',').map((c) => c.trim());
       if (colors.length > 0 && colors[0]) return colors[0];
     }
-    return '#6366f1';
+    return '#2596be';
   }
 
   getStoreImage(store: Store): string {

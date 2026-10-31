@@ -146,31 +146,31 @@ export class CatalogComponent implements OnInit, OnDestroy {
   private applyStoreTheme(store: Store): void {
     if (!this.isBrowser) return;
 
-    let primaryColor = '#0058b8';
-    let gradientStart = '#e0efff';
-    let gradientEnd = '#f8f9fb';
+    let primaryColor = '#10b981';
 
     if (store.colors) {
-      try {
-        const colors: string[] = JSON.parse(store.colors);
-        if (Array.isArray(colors) && colors.length >= 1) {
-          primaryColor = colors[0];
-          const rgb = this.hexToRgb(primaryColor);
-          const [r, g, b] = rgb.split(',').map(Number);
-          gradientStart = `rgba(${r},${g},${b},0.06)`;
-          gradientEnd = `rgba(${r},${g},${b},0.15)`;
-        }
-      } catch { }
+      const raw = store.colors.trim();
+      // Soporta tanto string hex simple (#rrggbb) como JSON array (["#rrggbb", ...])
+      if (raw.startsWith('#') || raw.startsWith('rgb')) {
+        primaryColor = raw;
+      } else {
+        try {
+          const colors: string[] = JSON.parse(raw);
+          if (Array.isArray(colors) && colors.length >= 1) {
+            primaryColor = colors[0];
+          }
+        } catch { }
+      }
     }
 
     const rgb = this.hexToRgb(primaryColor);
+    const [r, g, b] = rgb.split(',').map(Number);
     const root = document.documentElement;
     root.style.setProperty('--primary-color', primaryColor);
     root.style.setProperty('--primary-color-hover', this.adjustColor(primaryColor, -20));
     root.style.setProperty('--primary-color-rgb', rgb);
-    root.style.setProperty('--bg-gradient-start', gradientStart);
-    root.style.setProperty('--bg-gradient-end', gradientEnd);
-    const [r, g, b] = rgb.split(',').map(Number);
+    root.style.setProperty('--bg-gradient-start', '#e0efff');
+    root.style.setProperty('--bg-gradient-end', '#f8f9fb');
     root.style.setProperty('--card-border', `rgba(${r},${g},${b},0.18)`);
 
     // Favicon dinámico (tienda o logo por defecto)

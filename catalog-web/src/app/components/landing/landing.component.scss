@@ -1,0 +1,113 @@
+/* landing.component.scss */
+/* Responsive styles for the landing page */
+
+/* Navigation container */
+.saas-nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1rem 2rem;
+}
+
+@media (max-width: 768px) {
+  .saas-nav-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .saas-nav-links a,
+  .saas-nav-actions a {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Hero section */
+.saas-hero {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+/* Features grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+@media (max-width: 992px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Pricing grid */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+@media (max-width: 992px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Showcase grid */
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 992px) {
+  .showcase-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .showcase-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Footer layout */
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-col {
+  flex: 1 1 200px;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Buttons full width on small screens */
+@media (max-width: 600px) {
+  .btn-saas-primary,
+  .btn-saas-secondary,
+  .btn-saas-ghost,
+  .btn-plan-select,
+  .btn-view-all-stores {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+}
