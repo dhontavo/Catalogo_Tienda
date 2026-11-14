@@ -213,7 +213,7 @@
               stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            <span>+ Añadir Producto</span>
+            <span>Añadir Producto</span>
           </button>
         </div>
 
@@ -404,10 +404,10 @@
                 [class.selected]="storeForm.colors === c" (click)="storeForm.colors = c"></button>
               }
             </div>
-    <div class="form-group">
-      <label class="form-label">Color Personalizado</label>
-      <input type="color" [(ngModel)]="storeForm.colors" class="form-control"/>
-    </div>
+            <div class="form-group">
+              <label class="form-label">Color Personalizado</label>
+              <input type="color" [(ngModel)]="storeForm.colors" class="form-control" />
+            </div>
           </div>
 
           <div class="dash-form-actions">
@@ -460,7 +460,18 @@
           </div>
         </div>
 
-        <h3 class="plans-switch-title">Cambiar de Plan</h3>
+        <div class="plans-switch-header">
+          <h3 class="plans-switch-title">Cambiar de Plan</h3>
+          <p class="plans-switch-subtitle">
+            <span class="stripe-badge-secure">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              Pagos seguros cifrados con <strong>Stripe</strong>
+            </span>
+          </p>
+        </div>
         <div class="pricing-grid dash-pricing-grid">
           @for (p of plans(); track p.id) {
           <div class="pricing-card" [class.current-active]="p.id === authSvc.userPlanId()">
@@ -481,15 +492,16 @@
                 <span>{{ p.advertisement === 'NO' ? 'Sin publicidad' : 'Con badge' }}</span>
               </li>
               <li class="feature-item">
-                <span>Pedidos por WhatsApp</span>
+                <span>Pedidos por WhatsApp y Pasarela Stripe</span>
               </li>
             </ul>
 
             @if (p.id === authSvc.userPlanId()) {
             <button type="button" class="btn-plan-select btn-plan-disabled" disabled>Plan Actual</button>
             } @else {
-            <button type="button" class="btn-plan-select" (click)="changePlan(p.id)">
-              {{ (p.price ?? 0) > (currentPlan().price ?? 0) ? 'Mejorar a este Plan' : 'Cambiar a este Plan' }}
+            <button type="button" class="btn-plan-select" [class.btn-plan-stripe]="(p.price ?? 0) > 0"
+              (click)="changePlan(p.id)">
+              {{ (p.price ?? 0) > 0 ? 'Pagar con Stripe 💳' : 'Cambiar a Gratuito' }}
             </button>
             }
           </div>

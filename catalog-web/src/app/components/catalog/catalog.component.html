@@ -82,6 +82,7 @@
   [totalAmount]="cartTotal"
   (closeModal)="closeCartModal()"
   (orderPlaced)="onOrderPlaced()"
+  (stripeCheckout)="onStripeCheckout()"
   (quantityChanged)="onQuantityChanged($event)"
   (removed)="onRemoved($event)"
   (cleared)="onCleared()"

@@ -2,15 +2,14 @@
 
 namespace App\Controllers;
 
-
 use App\UseCases\Order;
 use App\Infrastructure\MySQLOrderRepository;
 use App\Infrastructure\MySQLProductRepository;
 use App\Infrastructure\SecurityHelper;
 
 /**
- * Controlador REST para autenticación.
- * Maneja las peticiones HTTP de ordenes
+ * Controlador REST para órdenes y pedidos.
+ * Maneja las peticiones HTTP de órdenes individuales o en lote.
  */
 class OrderController
 {
@@ -26,22 +25,51 @@ class OrderController
     }
 
     /**
-     * POST /order
-     * Crea una nueva orden.
+     * POST /orders
+     * Crea una o varias órdenes (soporta id_product o arreglo de products).
      */
     public function order(): void
     {
         $input = SecurityHelper::getJsonInput();
 
-        // Validar campos requeridos
-        $required = ['id_store', 'id_product'];
-        foreach ($required as $field) {
-            if (!isset($input[$field]) || empty($input[$field])) {
+        if (empty($input['id_store'])) {
+            SecurityHelper::jsonResponse(['error' => "El campo 'id_store' es obligatorio."], 400);
+            return;
+        }
+
+        // Si se envió un arreglo de productos (ej. desde el carrito de compras)
+        if (!empty($input['products']) && is_array($input['products'])) {
+            try {
+                $created = [];
+                foreach ($input['products'] as $prod) {
+                    $pid = $prod['id_product'] ?? $prod['id'] ?? null;
+                    if ($pid) {
+                        $qty = max(1, (int)($prod['quantity'] ?? 1));
+                        for ($i = 0; $i < $qty; $i++) {
+                            $created[] = $this->order->execute($input['id_store'], (string)$pid);
+                        }
+                    }
+                }
+
+                SecurityHelper::jsonResponse([
+                    'success' => true,
+                    'message' => 'Órdenes creadas exitosamente.',
+                    'data'    => $created,
+                ]);
+                return;
+            } catch (\Throwable $e) {
                 SecurityHelper::jsonResponse(
-                    ['error' => "El campo '$field' es obligatorio."],
-                    400
+                    ['error' => 'Error al crear las órdenes: ' . $e->getMessage()],
+                    500
                 );
+                return;
             }
+        }
+
+        // Si se envió un único id_product
+        if (empty($input['id_product'])) {
+            SecurityHelper::jsonResponse(['error' => "El campo 'id_product' o 'products' es obligatorio."], 400);
+            return;
         }
 
         try {
@@ -51,6 +79,7 @@ class OrderController
             );
 
             SecurityHelper::jsonResponse([
+                'success' => true,
                 'message' => 'Orden creada exitosamente.',
                 'data'    => $order,
             ]);
@@ -93,4 +122,4 @@ class OrderController
             ], 500);
         }
     }
-}
+}
