@@ -38,17 +38,13 @@ use App\Controllers\PlanController;
 use App\Controllers\ConfigController;
 use App\Controllers\StoreController;
 use App\Controllers\OrderController;
+use App\Controllers\StripeController;
 
 // ─── Cargar variables de entorno ─────────────────────────────
 Env::load(__DIR__ . '/../.env');
 
-
 // ─── CORS & Headers ─────────────────────────────────────
 SecurityHelper::setCorsHeaders();
-
-// ─── Autenticación por API Key ───────────────────────────
-// Todas las rutas requieren el header X-API-Key con la clave correcta.
-SecurityHelper::requireApiKey();
 
 // ─── Routing simple ─────────────────────────────────────
 $method = $_SERVER['REQUEST_METHOD'];
@@ -59,15 +55,48 @@ $basePath = '/Catalogo_Tienda/backend/public';
 $path = str_replace($basePath, '', $uri);
 $path = '/' . ltrim($path, '/');
 
-// ─── Rutas ──────────────────────────────────────────────────
+// ─── Autenticación por API Key ───────────────────────────
+// Todas las rutas requieren el header X-API-Key, excepto el webhook de Stripe
+// que es invocado por los servidores de Stripe con su propia firma Stripe-Signature.
+if ($path !== '/stripe/webhook') {
+    SecurityHelper::requireApiKey();
+}
+
+// ─── Controladores ──────────────────────────────────────────
 $productController = new ProductController();
 $authController = new AuthController();
 $planController = new PlanController();
 $configController = new ConfigController();
 $storeController = new StoreController();
 $orderController = new OrderController();
+$stripeController = new StripeController();
 
 switch (true) {
+    // GET /stripe/config
+    case $method === 'GET' && $path === '/stripe/config':
+        $stripeController->getConfig();
+        break;
+
+    // POST /stripe/create-checkout-session
+    case $method === 'POST' && $path === '/stripe/create-checkout-session':
+        $stripeController->createCheckoutSession();
+        break;
+
+    // GET /stripe/verify-session
+    case $method === 'GET' && $path === '/stripe/verify-session':
+        $stripeController->verifySession();
+        break;
+
+    // POST /stripe/webhook
+    case $method === 'POST' && $path === '/stripe/webhook':
+        $stripeController->webhook();
+        break;
+
+    // GET /subscriptions?id_user=X
+    case $method === 'GET' && $path === '/subscriptions':
+        $stripeController->getSubscriptions();
+        break;
+
     // GET /config
     case $method === 'GET' && $path === '/config':
         $configController->show();

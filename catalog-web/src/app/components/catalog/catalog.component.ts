@@ -3,12 +3,13 @@ import {
   PLATFORM_ID, signal, computed, effect
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subscription, combineLatest } from 'rxjs';
 
 import { CatalogService, Product, Store } from '../../services/catalog.service';
 import { CartService } from '../../services/cart.service';
+import { StripeService } from '../../services/stripe.service';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { ProductModalComponent } from '../product-modal/product-modal.component';
 import { CartModalComponent } from '../cart-modal/cart-modal.component';
@@ -24,7 +25,9 @@ const FALLBACK_IMG = 'http://localhost/Catalogo_Tienda/backend/public/uploads/lo
 })
 export class CatalogComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private catalogSvc = inject(CatalogService);
+  private stripeSvc = inject(StripeService);
   readonly cartSvc = inject(CartService);
   private titleSvc = inject(Title);
   private platformId = inject(PLATFORM_ID);
@@ -58,11 +61,19 @@ export class CatalogComponent implements OnInit, OnDestroy {
         this.route.queryParams
       ]).subscribe(([params, queryParams]) => {
         this.idStore = params['id_store'] || queryParams['id_store'] || '';
-        console.log(this.idStore);
+        
         if (!this.idStore) {
           this.loading.set(false);
           this.errorMsg.set('Enlace inválido. Por favor proporciona el id_store en la URL.');
           return;
+        }
+
+        // Revisar retorno de pago Stripe
+        if (queryParams['payment_status'] === 'success' && queryParams['session_id']) {
+          this.checkStripePayment(queryParams['session_id']);
+        } else if (queryParams['payment_status'] === 'canceled') {
+          this.showToast('ℹ️ El pago con tarjeta en Stripe fue cancelado.');
+          this.router.navigate([], { queryParams: {}, replaceUrl: true });
         }
 
         this.loading.set(true);
@@ -100,6 +111,29 @@ export class CatalogComponent implements OnInit, OnDestroy {
       document.removeEventListener('keydown', this.onKeydown);
     }
     clearTimeout(this.toastTimer);
+  }
+
+  // ─── Verificación de Pago Stripe ──────────────────────────────────────────
+  private checkStripePayment(sessionId: string): void {
+    this.showToast('⏳ Verificando confirmación de pago Stripe...');
+    this.subs.add(
+      this.stripeSvc.verifySession(sessionId).subscribe({
+        next: (res) => {
+          if (res.success && res.paid) {
+            this.cartSvc.clear(this.idStore);
+            this.closeCartModal();
+            this.showToast('🎉 ¡Pago exitoso con Stripe! Tu pedido ha sido confirmado.');
+          } else {
+            this.showToast('⚠️ No se pudo confirmar el pago de Stripe.');
+          }
+          this.router.navigate([], { queryParams: {}, replaceUrl: true });
+        },
+        error: () => {
+          this.showToast('❌ Error al verificar el pago con Stripe.');
+          this.router.navigate([], { queryParams: {}, replaceUrl: true });
+        }
+      })
+    );
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -141,7 +175,6 @@ export class CatalogComponent implements OnInit, OnDestroy {
     this.errorMsg.set(msg);
   }
 
-
   // ─── Theme ────────────────────────────────────────────────────────────────
   private applyStoreTheme(store: Store): void {
     if (!this.isBrowser) return;
@@ -150,7 +183,6 @@ export class CatalogComponent implements OnInit, OnDestroy {
 
     if (store.colors) {
       const raw = store.colors.trim();
-      // Soporta tanto string hex simple (#rrggbb) como JSON array (["#rrggbb", ...])
       if (raw.startsWith('#') || raw.startsWith('rgb')) {
         primaryColor = raw;
       } else {
@@ -254,12 +286,37 @@ export class CatalogComponent implements OnInit, OnDestroy {
     );
   }
 
+  onStripeCheckout(): void {
+    if (this.cartSvc.items().length === 0) return;
+
+    this.showToast('💳 Conectando con Stripe Checkout...');
+    this.subs.add(
+      this.stripeSvc.createOrderCheckout({
+        storeId: this.idStore,
+        storeName: this.store()?.store || 'Catálogo Oficial',
+        items: this.cartSvc.items(),
+      }).subscribe({
+        next: (res) => {
+          if (res.success && res.data?.url) {
+            this.stripeSvc.redirectToCheckout(res.data.url);
+          } else {
+            this.showToast('❌ No se pudo inicializar Stripe.');
+          }
+        },
+        error: (err) => {
+          const msg = err.error?.error || 'Error al conectar con Stripe.';
+          this.showToast('❌ ' + msg);
+        }
+      })
+    );
+  }
+
   // ─── Toast ────────────────────────────────────────────────────────────────
   showToast(msg: string): void {
     this.toastMsg.set(msg);
     this.toastActive.set(true);
     clearTimeout(this.toastTimer);
-    this.toastTimer = setTimeout(() => this.toastActive.set(false), 2500);
+    this.toastTimer = setTimeout(() => this.toastActive.set(false), 3000);
   }
 
   // ─── Keyboard ─────────────────────────────────────────────────────────────

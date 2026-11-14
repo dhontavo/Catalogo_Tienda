@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartItem, CartService } from '../../services/cart.service';
+import { CartItem } from '../../services/cart.service';
 
 const FALLBACK = 'http://localhost/Catalogo_Tienda/backend/public/uploads/logo-system/ERROR.png';
 
@@ -17,6 +17,7 @@ export class CartModalComponent implements OnChanges {
   @Input() totalAmount = 0;
   @Output() closeModal = new EventEmitter<void>();
   @Output() orderPlaced = new EventEmitter<void>();
+  @Output() stripeCheckout = new EventEmitter<void>();
   @Output() quantityChanged = new EventEmitter<{ id: string; delta: number }>();
   @Output() removed = new EventEmitter<string>();
   @Output() cleared = new EventEmitter<void>();
@@ -66,6 +67,10 @@ export class CartModalComponent implements OnChanges {
 
   placeOrder(): void {
     this.orderPlaced.emit();
+  }
+
+  payWithStripe(): void {
+    this.stripeCheckout.emit();
   }
 
   formatMXN(amount: number): string {

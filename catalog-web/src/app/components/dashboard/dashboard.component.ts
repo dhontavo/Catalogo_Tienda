@@ -1,9 +1,10 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CatalogService, Product, OrderItem, Plan } from '../../services/catalog.service';
+import { StripeService } from '../../services/stripe.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,9 @@ import { CatalogService, Product, OrderItem, Plan } from '../../services/catalog
 export class DashboardComponent implements OnInit {
   readonly authSvc = inject(AuthService);
   private catalogSvc = inject(CatalogService);
+  private stripeSvc = inject(StripeService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   // Tab activo
   activeTab = signal<'overview' | 'products' | 'orders' | 'store' | 'plan'>('overview');
@@ -103,10 +106,53 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
+    this.checkStripePaymentReturn();
     this.initStoreForm();
     this.loadPlans();
     this.loadProducts();
     this.loadOrders();
+  }
+
+  /**
+   * Revisa si el comerciante regresa de Stripe Checkout tras realizar el pago de un Plan.
+   */
+  private checkStripePaymentReturn(): void {
+    this.route.queryParams.subscribe((params) => {
+      const sessionId = params['session_id'];
+      const planUpgraded = params['plan_upgraded'];
+      const canceled = params['canceled'];
+
+      if (canceled) {
+        this.showToast('ℹ️ Proceso de pago en Stripe cancelado.');
+        this.activeTab.set('plan');
+        this.router.navigate([], { replaceUrl: true, queryParams: {} });
+        return;
+      }
+
+      if (sessionId && planUpgraded) {
+        this.activeTab.set('plan');
+        this.showToast('⏳ Verificando pago con Stripe...');
+        this.stripeSvc.verifySession(sessionId).subscribe({
+          next: (res) => {
+            if (res.success && res.paid) {
+              this.showToast('🎉 ¡Plan mejorado y activado exitosamente con Stripe!');
+              const newPlanId = res.data?.plan_id ? parseInt(res.data.plan_id, 10) : undefined;
+              if (newPlanId) {
+                this.authSvc.updateUserPlan(newPlanId);
+              }
+              this.loadPlans();
+            } else {
+              this.showToast('⚠️ No se completó el pago: ' + (res.message || 'Pago pendiente.'));
+            }
+            this.router.navigate([], { replaceUrl: true, queryParams: {} });
+          },
+          error: (err) => {
+            this.showToast('❌ Error al verificar el pago con Stripe: ' + (err.error?.error || err.message));
+            this.router.navigate([], { replaceUrl: true, queryParams: {} });
+          },
+        });
+      }
+    });
   }
 
   private initStoreForm(): void {
@@ -325,16 +371,51 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // ─── Cambiar / Upgrade Plan ──────────────────────────────────────────────
+  // ─── Cambiar / Upgrade Plan con Stripe ──────────────────────────────────
   changePlan(planId: number): void {
     if (planId === this.authSvc.userPlanId()) return;
 
-    this.authSvc.updateProfile({ id_plan: planId }).subscribe({
-      next: () => {
-        this.showToast('🎉 ¡Plan actualizado con éxito!');
-      },
-      error: () => this.showToast('❌ Error al actualizar el plan.'),
-    });
+    const targetPlan = this.plans().find((p) => p.id === planId);
+    if (!targetPlan) return;
+
+    // Si es el plan gratuito ($0), cambio directo
+    if (!targetPlan.price || targetPlan.price === 0) {
+      this.authSvc.updateProfile({ id_plan: planId }).subscribe({
+        next: () => {
+          this.showToast('🎉 ¡Cambiado al Plan Gratuito con éxito!');
+          this.authSvc.updateUserPlan(planId);
+        },
+        error: () => this.showToast('❌ Error al actualizar el plan.'),
+      });
+      return;
+    }
+
+    // Para planes de pago (Pro o Empresarial), iniciar Stripe Checkout
+    this.showToast('💳 Conectando con pasarela segura de Stripe...');
+    const userId = this.authSvc.currentUser()?.id || '';
+    const userEmail = this.authSvc.currentUser()?.email || '';
+
+    this.stripeSvc
+      .createPlanCheckout({
+        userId,
+        userEmail,
+        planId,
+        planName: targetPlan.plan,
+        price: targetPlan.price,
+      })
+      .subscribe({
+        next: (res) => {
+          if (res.success && res.data?.url) {
+            this.stripeSvc.redirectToCheckout(res.data.url);
+          } else {
+            this.showToast('❌ No se pudo inicializar la pasarela de pago.');
+          }
+        },
+        error: (err) => {
+          const msg = err.error?.error || 'Error al conectar con Stripe.';
+          this.showToast('❌ ' + msg);
+        },
+      });
   }
 
   // ─── Compartir Enlace ───────────────────────────────────────────────────
