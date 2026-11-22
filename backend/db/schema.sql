@@ -85,6 +85,33 @@ CREATE TABLE IF NOT EXISTS `config` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 8. Tabla de Suscripciones (SaaS & Stripe)
+CREATE TABLE IF NOT EXISTS `subscriptions` (
+    `id` VARCHAR(36) PRIMARY KEY,
+    `id_user` VARCHAR(36) NOT NULL,
+    `id_plan` INT NOT NULL,
+    `id_store` VARCHAR(36) DEFAULT NULL,
+    `stripe_customer_id` VARCHAR(255) DEFAULT NULL,
+    `stripe_subscription_id` VARCHAR(255) DEFAULT NULL,
+    `stripe_session_id` VARCHAR(255) DEFAULT NULL,
+    `status` ENUM('active', 'trialing', 'past_due', 'canceled', 'unpaid', 'incomplete') NOT NULL DEFAULT 'active',
+    `price` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    `currency` VARCHAR(10) NOT NULL DEFAULT 'mxn',
+    `interval` ENUM('month', 'year') DEFAULT 'month',
+    `current_period_start` DATETIME DEFAULT NULL,
+    `current_period_end` DATETIME DEFAULT NULL,
+    `cancel_at_period_end` TINYINT(1) DEFAULT 0,
+    `canceled_at` DATETIME DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`id_user`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`id_plan`) REFERENCES `plans`(`id`) ON DELETE RESTRICT,
+    FOREIGN KEY (`id_store`) REFERENCES `stores`(`id`) ON DELETE SET NULL,
+    INDEX `idx_subscriptions_user` (`id_user`),
+    INDEX `idx_subscriptions_status` (`status`),
+    INDEX `idx_subscriptions_stripe_sub` (`stripe_subscription_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ====================================================================
 -- Semillas de Datos (Seed Data)
 -- ====================================================================

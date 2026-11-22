@@ -131,6 +131,14 @@ export class AuthService {
     );
   }
 
+  updateUserPlan(planId: number): void {
+    const current = this.currentUser();
+    if (current) {
+      const updated: UserSession = { ...current, id_plan: planId };
+      this.setSession(updated, this.token() || '');
+    }
+  }
+
   // ─── Sesión ───────────────────────────────────────────────────────────────
   setSession(user: UserSession, token: string): void {
     this.currentUser.set(user);
