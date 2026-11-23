@@ -25,3 +25,10 @@ catalog-web/dist/
 catalog-web/.angular/
 mobile-app/ShoppyCatalog/www/
 mobile-app/ShoppyCatalog/.angular/
+
+# .NET Build & Cache
+backend-dotnet/**/bin/
+backend-dotnet/**/obj/
+backend-dotnet/**/.vs/
+backend-dotnet/**/*.user
+backend-dotnet/**/wwwroot/uploads/

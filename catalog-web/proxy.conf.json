@@ -1,8 +1,20 @@
 {
   "/Catalogo_Tienda/backend/public": {
-    "target": "http://localhost",
+    "target": "http://localhost:5000",
     "secure": false,
     "changeOrigin": true,
+    "pathRewrite": {
+      "^/Catalogo_Tienda/backend/public": ""
+    },
+    "logLevel": "debug"
+  },
+  "/api": {
+    "target": "http://localhost:5000",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    },
     "logLevel": "debug"
   }
 }
