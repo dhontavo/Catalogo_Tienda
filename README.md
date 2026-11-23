@@ -1,111 +1,158 @@
 # 🛍️ ShoppyCatalog SaaS — Plataforma Multi-inquilino de Catálogos Digitales
 
-> Plataforma **SaaS (Software as a Service)** multi-tienda desarrollada con **Angular 21** en el frontend web, **Ionic Angular** para la app móvil y una **REST API en PHP 8** bajo Clean Architecture y principios SOLID.
+> Plataforma **SaaS (Software as a Service)** multi-tienda desarrollada con soporte para **dos opciones de backend equivalentes (ASP.NET Core .NET 10 en C# y PHP 8)**, **Angular 21** con SSR en el frontend web y **Ionic 8 + Angular 20** para la aplicación móvil.
 
 ---
 
 ## 🚀 Características del Sistema SaaS
 
-- 🏢 **Multi-inquilino (Multi-tenant)**: Cada comercio opera en un espacio independiente con su propio catálogo, colores de marca, logo y número de WhatsApp para pedidos.
-- 💎 **Planes de Suscripción Flexibles**:
-  - **Plan Gratuito ($0/mes)**: Hasta 10 productos, pedidos ilimitados por WhatsApp, badge de la plataforma.
-  - **Plan Pro Emprendedor ($9.99/mes)**: Hasta 50 productos, sin publicidad de la plataforma, hasta 3 usuarios administradores.
-  - **Plan Empresarial ($24.99/mes)**: Productos ilimitados, sin publicidad, hasta 10 usuarios y soporte prioritario.
-- 🎯 **Control de Límites por Plan**: El backend valida en tiempo real la cantidad de productos registrados frente al límite del plan contratado antes de permitir la publicación.
-- 🪄 **Onboarding en 3 Pasos**: Asistente de registro para comerciantes (Datos del Propietario &rarr; Datos y Branding de la Tienda &rarr; Selección de Plan SaaS) con inicio de sesión automático.
-- 📊 **Panel de Administración (Merchant Dashboard)**:
-  - **Resumen**: KPIs en tiempo real (productos activos, barra de uso del plan, pedidos recibidos), enlace directo para compartir con botón de copiar y banner de upgrade.
-  - **Gestión de Catálogo (CRUD)**: Creación con subida de imágenes y previsualización local, edición, eliminación y búsqueda en tiempo real.
-  - **Bandeja de Pedidos**: Historial de órdenes realizadas por clientes con detalle del producto y fecha.
-  - **Personalización de Marca**: Modificación de nombre, WhatsApp de contacto, logo y paleta cromática interactiva.
-  - **Mi Plan**: Visualización de especificaciones y cambio de plan de suscripción instantáneo.
-- 🛒 **Storefront Público por Tienda**: Los clientes acceden a su tienda favorita (`/store/:id_store`), exploran productos, gestionan el carrito y envían el pedido formateado directamente a WhatsApp.
+- 🏢 **Multi-inquilino (Multi-tenant)**: Cada comercio gestiona su propio espacio independiente con catálogo personalizado, logotipo, paleta cromática de marca autodetectada y canal directo de WhatsApp.
+- 💎 **Planes de Suscripción SaaS**:
+  - **Plan Gratuito ($0/mes)**: Hasta 10 productos, pedidos ilimitados por WhatsApp y badge de la plataforma.
+  - **Plan Pro Emprendedor ($9.99/mes)**: Hasta 50 productos, sin publicidad y hasta 3 usuarios administradores.
+  - **Plan Empresarial Ilimitado ($24.99/mes)**: Productos ilimitados, sin publicidad, hasta 10 usuarios y soporte prioritario.
+- 💳 **Pasarela de Pagos Stripe Integrada**:
+  - **Checkout de Planes SaaS**: Los comerciantes pueden actualizar su suscripción mediante Stripe Checkout con confirmación automática.
+  - **Cobro de Carrito de Compras**: Los clientes de las tiendas pueden pagar su pedido directamente con tarjeta mediante sesiones seguras de Stripe.
+  - **Webhooks y Verificación**: Manejo de eventos `checkout.session.completed`, registro en tabla `subscriptions` y actualización automática de límites.
+- 🔐 **Seguridad y Recuperación de Cuentas**:
+  - Validación de **X-API-Key** en todas las rutas de la API.
+  - Hashes criptográficos compatibles con **BCrypt** y autenticación mediante **JWT (HS256)**.
+  - Flujo de **recuperación de contraseña**: Generación de credenciales temporales seguras de 8 caracteres con caducidad (10 min) y envío de correo con plantilla HTML moderna vía SMTP.
+- 🎨 **Detección Automática de Paleta de Marca**:
+  - Al subir el logotipo de una tienda, el backend analiza la imagen y extrae automáticamente los colores predominantes para aplicar la temática visual del catálogo.
+- 📊 **Panel de Control del Comerciante (Merchant Dashboard)**:
+  - KPIs en tiempo real (productos activos, cupo restante del plan, pedidos recibidos).
+  - Gestión integral de productos (CRUD con subida de imágenes y previsualización).
+  - Bandeja y tracking de pedidos.
+  - Personalización de identidad visual (nombre, WhatsApp, logo y colores).
+- 🛒 **Storefront Público Responsivo**:
+  - Vitrina interactiva (`/store/:id_store`) con carrito de compras, cálculo de totales, integración con Stripe y opción de enviar pedido formateado por WhatsApp.
 
 ---
 
-## 🏗️ Arquitectura de la Plataforma
+## 🏗️ Arquitectura del Repositorio
 
 ```
 Catalogo_Tienda/
 │
-├── backend/                              # REST API en PHP 8
-│   ├── app/
-│   │   ├── Domain/                      # Modelos de dominio (Store, Plan, User, Product, Order)
-│   │   ├── UseCases/                    # Lógica de negocio SaaS (CreateProduct con límite de plan, RegisterStore, etc.)
-│   │   ├── Interfaces/                  # Contratos de repositorios (ProductRepository, PlanRepository, etc.)
-│   │   ├── Infrastructure/              # Implementaciones MySQL, JWT, Cifrado, Helpers
-│   │   └── Controllers/                 # Controladores HTTP (Store, Product, Plan, Auth, Order)
-│   ├── db/
-│   │   └── schema.sql                   # Esquema relacional SaaS y semillas de planes
-│   ├── public/
-│   │   └── index.php                    # Front Controller y Router
-│   └── config/database.php              # Conexión MySQL
+├── backend-dotnet/                           # REST API en C# (.NET 10 / ASP.NET Core)
+│   └── backend-dotnet/
+│       ├── Controllers/                      # Auth, Config, Order, Plan, Product, Store, Stripe
+│       ├── Data/                             # Conexión MySQL de alto rendimiento (Dapper)
+│       ├── Middleware/                       # Validación de API Key y CORS
+│       ├── Models/                           # Entidades de dominio y DTOs
+│       ├── Repositories/                     # Acceso a datos relacionales con Dapper
+│       ├── Services/                         # JWT, BCrypt, SkiaSharp (colores), Stripe, MailKit
+│       ├── Templates/                        # Plantilla HTML para correos de recuperación
+│       ├── wwwroot/uploads/                  # Archivos estáticos de logos y productos
+│       └── appsettings.json                  # Configuración de base de datos, Stripe y SMTP
 │
-├── catalog-web/                          # Frontend Web SaaS (Angular 21 + SSR)
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── components/
-│   │   │   │   ├── landing/             # Portada SaaS, características, planes y vitrina
-│   │   │   │   ├── store-list/          # Directorio de tiendas activas
-│   │   │   │   ├── login/               # Inicio de sesión de comerciantes
-│   │   │   │   ├── register/            # Asistente de onboarding en 3 pasos
-│   │   │   │   ├── dashboard/           # Panel administrativo del comerciante
-│   │   │   │   └── catalog/             # Catálogo público del cliente final
-│   │   │   └── services/
-│   │   │       ├── auth.service.ts      # Gestión de sesión, tokens y perfil
-│   │   │       ├── auth.guard.ts        # Protección de rutas /admin
-│   │   │       ├── catalog.service.ts   # Comunicación con API REST
-│   │   │       └── cart.service.ts      # Carrito de compras
-│   │   └── styles.css                   # Sistema de diseño SaaS y Storefront
+├── backend/                                  # REST API en PHP 8 (Clean Architecture)
+│   ├── app/
+│   │   ├── Domain/                           # Modelos de dominio (Store, Plan, User, Product, Order)
+│   │   ├── UseCases/                         # Casos de uso de negocio
+│   │   ├── Interfaces/                       # Contratos de repositorios
+│   │   ├── Infrastructure/                   # Implementaciones PDO, JWT, ImageHelper, StripeService
+│   │   └── Controllers/                      # Controladores REST
+│   ├── db/schema.sql                         # Esquema relacional MySQL y semillas
+│   ├── public/index.php                      # Front Controller y Router
+│   └── .env                                  # Variables de entorno
+│
+├── catalog-web/                              # Frontend Web SaaS (Angular 21 + SSR)
+│   ├── src/app/
+│   │   ├── components/                       # Landing, Store-List, Login, Register, Dashboard, Catalog
+│   │   └── services/                         # AuthService, CatalogService, CartService, StripeService
 │   └── package.json
 │
 └── mobile-app/
-    └── ShoppyCatalog/                   # App móvil para Android/iOS (Ionic 8 + Angular 20)
-        ├── src/
-        │   ├── app/                     # Módulos, páginas y servicios de la app móvil
-        │   └── environments/            # Variables de entorno generadas por set-env.js
-        ├── set-env.js                   # Script de configuración de entorno desde .env
+    └── ShoppyCatalog/                        # Aplicación Móvil (Ionic 8 + Angular 20 + Capacitor)
+        ├── src/app/                          # Páginas y componentes móviles
         └── package.json
 ```
 
 ---
 
-## 🔌 Endpoints de la API REST
+## 🔌 Especificación de la API REST
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/plans` | Lista los planes de suscripción disponibles |
-| `POST` | `/register` | Registra comerciante, crea la tienda y asigna el plan |
-| `POST` | `/login` | Inicia sesión y retorna JWT + datos de la tienda |
-| `PUT` | `/users/{id}` | Actualiza perfil, cambia plan o branding |
-| `GET` | `/stores` | Directorio de tiendas disponibles |
-| `GET` | `/store?id_store=X` | Consulta la tienda por ID o nombre |
-| `PUT` | `/store` | Actualiza branding, logo y teléfono de la tienda |
-| `GET` | `/products?id_store=X` | Lista productos de una tienda |
-| `POST` | `/products` | Crea producto (valida límite según el plan SaaS) |
-| `PUT` | `/products?id=X` | Actualiza un producto existente |
-| `DELETE` | `/products?id=X` | Elimina un producto |
-| `GET` | `/orders?id_store=X` | Lista pedidos de la tienda para el dashboard |
-| `POST` | `/orders` | Registra un pedido realizado desde el catálogo |
+Ambos backends (.NET y PHP) implementan de forma exacta la misma especificación de endpoints y contratos JSON:
+
+### 🔑 Autenticación y Perfil
+| Método | Ruta | Header Requerido | Descripción |
+|---|---|---|---|
+| `POST` | `/register` | `X-API-Key` | Registra usuario y opcionalmente su tienda con logo y plan |
+| `POST` | `/login` | `X-API-Key` | Autentica credenciales y retorna token JWT y datos de tienda |
+| `POST` | `/forgot-password` | `X-API-Key` | Emite clave temporal de 10 min y envía correo HTML |
+| `POST` | `/change-password` | `X-API-Key` | Actualiza la contraseña y revoca claves temporales |
+| `PUT` | `/users/{id}` | `X-API-Key`, `Authorization` | Actualiza datos del perfil del comerciante y su tienda |
+
+### 🏢 Tiendas y Branding
+| Método | Ruta | Header Requerido | Descripción |
+|---|---|---|---|
+| `GET` | `/stores` | `X-API-Key` | Directorio de tiendas registradas |
+| `GET` | `/store?id_store=X` | `X-API-Key` | Obtiene tienda por ID o nombre (incluye logo y colores) |
+| `PUT` | `/store` | `X-API-Key` | Actualiza nombre, teléfono, logo y colores de la tienda |
+
+### 📦 Productos
+| Método | Ruta | Header Requerido | Descripción |
+|---|---|---|---|
+| `GET` | `/products?id_store=X&page=1&limit=10` | `X-API-Key` | Lista productos paginados de una tienda |
+| `GET` | `/products?id=X` | `X-API-Key` | Obtiene el detalle de un producto e incrementa vistas |
+| `POST` | `/products` | `X-API-Key` | Crea producto (valida límite de catálogo del plan) |
+| `PUT` | `/products?id=X` | `X-API-Key` | Actualiza información o imagen de un producto |
+| `DELETE` | `/products?id=X` | `X-API-Key` | Elimina un producto del catálogo |
+
+### 📋 Planes, Órdenes y Configuración
+| Método | Ruta | Header Requerido | Descripción |
+|---|---|---|---|
+| `GET` | `/plans` | `X-API-Key` | Lista de planes SaaS y sus especificaciones |
+| `POST` | `/orders` | `X-API-Key` | Registra una orden individual o múltiple desde el carrito |
+| `GET` | `/orders?id_store=X` | `X-API-Key` | Lista pedidos de la tienda para el dashboard |
+| `GET` | `/config` | `X-API-Key` | Obtiene la configuración general del sistema |
+| `PUT` | `/config` | `X-API-Key` | Actualiza parámetros generales de la plataforma |
+
+### 💳 Stripe & Suscripciones
+| Método | Ruta | Header Requerido | Descripción |
+|---|---|---|---|
+| `GET` | `/stripe/config` | `X-API-Key` | Obtiene la clave publicable y moneda configurada |
+| `POST` | `/stripe/create-checkout-session` | `X-API-Key` | Crea sesión Stripe Checkout (`type: "plan"` o `"order"`) |
+| `GET` | `/stripe/verify-session?session_id=X`| `X-API-Key` | Verifica pago en Stripe y aplica upgrade o pedidos |
+| `GET` | `/subscriptions?id_user=X` | `X-API-Key` | Historial de suscripciones y planes del comerciante |
+| `POST` | `/stripe/webhook` | `Stripe-Signature` | Webhook público de Stripe (`checkout.session.completed`) |
 
 ---
 
 ## 🛠️ Puesta en Marcha
 
 ### 1. Base de Datos MySQL
-Importa el esquema relacional con los planes iniciales:
+Crea la base de datos e importa el esquema relacional con los planes iniciales:
 ```bash
 mysql -u root -p catalogo_tienda < backend/db/schema.sql
 ```
 
-### 2. Backend PHP
-Asegúrate de que Apache o el servidor de PHP apunte al directorio `public/`:
+---
+
+### 2. Opción de Backend A: .NET 10 / C# (Recomendado)
+Asegúrate de tener instalado el SDK de .NET:
+```bash
+cd backend-dotnet/backend-dotnet/backend-dotnet
+dotnet run
+```
+La API quedará escuchando en `http://localhost:5000` (o el puerto configurado en `launchSettings.json`).
+
+---
+
+### 3. Opción de Backend B: PHP 8
+Configura tu archivo `backend/.env` con la base de datos y credenciales de Stripe/SMTP:
 ```bash
 cd backend
 php -S localhost:8000 -t public
 ```
+La API quedará escuchando en `http://localhost:8000`.
 
-### 3. Frontend Web (Angular 21)
+---
+
+### 4. Frontend Web (Angular 21)
 ```bash
 cd catalog-web
 npm install
@@ -113,14 +160,25 @@ npm start
 ```
 Abre tu navegador en `http://localhost:4200` para acceder a la plataforma SaaS.
 
-### 4. App Móvil (Ionic 8 + Angular 20)
+---
+
+### 5. App Móvil (Ionic 8 + Angular 20)
 ```bash
 cd mobile-app/ShoppyCatalog
 npm install
 npm start
 ```
-Para desplegar en dispositivo/emulador Android:
+Para sincronizar y ejecutar en emulador/dispositivo Android:
 ```bash
 npx cap sync android
 npx cap open android
 ```
+
+---
+
+## 🔒 Variables de Entorno y Claves
+
+Por seguridad, nunca confirmes archivos con claves privadas al repositorio. Utiliza las plantillas de ejemplo:
+- Backend .NET: [appsettings.json](file:///c:/xampp/htdocs/Catalogo_Tienda/backend-dotnet/backend-dotnet/backend-dotnet/appsettings.json)
+- Backend PHP: [backend/.env.example](file:///c:/xampp/htdocs/Catalogo_Tienda/backend/.env.example)
+- Frontend Web: [environment.ts](file:///c:/xampp/htdocs/Catalogo_Tienda/catalog-web/src/environments/environment.ts)
